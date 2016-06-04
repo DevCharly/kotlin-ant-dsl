@@ -1,0 +1,4 @@
+# Normalize line endings in text files to LF on checkin.
+# (this overrides core.autocrlf)
+
+* text=auto
