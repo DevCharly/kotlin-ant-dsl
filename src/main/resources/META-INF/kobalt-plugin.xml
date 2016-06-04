@@ -1,0 +1,6 @@
+<kobalt-plugin>
+    <name>kobalt-ant</name>
+    <plugin-actors>
+        <class-name>com.devcharly.kobalt.plugin.ant.AntTaskPlugin</class-name>
+    </plugin-actors>
+</kobalt-plugin>
