@@ -17,6 +17,23 @@
 package com.devcharly.kobalt.plugin.ant
 
 import org.apache.tools.ant.taskdefs.*
+import java.io.File
+
+fun AntTask.copy(file: String, tofile: String? = null, todir: String? = null, overwrite: Boolean = false) {
+	val task = Copy()
+	task.setFile(fileOrNull(file))
+	task.setTofile(fileOrNull(tofile))
+	task.setTodir(fileOrNull(todir))
+	task.setOverwrite(overwrite)
+	executeTask("copy", task)
+}
+
+fun AntTask.delete(file: String? = null, dir: String? = null) {
+	val task = Delete()
+	task.setFile(fileOrNull(file))
+	task.setDir(fileOrNull(dir))
+	executeTask("delete", task)
+}
 
 fun AntTask.echo(message: String) {
 	val task = Echo()
@@ -29,4 +46,15 @@ fun AntTask.property(name: String, value: String) {
 	task.name = name
 	task.value = value
 	executeTask("property", task)
+}
+
+fun AntTask.touch(file: String) {
+	val task = Touch()
+	task.setFile(File(file))
+	executeTask("touch", task)
+}
+
+
+fun fileOrNull(pathname: String?): File? {
+	return if (pathname != null) File(pathname) else null
 }
