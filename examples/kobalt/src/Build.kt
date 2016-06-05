@@ -20,7 +20,16 @@ val project = project {
 	antTask("files") {
 		touch("file.txt")
 		copy("file.txt", todir = "dir", overwrite = true)
-		copy("file.txt", tofile = "dir/file2.txt", overwrite = true)
+		copy("file.txt", tofile = "dir/file2.txt")
 		delete("file.txt")
 	}
+
+
+	antTask("fileset") {
+		copy(todir = "dir") {
+			fileset("dir1")
+			fileset("dir2")
+		}
+	}
 }
+

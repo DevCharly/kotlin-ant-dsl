@@ -17,15 +17,29 @@
 package com.devcharly.kobalt.plugin.ant
 
 import org.apache.tools.ant.taskdefs.*
+import org.apache.tools.ant.types.FileSet
 import java.io.File
 
-fun AntTask.copy(file: String, tofile: String? = null, todir: String? = null, overwrite: Boolean = false) {
+fun AntTask.copy(file: String? = null, tofile: String? = null, todir: String? = null,
+	overwrite: Boolean = false,
+	nested: (AntCopyNested.() -> Unit)? = null)
+{
 	val task = Copy()
 	task.setFile(fileOrNull(file))
 	task.setTofile(fileOrNull(tofile))
 	task.setTodir(fileOrNull(todir))
 	task.setOverwrite(overwrite)
+	if (nested != null)
+		nested(AntCopyNested(task))
 	executeTask("copy", task)
+}
+
+class AntCopyNested(val task: Copy) {
+	fun fileset(dir: String) {
+		val fileset = FileSet()
+		fileset.dir = fileOrNull(dir)
+		task.addFileset(fileset)
+	}
 }
 
 fun AntTask.delete(file: String? = null, dir: String? = null) {
