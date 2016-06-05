@@ -28,7 +28,10 @@ val project = project {
 	antTask("fileset") {
 		copy(todir = "dir") {
 			fileset("dir1")
-			fileset("dir2")
+			fileset("dir2") {
+				include(name="**/*.java")
+				exclude(name="**/*Test*")
+			}
 		}
 	}
 }

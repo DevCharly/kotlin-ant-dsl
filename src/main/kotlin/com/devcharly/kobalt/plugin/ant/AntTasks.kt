@@ -35,10 +35,22 @@ fun AntTask.copy(file: String? = null, tofile: String? = null, todir: String? = 
 }
 
 class AntCopyNested(val task: Copy) {
-	fun fileset(dir: String) {
+	fun fileset(dir: String, nested: (AntFileSet.() -> Unit)? = null) {
 		val fileset = FileSet()
 		fileset.dir = fileOrNull(dir)
+		if (nested != null)
+			nested(AntFileSet(fileset))
 		task.addFileset(fileset)
+	}
+}
+
+class AntFileSet(val fileset: FileSet) {
+	fun include(name: String) {
+		fileset.createInclude().name = name
+	}
+
+	fun exclude(name: String) {
+		fileset.createExclude().name = name
 	}
 }
 
