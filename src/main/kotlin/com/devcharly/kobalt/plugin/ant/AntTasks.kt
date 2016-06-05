@@ -20,8 +20,6 @@ import org.apache.tools.ant.taskdefs.Echo
 
 fun AntTask.echo(message: String) {
 	val task = Echo()
-	task.taskName = "echo"
-	task.taskType = "echo"
 	task.setMessage(message)
-	add(task)
+	executeTask("echo", task)
 }

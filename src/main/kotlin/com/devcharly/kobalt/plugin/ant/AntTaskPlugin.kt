@@ -20,6 +20,7 @@ import com.beust.kobalt.TaskResult
 import com.beust.kobalt.api.*
 import com.beust.kobalt.api.annotation.AnnotationDefault
 import com.beust.kobalt.api.annotation.Directive
+import org.apache.tools.ant.Target
 import org.apache.tools.ant.Task
 import java.util.*
 
@@ -66,28 +67,47 @@ class AntTaskPlugin : BasePlugin() {
 }
 
 class AntTask(val taskName: String,
-		var description: String = "", var group: String = AnnotationDefault.GROUP,
-		var dependsOn: Array<String> = arrayOf(), var reverseDependsOn: Array<String> = arrayOf(),
-		var runBefore: Array<String> = arrayOf(), var runAfter: Array<String> = arrayOf(),
-		var alwaysRunAfter: Array<String> = arrayOf())
+		val description: String = "", val group: String = AnnotationDefault.GROUP,
+		val dependsOn: Array<String> = arrayOf(), val reverseDependsOn: Array<String> = arrayOf(),
+		val runBefore: Array<String> = arrayOf(), val runAfter: Array<String> = arrayOf(),
+		val alwaysRunAfter: Array<String> = arrayOf(),
+		val tasks: AntTask.() -> Unit)
 {
-	val tasks = ArrayList<Task>()
-
-	fun add(task: Task) {
-		tasks.add(task)
-	}
+	lateinit var project: org.apache.tools.ant.Project
+	lateinit var target: Target
 
 	fun execute() {
-		tasks.forEach {
-			it.execute()
-		}
+		// create Ant project
+		project = org.apache.tools.ant.Project()
+		project.init()
+
+		// create Ant target
+		target = Target()
+		target.project = project
+		target.name = taskName
+
+		// execute Ant tasks
+		tasks(this)
+	}
+
+	fun executeTask(taskName: String, task: Task) {
+		task.project = project
+		task.owningTarget = target
+		task.taskName = taskName
+		task.taskType = taskName
+
+		task.execute()
 	}
 }
 
 @Directive
-fun Project.antTask(taskName: String, init: AntTask.() -> Unit) = AntTask(taskName).apply {
-	init(this)
-
+fun Project.antTask(taskName: String,
+		description: String = "", group: String = AnnotationDefault.GROUP,
+		dependsOn: Array<String> = arrayOf(), reverseDependsOn: Array<String> = arrayOf(),
+		runBefore: Array<String> = arrayOf(), runAfter: Array<String> = arrayOf(),
+		alwaysRunAfter: Array<String> = arrayOf(),
+		tasks: AntTask.() -> Unit)
+= AntTask(taskName, description, group, dependsOn, reverseDependsOn, runBefore, runAfter, alwaysRunAfter, tasks).apply {
 	val antTasks = projectProperties.get(AntTaskPlugin.ANT_TASKS) as ArrayList<AntTask>?
 		?: ArrayList<AntTask>().apply { projectProperties.put(AntTaskPlugin.ANT_TASKS, this) }
 	antTasks.add(this)
