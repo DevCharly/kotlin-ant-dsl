@@ -16,6 +16,11 @@ You can use your custom Ant tasks in Kobalt. Or use built-it Ant tasks.
 
 **This is project is currently work-in-progress.**
 
+## Supported Ant tasks
+
+  * [echo](http://ant.apache.org/manual/Tasks/echo.html) (partial)
+  * [property](http://ant.apache.org/manual/Tasks/property.html) (partial)
+
 [Kobalt]: http://beust.com/kobalt
 [Ant]: http://ant.apache.org/
 [Ant tasks]: http://ant.apache.org/manual/tasksoverview.html
