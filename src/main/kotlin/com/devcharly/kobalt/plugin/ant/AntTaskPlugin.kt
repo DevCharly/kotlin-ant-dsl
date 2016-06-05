@@ -20,6 +20,7 @@ import com.beust.kobalt.TaskResult
 import com.beust.kobalt.api.*
 import com.beust.kobalt.api.annotation.AnnotationDefault
 import com.beust.kobalt.api.annotation.Directive
+import org.apache.tools.ant.DefaultLogger
 import org.apache.tools.ant.Target
 import org.apache.tools.ant.Task
 import java.util.*
@@ -77,8 +78,15 @@ class AntTask(val taskName: String,
 	lateinit var target: Target
 
 	fun execute() {
+		// create Ant logger
+		val logger = DefaultLogger()
+		logger.setMessageOutputLevel(org.apache.tools.ant.Project.MSG_INFO)
+		logger.setOutputPrintStream(System.out)
+		logger.setErrorPrintStream(System.err)
+
 		// create Ant project
 		project = org.apache.tools.ant.Project()
+		project.addBuildListener(logger)
 		project.init()
 
 		// create Ant target
