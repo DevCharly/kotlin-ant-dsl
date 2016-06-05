@@ -16,10 +16,17 @@
 
 package com.devcharly.kobalt.plugin.ant
 
-import org.apache.tools.ant.taskdefs.Echo
+import org.apache.tools.ant.taskdefs.*
 
 fun AntTask.echo(message: String) {
 	val task = Echo()
 	task.setMessage(message)
 	executeTask("echo", task)
+}
+
+fun AntTask.property(name: String, value: String) {
+	val task = Property()
+	task.name = name
+	task.value = value
+	executeTask("property", task)
 }

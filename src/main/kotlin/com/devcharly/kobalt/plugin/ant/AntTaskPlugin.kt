@@ -21,6 +21,7 @@ import com.beust.kobalt.api.*
 import com.beust.kobalt.api.annotation.AnnotationDefault
 import com.beust.kobalt.api.annotation.Directive
 import org.apache.tools.ant.DefaultLogger
+import org.apache.tools.ant.PropertyHelper
 import org.apache.tools.ant.Target
 import org.apache.tools.ant.Task
 import java.util.*
@@ -105,6 +106,10 @@ class AntTask(val taskName: String,
 		task.taskType = taskName
 
 		task.execute()
+	}
+
+	fun p(name: String): String {
+		return PropertyHelper.getPropertyHelper(project).parseProperties("\${$name}").toString()
 	}
 }
 
