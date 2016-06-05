@@ -110,5 +110,9 @@ fun Project.antTask(taskName: String,
 = AntTask(taskName, description, group, dependsOn, reverseDependsOn, runBefore, runAfter, alwaysRunAfter, tasks).apply {
 	val antTasks = projectProperties.get(AntTaskPlugin.ANT_TASKS) as ArrayList<AntTask>?
 		?: ArrayList<AntTask>().apply { projectProperties.put(AntTaskPlugin.ANT_TASKS, this) }
+	antTasks.forEach {
+		if( it.taskName == taskName )
+			throw AssertionError("Duplicate antTask '$taskName' in project '$projectName'")
+	}
 	antTasks.add(this)
 }
