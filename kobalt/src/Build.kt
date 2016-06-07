@@ -8,14 +8,21 @@ val project = project {
 	version = "0.1"
 
 	dependencies {
-		compile("com.beust:kobalt-plugin-api:")
+		provided("com.beust:kobalt-plugin-api:")
 		compile("org.apache.ant:ant:1.9.7")
 	}
 
 	assemble {
 		mavenJars {
+			jar {
+				fatJar = true
+
+				exclude("**/kotlin-stdlib-*.jar")
+				exclude("**/kotlin-runtime-*.jar")
+			}
 		}
 	}
+
 
 /*
 	bintray {
