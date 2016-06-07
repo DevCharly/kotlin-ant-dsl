@@ -67,6 +67,12 @@ fun AntTask.echo(message: String) {
 	executeTask("echo", task)
 }
 
+fun AntTask.mkdir(dir: String) {
+	val task = Mkdir()
+	task.dir = File(dir)
+	executeTask("mkdir", task)
+}
+
 fun AntTask.property(name: String, value: String) {
 	val task = Property()
 	task.name = name

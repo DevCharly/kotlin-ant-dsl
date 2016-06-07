@@ -21,6 +21,7 @@ You can use your custom Ant tasks in Kobalt. Or use built-it Ant tasks.
   * [copy](http://ant.apache.org/manual/Tasks/copy.html) (partial)
   * [delete](http://ant.apache.org/manual/Tasks/delete.html) (partial)
   * [echo](http://ant.apache.org/manual/Tasks/echo.html) (partial)
+  * [mkdir](http://ant.apache.org/manual/Tasks/mkdir.html)
   * [property](http://ant.apache.org/manual/Tasks/property.html) (partial)
   * [touch](http://ant.apache.org/manual/Tasks/touch.html) (partial)
 
