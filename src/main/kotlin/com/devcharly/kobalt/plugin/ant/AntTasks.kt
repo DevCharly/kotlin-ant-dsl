@@ -24,14 +24,14 @@ fun AntTask.copy(file: String? = null, tofile: String? = null, todir: String? = 
 	overwrite: Boolean = false,
 	nested: (AntCopyNested.() -> Unit)? = null)
 {
-	val task = Copy()
-	task.setFile(fileOrNull(file))
-	task.setTofile(fileOrNull(tofile))
-	task.setTodir(fileOrNull(todir))
-	task.setOverwrite(overwrite)
-	if (nested != null)
-		nested(AntCopyNested(task))
-	executeTask("copy", task)
+	Copy().execute("copy") { task ->
+		task.setFile(fileOrNull(file))
+		task.setTofile(fileOrNull(tofile))
+		task.setTodir(fileOrNull(todir))
+		task.setOverwrite(overwrite)
+		if (nested != null)
+			nested(AntCopyNested(task))
+	}
 }
 
 class AntCopyNested(val task: Copy) {
@@ -55,38 +55,33 @@ class AntFileSet(val fileset: FileSet) {
 }
 
 fun AntTask.delete(file: String? = null, dir: String? = null) {
-	val task = Delete()
-	task.setFile(fileOrNull(file))
-	task.setDir(fileOrNull(dir))
-	executeTask("delete", task)
+	Delete().execute("delete") { task ->
+		task.setFile(fileOrNull(file))
+		task.setDir(fileOrNull(dir))
+	}
 }
 
 fun AntTask.echo(message: String) {
-	val task = Echo()
-	task.setMessage(message)
-	executeTask("echo", task)
+	Echo().execute("echo") { task ->
+		task.setMessage(message)
+	}
 }
 
 fun AntTask.mkdir(dir: String) {
-	val task = Mkdir()
-	task.dir = File(dir)
-	executeTask("mkdir", task)
+	Mkdir().execute("mkdir") { task ->
+		task.dir = File(dir)
+	}
 }
 
 fun AntTask.property(name: String, value: String) {
-	val task = Property()
-	task.name = name
-	task.value = value
-	executeTask("property", task)
+	Property().execute("property") { task ->
+		task.name = name
+		task.value = value
+	}
 }
 
 fun AntTask.touch(file: String) {
-	val task = Touch()
-	task.setFile(File(file))
-	executeTask("touch", task)
-}
-
-
-fun fileOrNull(pathname: String?): File? {
-	return if (pathname != null) File(pathname) else null
+	Touch().execute("touch") { task ->
+		task.setFile(File(file))
+	}
 }

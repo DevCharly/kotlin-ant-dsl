@@ -24,6 +24,7 @@ import org.apache.tools.ant.DefaultLogger
 import org.apache.tools.ant.PropertyHelper
 import org.apache.tools.ant.Target
 import org.apache.tools.ant.Task
+import java.io.File
 import java.util.*
 
 /**
@@ -99,11 +100,23 @@ class AntTask(val taskName: String,
 		tasks(this)
 	}
 
-	fun executeTask(taskName: String, task: Task) {
+
+	fun <T : Task> T.execute(taskName: String, block: (T) -> Unit) {
+		initTask(this, taskName)
+		block(this)
+		executeTask(this)
+	}
+
+	fun initTask(task: Task, taskName: String) {
 		task.project = project
 		task.owningTarget = target
 		task.taskName = taskName
 		task.taskType = taskName
+	}
+
+	fun executeTask(task: Task) {
+		if (task.project == null)
+			throw IllegalStateException("initTask() not called")
 
 		task.execute()
 	}
@@ -128,4 +141,8 @@ fun Project.antTask(taskName: String,
 			throw AssertionError("Duplicate antTask '$taskName' in project '$projectName'")
 	}
 	antTasks.add(this)
+}
+
+fun fileOrNull(pathname: String?): File? {
+	return if (pathname != null) File(pathname) else null
 }
