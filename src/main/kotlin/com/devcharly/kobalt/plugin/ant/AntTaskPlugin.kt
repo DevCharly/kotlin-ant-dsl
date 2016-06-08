@@ -56,6 +56,7 @@ class AntTaskPlugin : BasePlugin() {
 		super.apply(project, context)
 
 		// add new tasks for project
+		@Suppress("UNCHECKED_CAST")
 		val antTasks = project.projectProperties.get(AntTaskPlugin.ANT_TASKS) as ArrayList<AntTask>
 		antTasks.forEach {
 			taskManager.addTask(this, project, it.taskName, it.description, it.group,
@@ -134,6 +135,7 @@ fun Project.antTask(taskName: String,
 		alwaysRunAfter: Array<String> = arrayOf(),
 		tasks: AntTask.() -> Unit)
 = AntTask(taskName, description, group, dependsOn, reverseDependsOn, runBefore, runAfter, alwaysRunAfter, tasks).apply {
+	@Suppress("UNCHECKED_CAST")
 	val antTasks = projectProperties.get(AntTaskPlugin.ANT_TASKS) as ArrayList<AntTask>?
 		?: ArrayList<AntTask>().apply { projectProperties.put(AntTaskPlugin.ANT_TASKS, this) }
 	antTasks.forEach {
