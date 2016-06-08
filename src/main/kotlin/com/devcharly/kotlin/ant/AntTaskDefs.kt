@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package com.devcharly.kobalt.plugin.ant
+package com.devcharly.kotlin.ant
 
+import com.devcharly.kobalt.plugin.ant.AntBuilder
+import com.devcharly.kobalt.plugin.ant.fileOrNull
 import org.apache.tools.ant.taskdefs.*
 import org.apache.tools.ant.types.FileSet
 import java.io.File
 
-fun AntTask.copy(file: String? = null, tofile: String? = null, todir: String? = null,
-	overwrite: Boolean = false,
-	nested: (AntCopyNested.() -> Unit)? = null)
+fun AntBuilder.copy(file: String? = null, tofile: String? = null, todir: String? = null,
+					overwrite: Boolean = false,
+					nested: (AntCopyNested.() -> Unit)? = null)
 {
 	Copy().execute("copy") { task ->
 		task.setFile(fileOrNull(file))
@@ -54,26 +56,26 @@ class AntFileSet(val fileset: FileSet) {
 	}
 }
 
-fun AntTask.delete(file: String? = null, dir: String? = null) {
+fun AntBuilder.delete(file: String? = null, dir: String? = null) {
 	Delete().execute("delete") { task ->
 		task.setFile(fileOrNull(file))
 		task.setDir(fileOrNull(dir))
 	}
 }
 
-fun AntTask.echo(message: String) {
+fun AntBuilder.echo(message: String) {
 	Echo().execute("echo") { task ->
 		task.setMessage(message)
 	}
 }
 
-fun AntTask.mkdir(dir: String) {
+fun AntBuilder.mkdir(dir: String) {
 	Mkdir().execute("mkdir") { task ->
 		task.dir = File(dir)
 	}
 }
 
-fun AntTask.property(name: String? = null, value: String? = null, file: String? = null) {
+fun AntBuilder.property(name: String? = null, value: String? = null, file: String? = null) {
 	Property().execute("property") { task ->
 		task.name = name
 		task.value = value
@@ -81,7 +83,7 @@ fun AntTask.property(name: String? = null, value: String? = null, file: String? 
 	}
 }
 
-fun AntTask.touch(file: String) {
+fun AntBuilder.touch(file: String) {
 	Touch().execute("touch") { task ->
 		task.setFile(File(file))
 	}
