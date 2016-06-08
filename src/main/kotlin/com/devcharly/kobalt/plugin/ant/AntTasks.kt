@@ -73,10 +73,11 @@ fun AntTask.mkdir(dir: String) {
 	}
 }
 
-fun AntTask.property(name: String, value: String) {
+fun AntTask.property(name: String? = null, value: String? = null, file: String? = null) {
 	Property().execute("property") { task ->
 		task.name = name
 		task.value = value
+		task.file = fileOrNull(file)
 	}
 }
 
