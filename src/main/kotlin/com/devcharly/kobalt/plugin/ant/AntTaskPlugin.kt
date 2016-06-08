@@ -20,6 +20,8 @@ import com.beust.kobalt.TaskResult
 import com.beust.kobalt.api.*
 import com.beust.kobalt.api.annotation.AnnotationDefault
 import com.beust.kobalt.api.annotation.Directive
+import com.beust.kobalt.misc.error
+import org.apache.tools.ant.BuildException
 import org.apache.tools.ant.DefaultLogger
 import org.apache.tools.ant.PropertyHelper
 import org.apache.tools.ant.Target
@@ -64,7 +66,6 @@ class AntTaskPlugin : BasePlugin() {
 					it.runBefore.toList(), it.runAfter.toList(), it.alwaysRunAfter.toList(),
 					task = { project ->
 						it.execute()
-						TaskResult()
 					})
 		}
 	}
@@ -80,7 +81,7 @@ class AntTask(val taskName: String,
 	lateinit var project: org.apache.tools.ant.Project
 	lateinit var target: Target
 
-	fun execute() {
+	fun execute() : TaskResult {
 		// create Ant logger
 		val logger = DefaultLogger()
 		logger.setMessageOutputLevel(org.apache.tools.ant.Project.MSG_INFO)
@@ -98,9 +99,13 @@ class AntTask(val taskName: String,
 		target.name = taskName
 
 		// execute Ant tasks
-		tasks(this)
+		try {
+			tasks(this)
+			return TaskResult()
+		} catch (e: BuildException) {
+			return TaskResult(false, e.message)
+		}
 	}
-
 
 	fun <T : Task> T.execute(taskName: String, block: (T) -> Unit) {
 		initTask(this, taskName)
@@ -119,7 +124,18 @@ class AntTask(val taskName: String,
 		if (task.project == null)
 			throw IllegalStateException("initTask() not called")
 
-		task.execute()
+		try {
+			task.execute()
+		} catch (e: BuildException) {
+			// always print stack trace
+			// if running from an IDE, clicking on
+			//     BuildKt$project.invoke(Build.kt:123)
+			// in stack trace jump directly to the line in Build.kt
+			e.printStackTrace()
+
+			error("Ant task [${task.taskName}] failed: ${e.message}")
+			throw e
+		}
 	}
 
 	fun p(name: String): String {
