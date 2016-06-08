@@ -14,7 +14,7 @@ val project = project {
 
 	antTask("property") {
 		property("place", "World")
-		echo("Hello "+p("place"))
+		echo("Hello ${p("place")}")
 	}
 
 	antTask("files") {
