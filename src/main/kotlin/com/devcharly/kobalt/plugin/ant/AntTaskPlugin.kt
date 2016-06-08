@@ -42,7 +42,7 @@ class AntTaskPlugin : BasePlugin() {
 	override val name = PLUGIN_NAME
 
 	companion object {
-		const val PLUGIN_NAME = "kobalt-ant-task"
+		const val PLUGIN_NAME = "AntTask"
 		const val ANT_TASKS = "antTasks"
 	}
 
