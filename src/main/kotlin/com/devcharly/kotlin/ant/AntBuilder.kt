@@ -26,7 +26,7 @@ open class AntBuilder(private val tasks: AntBuilder.() -> Unit) {
 	lateinit var project: org.apache.tools.ant.Project
 	lateinit var target: Target
 
-	fun execute() {
+	fun execute(basedir: String = "") {
 		// create Ant logger
 		val logger = DefaultLogger()
 		logger.setMessageOutputLevel(org.apache.tools.ant.Project.MSG_INFO)
@@ -37,6 +37,7 @@ open class AntBuilder(private val tasks: AntBuilder.() -> Unit) {
 		project = org.apache.tools.ant.Project()
 		project.addBuildListener(logger)
 		project.init()
+		project.baseDir = File(basedir).absoluteFile
 
 		// create Ant target
 		target = Target()
