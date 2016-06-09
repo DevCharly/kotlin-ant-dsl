@@ -1,5 +1,6 @@
 import com.beust.kobalt.*
 import com.devcharly.kobalt.plugin.ant.*
+import com.devcharly.kotlin.ant.*
 
 val plugins = plugins(
 	file("../kobaltBuild/classes")

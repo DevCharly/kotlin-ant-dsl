@@ -16,8 +16,6 @@
 
 package com.devcharly.kotlin.ant
 
-import com.devcharly.kobalt.plugin.ant.AntBuilder
-import com.devcharly.kobalt.plugin.ant.fileOrNull
 import org.apache.tools.ant.taskdefs.*
 import org.apache.tools.ant.types.FileSet
 import java.io.File

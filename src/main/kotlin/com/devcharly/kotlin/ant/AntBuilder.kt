@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.devcharly.kobalt.plugin.ant
+package com.devcharly.kotlin.ant
 
 import org.apache.tools.ant.DefaultLogger
 import org.apache.tools.ant.PropertyHelper

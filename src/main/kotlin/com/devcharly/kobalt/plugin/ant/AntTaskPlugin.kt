@@ -21,6 +21,7 @@ import com.beust.kobalt.api.*
 import com.beust.kobalt.api.annotation.AnnotationDefault
 import com.beust.kobalt.api.annotation.Directive
 import com.beust.kobalt.misc.error
+import com.devcharly.kotlin.ant.AntBuilder
 import org.apache.tools.ant.BuildException
 import org.apache.tools.ant.Task
 import java.util.*
