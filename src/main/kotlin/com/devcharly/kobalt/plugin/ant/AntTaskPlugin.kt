@@ -38,7 +38,7 @@ import java.util.*
  *     }
  * }
  */
-class AntTaskPlugin : BasePlugin() {
+class AntTaskPlugin : BasePlugin(), ITaskContributor {
 	override val name = PLUGIN_NAME
 
 	companion object {
@@ -51,20 +51,22 @@ class AntTaskPlugin : BasePlugin() {
 		return project.projectProperties.get(ANT_TASKS) != null
 	}
 
-	override fun apply(project: Project, context: KobaltContext) {
-		super.apply(project, context)
+	override fun tasksFor(project: Project, context: KobaltContext): List<DynamicTask> {
+		@Suppress("UNCHECKED_CAST")
+		val antTasks = project.projectProperties.get(AntTaskPlugin.ANT_TASKS) as ArrayList<AntTask>?
+			?: return emptyList()
 
 		// add new tasks for project
-		@Suppress("UNCHECKED_CAST")
-		val antTasks = project.projectProperties.get(AntTaskPlugin.ANT_TASKS) as ArrayList<AntTask>
+		val dynamicTasks = ArrayList<DynamicTask>()
 		antTasks.forEach {
-			taskManager.addTask(this, project, it.taskName, it.description, it.group,
+			dynamicTasks.add(DynamicTask(this, it.taskName, it.description, it.group, project,
 					it.dependsOn.toList(), it.reverseDependsOn.toList(),
 					it.runBefore.toList(), it.runAfter.toList(), it.alwaysRunAfter.toList(),
-					task = { project ->
+					closure = { project ->
 						it.executeTasks()
-					})
+					}))
 		}
+		return dynamicTasks
 	}
 }
 
