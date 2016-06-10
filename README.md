@@ -1,5 +1,7 @@
 # [Ant] plug-in for [Kobalt] build system
 
+[![Build Status](https://travis-ci.org/DevCharly/kobalt-ant.svg?branch=master)](https://travis-ci.org/DevCharly/kobalt-ant)
+
 Supports definition of per-project Kobalt tasks (similar to Ant targets)
 and execution of [Ant tasks].
 
