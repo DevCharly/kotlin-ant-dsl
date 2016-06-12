@@ -17,7 +17,6 @@
 package com.devcharly.kotlin.ant
 
 import org.apache.tools.ant.taskdefs.*
-import org.apache.tools.ant.types.FileSet
 import java.io.File
 
 fun AntBuilder.copy(file: String? = null, tofile: String? = null, todir: String? = null,
@@ -34,26 +33,6 @@ fun AntBuilder.copy(file: String? = null, tofile: String? = null, todir: String?
 	}
 }
 
-class AntCopyNested(val task: Copy) {
-	fun fileset(dir: String, nested: (AntFileSet.() -> Unit)? = null) {
-		val fileset = FileSet()
-		fileset.dir = fileOrNull(dir)
-		if (nested != null)
-			nested(AntFileSet(fileset))
-		task.addFileset(fileset)
-	}
-}
-
-class AntFileSet(val fileset: FileSet) {
-	fun include(name: String) {
-		fileset.createInclude().name = name
-	}
-
-	fun exclude(name: String) {
-		fileset.createExclude().name = name
-	}
-}
-
 fun AntBuilder.delete(file: String? = null, dir: String? = null) {
 	Delete().execute("delete") { task ->
 		task.setFile(fileOrNull(file))
@@ -61,23 +40,9 @@ fun AntBuilder.delete(file: String? = null, dir: String? = null) {
 	}
 }
 
-fun AntBuilder.echo(message: String) {
-	Echo().execute("echo") { task ->
-		task.setMessage(message)
-	}
-}
-
 fun AntBuilder.mkdir(dir: String) {
 	Mkdir().execute("mkdir") { task ->
 		task.dir = File(dir)
-	}
-}
-
-fun AntBuilder.property(name: String? = null, value: String? = null, file: String? = null) {
-	Property().execute("property") { task ->
-		task.name = name
-		task.value = value
-		task.file = fileOrNull(file)
 	}
 }
 
