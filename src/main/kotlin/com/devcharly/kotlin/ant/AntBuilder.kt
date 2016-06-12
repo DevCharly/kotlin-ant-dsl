@@ -27,10 +27,10 @@ open class AntBuilder(private val tasks: AntBuilder.() -> Unit) {
 	lateinit var project: Project
 	lateinit var target: Target
 
-	fun execute(basedir: String = "") {
+	fun execute(basedir: String = "", logLevel: LogLevel = LogLevel.INFO) {
 		// create Ant logger
 		val logger = DefaultLogger()
-		logger.setMessageOutputLevel(org.apache.tools.ant.Project.MSG_INFO)
+		logger.setMessageOutputLevel(logLevel.level)
 		logger.setOutputPrintStream(System.out)
 		logger.setErrorPrintStream(System.err)
 
@@ -76,4 +76,14 @@ open class AntBuilder(private val tasks: AntBuilder.() -> Unit) {
 
 fun fileOrNull(pathname: String?): File? {
 	return if (pathname != null) File(pathname) else null
+}
+
+//---- enum LogLevel ----------------------------------------------------------
+
+enum class LogLevel(val level: Int) {
+	ERR(Project.MSG_ERR),
+	WARN(Project.MSG_WARN),
+	INFO(Project.MSG_INFO),
+	VERBOSE(Project.MSG_VERBOSE),
+	DEBUG(Project.MSG_DEBUG)
 }

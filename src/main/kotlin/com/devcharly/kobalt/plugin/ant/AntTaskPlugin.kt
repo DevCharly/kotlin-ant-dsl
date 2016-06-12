@@ -20,8 +20,10 @@ import com.beust.kobalt.TaskResult
 import com.beust.kobalt.api.*
 import com.beust.kobalt.api.annotation.AnnotationDefault
 import com.beust.kobalt.api.annotation.Directive
+import com.beust.kobalt.misc.KobaltLogger
 import com.beust.kobalt.misc.error
 import com.devcharly.kotlin.ant.AntBuilder
+import com.devcharly.kotlin.ant.LogLevel
 import org.apache.tools.ant.BuildException
 import org.apache.tools.ant.Task
 import java.util.*
@@ -75,13 +77,23 @@ class AntTask(val taskName: String,
 		val dependsOn: Array<String> = arrayOf(), val reverseDependsOn: Array<String> = arrayOf(),
 		val runBefore: Array<String> = arrayOf(), val runAfter: Array<String> = arrayOf(),
 		val alwaysRunAfter: Array<String> = arrayOf(),
+		val logLevel: LogLevel? = null,
 		tasks: AntBuilder.() -> Unit)
 	: AntBuilder(tasks)
 {
 	fun executeTasks() : TaskResult {
+		val logLevel2 = logLevel
+			?: when (KobaltLogger.LOG_LEVEL) {
+				0 -> LogLevel.WARN
+				1 -> LogLevel.INFO
+				2 -> LogLevel.VERBOSE
+				3 -> LogLevel.DEBUG
+				else -> LogLevel.INFO
+			}
+
 		// execute Ant tasks
 		try {
-			execute()
+			execute(logLevel = logLevel2)
 			return TaskResult()
 		} catch (e: BuildException) {
 			return TaskResult(false, e.message)
@@ -110,8 +122,9 @@ fun Project.antTask(taskName: String,
 		dependsOn: Array<String> = arrayOf(), reverseDependsOn: Array<String> = arrayOf(),
 		runBefore: Array<String> = arrayOf(), runAfter: Array<String> = arrayOf(),
 		alwaysRunAfter: Array<String> = arrayOf(),
+		logLevel: LogLevel? = null,
 		tasks: AntBuilder.() -> Unit)
-= AntTask(taskName, description, group, dependsOn, reverseDependsOn, runBefore, runAfter, alwaysRunAfter, tasks).apply {
+= AntTask(taskName, description, group, dependsOn, reverseDependsOn, runBefore, runAfter, alwaysRunAfter, logLevel, tasks).apply {
 	@Suppress("UNCHECKED_CAST")
 	val antTasks = projectProperties.get(AntTaskPlugin.ANT_TASKS) as ArrayList<AntTask>?
 		?: ArrayList<AntTask>().apply { projectProperties.put(AntTaskPlugin.ANT_TASKS, this) }
