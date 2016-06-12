@@ -17,13 +17,14 @@
 package com.devcharly.kotlin.ant
 
 import org.apache.tools.ant.DefaultLogger
+import org.apache.tools.ant.Project
 import org.apache.tools.ant.PropertyHelper
 import org.apache.tools.ant.Target
 import org.apache.tools.ant.Task
 import java.io.File
 
 open class AntBuilder(private val tasks: AntBuilder.() -> Unit) {
-	lateinit var project: org.apache.tools.ant.Project
+	lateinit var project: Project
 	lateinit var target: Target
 
 	fun execute(basedir: String = "") {
@@ -34,7 +35,7 @@ open class AntBuilder(private val tasks: AntBuilder.() -> Unit) {
 		logger.setErrorPrintStream(System.err)
 
 		// create Ant project
-		project = org.apache.tools.ant.Project()
+		project = Project()
 		project.addBuildListener(logger)
 		project.init()
 		project.baseDir = File(basedir).absoluteFile
