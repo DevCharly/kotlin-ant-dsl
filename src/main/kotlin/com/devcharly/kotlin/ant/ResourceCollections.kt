@@ -16,20 +16,21 @@
 
 package com.devcharly.kotlin.ant
 
-import org.apache.tools.ant.taskdefs.*
 import org.apache.tools.ant.types.FileSet
 
-class AntCopyNested(val task: Copy) {
-	fun fileset(dir: String, nested: (AntFileSet.() -> Unit)? = null) {
+interface IFileSetNested {
+	fun fileset(dir: String, nested: (KFileSet.() -> Unit)? = null) {
 		val fileset = FileSet()
 		fileset.dir = fileOrNull(dir)
 		if (nested != null)
-			nested(AntFileSet(fileset))
-		task.addFileset(fileset)
+			nested(KFileSet(fileset))
+		_addFileset(fileset)
 	}
+
+	fun _addFileset(fileset: FileSet)
 }
 
-class AntFileSet(val fileset: FileSet) {
+class KFileSet(val fileset: FileSet) {
 	fun include(name: String) {
 		fileset.createInclude().name = name
 	}

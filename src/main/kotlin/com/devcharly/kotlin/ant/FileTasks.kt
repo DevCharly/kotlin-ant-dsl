@@ -17,11 +17,12 @@
 package com.devcharly.kotlin.ant
 
 import org.apache.tools.ant.taskdefs.*
+import org.apache.tools.ant.types.FileSet
 import java.io.File
 
 fun AntBuilder.copy(file: String? = null, tofile: String? = null, todir: String? = null,
 					overwrite: Boolean = false,
-					nested: (AntCopyNested.() -> Unit)? = null)
+					nested: (CopyNested.() -> Unit)? = null)
 {
 	Copy().execute("copy") { task ->
 		task.setFile(fileOrNull(file))
@@ -29,7 +30,13 @@ fun AntBuilder.copy(file: String? = null, tofile: String? = null, todir: String?
 		task.setTodir(fileOrNull(todir))
 		task.setOverwrite(overwrite)
 		if (nested != null)
-			nested(AntCopyNested(task))
+			nested(CopyNested(task))
+	}
+}
+
+class CopyNested(val task: Copy) : IFileSetNested {
+	override fun _addFileset(fileset: FileSet) {
+		task.addFileset(fileset)
 	}
 }
 
