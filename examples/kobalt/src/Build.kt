@@ -64,4 +64,17 @@ val project = project {
 			fileset(dir = "dir", includes = "file2.txt")
 		}
 	}
+
+	antTask("jar", basedir = "_zip_") {
+		jar("out1.jar", basedir = "dir") {
+			manifest {
+				attribute("Main-Class", "com.myapp.Main")
+				attribute("Class-Path", "common.jar")
+			}
+
+			service("javax.script.ScriptEngineFactory",
+					"org.acme.PinkyLanguage",
+					"org.acme.BrainLanguage")
+		}
+	}
 }

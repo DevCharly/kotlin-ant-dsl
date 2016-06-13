@@ -16,8 +16,12 @@
 
 package com.devcharly.kotlin.ant
 
+import org.apache.tools.ant.taskdefs.Jar
+import org.apache.tools.ant.taskdefs.Manifest
 import org.apache.tools.ant.taskdefs.Zip
 import org.apache.tools.ant.types.ResourceCollection
+import org.apache.tools.ant.types.spi.Provider
+import org.apache.tools.ant.types.spi.Service
 
 //---- zip --------------------------------------------------------------------
 
@@ -36,10 +40,50 @@ fun AntBuilder.zip(destfile: String, basedir: String? = null,
 	}
 }
 
-class KZip(override val task: Zip)
+open class KZip(override val task: Zip)
 	: IFileSetNested
 {
 	override fun _addResourceCollection(res: ResourceCollection) {
 		task.add(res)
+	}
+}
+
+//---- jar --------------------------------------------------------------------
+
+fun AntBuilder.jar(destfile: String, basedir: String? = null,
+				   includes: String? = null, includesfile: String? = null,
+				   excludes: String? = null, excludesfile: String? = null,
+				   defaultexcludes: Boolean = true,
+				   nested: (KJar.() -> Unit)? = null)
+{
+	Jar().execute("jar") { task ->
+		task.setDestFile(resolveFile(destfile))
+		task.setBasedir(resolveFile(basedir))
+		task._init(includes, includesfile, excludes, excludesfile, defaultexcludes)
+		if (nested != null)
+			nested(KJar(task))
+	}
+}
+
+class KJar(override val task: Jar)
+	: KZip(task)
+{
+	fun manifest(init: KManifest.() -> Unit) {
+		val manifest = Manifest()
+		init(KManifest(manifest))
+		task.addConfiguredManifest(manifest)
+	}
+
+	fun service(type: String, vararg providers: String) {
+		val service = Service()
+		service.type = type
+		providers.forEach { service.addConfiguredProvider(Provider().apply { className = it }) }
+		task.addConfiguredService(service)
+	}
+}
+
+class KManifest(val manifest: Manifest) {
+	fun attribute(name: String, value: String) {
+		manifest.addConfiguredAttribute(Manifest.Attribute(name, value))
 	}
 }
