@@ -26,6 +26,7 @@ import com.devcharly.kotlin.ant.AntBuilder
 import com.devcharly.kotlin.ant.LogLevel
 import org.apache.tools.ant.BuildException
 import org.apache.tools.ant.Task
+import java.io.File
 import java.util.*
 
 /**
@@ -77,11 +78,16 @@ class AntTask(val taskName: String,
 		val dependsOn: Array<String> = arrayOf(), val reverseDependsOn: Array<String> = arrayOf(),
 		val runBefore: Array<String> = arrayOf(), val runAfter: Array<String> = arrayOf(),
 		val alwaysRunAfter: Array<String> = arrayOf(),
-		val logLevel: LogLevel? = null,
+		val basedir: String = "", val logLevel: LogLevel? = null,
 		tasks: AntBuilder.() -> Unit)
 	: AntBuilder(tasks)
 {
 	fun executeTasks() : TaskResult {
+		// create basedir
+		if (basedir != "")
+			File(basedir).mkdirs()
+
+		// use Kobalt log level
 		val logLevel2 = logLevel
 			?: when (KobaltLogger.LOG_LEVEL) {
 				0 -> LogLevel.WARN
@@ -93,7 +99,7 @@ class AntTask(val taskName: String,
 
 		// execute Ant tasks
 		try {
-			execute(logLevel = logLevel2)
+			execute(basedir, logLevel2)
 			return TaskResult()
 		} catch (e: BuildException) {
 			return TaskResult(false, e.message)
@@ -122,9 +128,11 @@ fun Project.antTask(taskName: String,
 		dependsOn: Array<String> = arrayOf(), reverseDependsOn: Array<String> = arrayOf(),
 		runBefore: Array<String> = arrayOf(), runAfter: Array<String> = arrayOf(),
 		alwaysRunAfter: Array<String> = arrayOf(),
-		logLevel: LogLevel? = null,
+		basedir: String = "", logLevel: LogLevel? = null,
 		tasks: AntBuilder.() -> Unit)
-= AntTask(taskName, description, group, dependsOn, reverseDependsOn, runBefore, runAfter, alwaysRunAfter, logLevel, tasks).apply {
+= AntTask(taskName, description, group,
+		dependsOn, reverseDependsOn, runBefore, runAfter, alwaysRunAfter,
+		basedir, logLevel, tasks).apply {
 	@Suppress("UNCHECKED_CAST")
 	val antTasks = projectProperties.get(AntTaskPlugin.ANT_TASKS) as ArrayList<AntTask>?
 		?: ArrayList<AntTask>().apply { projectProperties.put(AntTaskPlugin.ANT_TASKS, this) }

@@ -18,15 +18,20 @@ val project = project {
 		echo("Hello ${p("place")}")
 	}
 
-	antTask("files") {
+	antTask("files", basedir = "_files_") {
 		touch("file.txt")
 		copy("file.txt", todir = "dir", overwrite = true)
 		copy("file.txt", tofile = "dir/file2.txt")
 		delete("file.txt")
 	}
 
+	antTask("fileset", basedir = "_fileset_") {
+		mkdir("dir1")
+		mkdir("dir2")
+		touch("dir1/file1.java")
+		touch("dir2/file2.java")
+		touch("dir2/fileTest.java")
 
-	antTask("fileset") {
 		copy(todir = "dir") {
 			fileset("dir1")
 			fileset("dir2") {
@@ -36,4 +41,3 @@ val project = project {
 		}
 	}
 }
-
