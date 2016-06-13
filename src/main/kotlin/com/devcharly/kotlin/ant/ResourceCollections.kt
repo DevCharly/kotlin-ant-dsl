@@ -24,6 +24,7 @@ interface IFileSetNested {
 
 	fun fileset(dir: String, nested: (KFileSet.() -> Unit)? = null) {
 		val fileset = FileSet()
+		task.project.setProjectReference(fileset);
 		fileset.dir = task.resolveFile(dir)
 		if (nested != null)
 			nested(KFileSet(fileset))
