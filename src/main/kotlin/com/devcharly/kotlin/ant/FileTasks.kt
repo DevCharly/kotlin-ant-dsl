@@ -17,11 +17,13 @@
 package com.devcharly.kotlin.ant
 
 import org.apache.tools.ant.taskdefs.*
-import org.apache.tools.ant.types.FileSet
+import org.apache.tools.ant.types.ResourceCollection
+
+//---- copy -------------------------------------------------------------------
 
 fun AntBuilder.copy(file: String? = null, tofile: String? = null, todir: String? = null,
 					overwrite: Boolean = false,
-					nested: (CopyNested.() -> Unit)? = null)
+					nested: (KCopy.() -> Unit)? = null)
 {
 	Copy().execute("copy") { task ->
 		task.setFile(resolveFile(file))
@@ -29,15 +31,17 @@ fun AntBuilder.copy(file: String? = null, tofile: String? = null, todir: String?
 		task.setTodir(resolveFile(todir))
 		task.setOverwrite(overwrite)
 		if (nested != null)
-			nested(CopyNested(task))
+			nested(KCopy(task))
 	}
 }
 
-class CopyNested(override val task: Copy) : IFileSetNested {
-	override fun _addFileset(fileset: FileSet) {
-		task.addFileset(fileset)
+class KCopy(override val task: Copy) : IFileSetNested, IDirSetNested {
+	override fun _addResourceCollection(res: ResourceCollection) {
+		task.add(res)
 	}
 }
+
+//---- delete -----------------------------------------------------------------
 
 fun AntBuilder.delete(file: String? = null, dir: String? = null) {
 	Delete().execute("delete") { task ->
@@ -46,11 +50,15 @@ fun AntBuilder.delete(file: String? = null, dir: String? = null) {
 	}
 }
 
+//---- mkdir ------------------------------------------------------------------
+
 fun AntBuilder.mkdir(dir: String) {
 	Mkdir().execute("mkdir") { task ->
 		task.dir = resolveFile(dir)
 	}
 }
+
+//---- touch ------------------------------------------------------------------
 
 fun AntBuilder.touch(file: String) {
 	Touch().execute("touch") { task ->

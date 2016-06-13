@@ -17,21 +17,28 @@
 package com.devcharly.kotlin.ant
 
 import org.apache.tools.ant.Task
+import org.apache.tools.ant.types.DirSet
 import org.apache.tools.ant.types.FileSet
+import org.apache.tools.ant.types.ResourceCollection
 
-interface IFileSetNested {
+//---- ResourceCollection -----------------------------------------------------
+
+interface IResourceCollectionNested {
 	val task: Task
+	fun _addResourceCollection(res: ResourceCollection)
+}
 
+//---- FileSet ----------------------------------------------------------------
+
+interface IFileSetNested : IResourceCollectionNested {
 	fun fileset(dir: String, nested: (KFileSet.() -> Unit)? = null) {
 		val fileset = FileSet()
 		task.project.setProjectReference(fileset);
 		fileset.dir = task.resolveFile(dir)
 		if (nested != null)
 			nested(KFileSet(fileset))
-		_addFileset(fileset)
+		_addResourceCollection(fileset)
 	}
-
-	fun _addFileset(fileset: FileSet)
 }
 
 class KFileSet(val fileset: FileSet) {
@@ -41,5 +48,28 @@ class KFileSet(val fileset: FileSet) {
 
 	fun exclude(name: String) {
 		fileset.createExclude().name = name
+	}
+}
+
+//---- DirSet -----------------------------------------------------------------
+
+interface IDirSetNested : IResourceCollectionNested {
+	fun dirset(dir: String, nested: (KDirSet.() -> Unit)? = null) {
+		val dirset = DirSet()
+		task.project.setProjectReference(dirset);
+		dirset.dir = task.resolveFile(dir)
+		if (nested != null)
+			nested(KDirSet(dirset))
+		_addResourceCollection(dirset)
+	}
+}
+
+class KDirSet(val dirset: DirSet) {
+	fun include(name: String) {
+		dirset.createInclude().name = name
+	}
+
+	fun exclude(name: String) {
+		dirset.createExclude().name = name
 	}
 }
