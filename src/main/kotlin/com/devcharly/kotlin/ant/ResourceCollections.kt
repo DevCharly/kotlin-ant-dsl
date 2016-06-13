@@ -17,10 +17,7 @@
 package com.devcharly.kotlin.ant
 
 import org.apache.tools.ant.Task
-import org.apache.tools.ant.types.AbstractFileSet
-import org.apache.tools.ant.types.DirSet
-import org.apache.tools.ant.types.FileSet
-import org.apache.tools.ant.types.ResourceCollection
+import org.apache.tools.ant.types.*
 
 //---- ResourceCollection -----------------------------------------------------
 
@@ -31,35 +28,32 @@ interface IResourceCollectionNested {
 
 //---- AbstractFileSet --------------------------------------------------------
 
-interface IAbstractFileSetNested : IResourceCollectionNested {
-	fun _init(abstractFileSet: AbstractFileSet,
-			  includes: String?, includesfile: String?,
-			  excludes: String?, excludesfile: String?,
-			  casesensitive: Boolean, followsymlinks: Boolean,
-			  erroronmissingdir: Boolean)
-	{
-		if (includes != null)
-			abstractFileSet.setIncludes(includes)
-		if (includesfile != null)
-			abstractFileSet.setIncludesfile(task.resolveFile(includesfile))
+fun AbstractFileSet._init(includes: String?, includesfile: String?,
+						  excludes: String?, excludesfile: String?,
+						  casesensitive: Boolean, followsymlinks: Boolean,
+						  erroronmissingdir: Boolean)
+{
+	if (includes != null)
+		setIncludes(includes)
+	if (includesfile != null)
+		setIncludesfile(project.resolveFile(includesfile))
 
-		if (excludes != null)
-			abstractFileSet.setExcludes(excludes)
-		if (excludesfile != null)
-			abstractFileSet.setExcludesfile(task.resolveFile(excludesfile))
+	if (excludes != null)
+		setExcludes(excludes)
+	if (excludesfile != null)
+		setExcludesfile(project.resolveFile(excludesfile))
 
-		if (!casesensitive)
-			abstractFileSet.setCaseSensitive(casesensitive)
-		if (!followsymlinks)
-			abstractFileSet.setFollowSymlinks(followsymlinks)
-		if( !erroronmissingdir)
-			abstractFileSet.errorOnMissingDir = erroronmissingdir
-	}
+	if (!casesensitive)
+		setCaseSensitive(casesensitive)
+	if (!followsymlinks)
+		setFollowSymlinks(followsymlinks)
+	if( !erroronmissingdir)
+		setErrorOnMissingDir(erroronmissingdir)
 }
 
 //---- FileSet ----------------------------------------------------------------
 
-interface IFileSetNested : IAbstractFileSetNested {
+interface IFileSetNested : IResourceCollectionNested {
 	fun fileset(dir: String? = null, file: String? = null,
 				defaultexcludes: Boolean = true,
 				includes: String? = null, includesfile: String? = null,
@@ -76,7 +70,7 @@ interface IFileSetNested : IAbstractFileSetNested {
 			fileset.setFile(task.resolveFile(file))
 		if (!defaultexcludes)
 			fileset.defaultexcludes = defaultexcludes
-		_init(fileset, includes, includesfile, excludes, excludesfile, casesensitive, followsymlinks, erroronmissingdir)
+		fileset._init(includes, includesfile, excludes, excludesfile, casesensitive, followsymlinks, erroronmissingdir)
 		if (nested != null)
 			nested(KFileSet(fileset))
 		_addResourceCollection(fileset)
@@ -95,7 +89,7 @@ class KFileSet(val fileset: FileSet) {
 
 //---- DirSet -----------------------------------------------------------------
 
-interface IDirSetNested : IAbstractFileSetNested {
+interface IDirSetNested : IResourceCollectionNested {
 	fun dirset(dir: String,
 			   includes: String? = null, includesfile: String? = null,
 			   excludes: String? = null, excludesfile: String? = null,
@@ -105,8 +99,9 @@ interface IDirSetNested : IAbstractFileSetNested {
 	{
 		val dirset = DirSet()
 		task.project.setProjectReference(dirset);
-		dirset.dir = task.resolveFile(dir)
-		_init(dirset, includes, includesfile, excludes, excludesfile, casesensitive, followsymlinks, erroronmissingdir)
+		if (dir != null)
+			dirset.dir = task.resolveFile(dir)
+		dirset._init(includes, includesfile, excludes, excludesfile, casesensitive, followsymlinks, erroronmissingdir)
 		if (nested != null)
 			nested(KDirSet(dirset))
 		_addResourceCollection(dirset)
@@ -120,5 +115,60 @@ class KDirSet(val dirset: DirSet) {
 
 	fun exclude(name: String) {
 		dirset.createExclude().name = name
+	}
+}
+
+//---- ArchiveFileSet ---------------------------------------------------------
+
+fun ArchiveFileSet._init(prefix: String?, fullpath: String?, src: String?,
+						 filemode: String?, dirmode: String?,
+						 encoding: String?, erroronmissingarchive: Boolean)
+{
+	if (prefix != null)
+		setPrefix(prefix)
+	if (fullpath != null)
+		setFullpath(fullpath)
+	if (src != null)
+		setSrc(project.resolveFile(src))
+	if (filemode != null)
+		setFileMode(filemode)
+	if (dirmode != null)
+		setDirMode(dirmode)
+	if (encoding != null)
+		setEncoding(encoding)
+	if (!erroronmissingarchive)
+		setErrorOnMissingArchive(erroronmissingarchive)
+}
+
+//---- ZipFileSet -------------------------------------------------------------
+
+interface IZipFileSetNested : IFileSetNested {
+	fun zipfileset(
+			// fileset
+			dir: String? = null, file: String? = null,
+			defaultexcludes: Boolean = true,
+			includes: String? = null, includesfile: String? = null,
+			excludes: String? = null, excludesfile: String? = null,
+			casesensitive: Boolean = true, followsymlinks: Boolean = true,
+			erroronmissingdir: Boolean = true,
+			// zipfileset
+			prefix: String? = null, fullpath: String? = null, src: String? = null,
+			filemode: String? = null, dirmode: String? = null,
+			encoding: String? = null, erroronmissingarchive: Boolean = true,
+			nested: (KFileSet.() -> Unit)? = null)
+	{
+		val zipfileset = ZipFileSet()
+		task.project.setProjectReference(zipfileset);
+		if (dir != null)
+			zipfileset.dir = task.resolveFile(dir)
+		if (file != null)
+			zipfileset.setFile(task.resolveFile(file))
+		if (!defaultexcludes)
+			zipfileset.defaultexcludes = defaultexcludes
+		zipfileset._init(includes, includesfile, excludes, excludesfile, casesensitive, followsymlinks, erroronmissingdir)
+		zipfileset._init(prefix, fullpath, src, filemode, dirmode, encoding, erroronmissingarchive)
+		if (nested != null)
+			nested(KFileSet(zipfileset))
+		_addResourceCollection(zipfileset)
 	}
 }

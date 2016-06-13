@@ -63,6 +63,9 @@ val project = project {
 		zip("out3.zip") {
 			fileset(dir = "dir", includes = "file2.txt")
 		}
+		zip("out4.zip") {
+			zipfileset(dir = "dir", prefix = "pre-dir")
+		}
 	}
 
 	antTask("jar", basedir = "_zip_") {

@@ -18,7 +18,9 @@ You can use your custom Ant tasks in Kobalt. Or use built-it Ant tasks.
 
 **This is project is currently work-in-progress.**
 
-## Supported Ant tasks
+## Supported Ant features
+
+### Tasks
 
   * [copy](http://ant.apache.org/manual/Tasks/copy.html) (partial)
   * [delete](http://ant.apache.org/manual/Tasks/delete.html) (partial)
@@ -28,6 +30,12 @@ You can use your custom Ant tasks in Kobalt. Or use built-it Ant tasks.
   * [property](http://ant.apache.org/manual/Tasks/property.html) (partial)
   * [touch](http://ant.apache.org/manual/Tasks/touch.html) (partial)
   * [zip](http://ant.apache.org/manual/Tasks/zip.html) (partial)
+
+### Types
+
+  * [DirSet](http://ant.apache.org/manual/Types/dirset.html)
+  * [FileSet](http://ant.apache.org/manual/Types/fileset.html)
+  * [ZipFileSet](http://ant.apache.org/manual/Types/zipfileset.html)
 
 [Kobalt]: http://beust.com/kobalt
 [Ant]: http://ant.apache.org/

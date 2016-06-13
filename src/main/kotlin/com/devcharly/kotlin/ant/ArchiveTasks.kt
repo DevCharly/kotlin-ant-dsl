@@ -41,7 +41,7 @@ fun AntBuilder.zip(destfile: String, basedir: String? = null,
 }
 
 open class KZip(override val task: Zip)
-	: IFileSetNested
+	: IFileSetNested, IZipFileSetNested
 {
 	override fun _addResourceCollection(res: ResourceCollection) {
 		task.add(res)
