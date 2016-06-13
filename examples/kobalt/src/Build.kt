@@ -53,4 +53,15 @@ val project = project {
 			}
 		}
 	}
+
+	antTask("zip", basedir = "_zip_") {
+		echo("content1", file = "dir/file1.txt")
+		echo("content2", file = "dir/file2.txt")
+
+		zip("out1.zip", basedir = "dir")
+		zip("out2.zip", basedir = "dir", includes = "file1.txt")
+		zip("out3.zip") {
+			fileset(dir = "dir", includes = "file2.txt")
+		}
+	}
 }

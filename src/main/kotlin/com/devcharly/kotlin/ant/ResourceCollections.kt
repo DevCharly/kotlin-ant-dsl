@@ -70,8 +70,10 @@ interface IFileSetNested : IAbstractFileSetNested {
 	{
 		val fileset = FileSet()
 		task.project.setProjectReference(fileset);
-		fileset.dir = task.resolveFile(dir)
-		fileset.setFile(task.resolveFile(file))
+		if (dir != null)
+			fileset.dir = task.resolveFile(dir)
+		if (file != null)
+			fileset.setFile(task.resolveFile(file))
 		if (!defaultexcludes)
 			fileset.defaultexcludes = defaultexcludes
 		_init(fileset, includes, includesfile, excludes, excludesfile, casesensitive, followsymlinks, erroronmissingdir)

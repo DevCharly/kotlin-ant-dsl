@@ -26,6 +26,7 @@ You can use your custom Ant tasks in Kobalt. Or use built-it Ant tasks.
   * [mkdir](http://ant.apache.org/manual/Tasks/mkdir.html)
   * [property](http://ant.apache.org/manual/Tasks/property.html) (partial)
   * [touch](http://ant.apache.org/manual/Tasks/touch.html) (partial)
+  * [zip](http://ant.apache.org/manual/Tasks/zip.html) (partial)
 
 [Kobalt]: http://beust.com/kobalt
 [Ant]: http://ant.apache.org/
