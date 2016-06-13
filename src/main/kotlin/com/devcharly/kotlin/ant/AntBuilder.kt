@@ -72,10 +72,14 @@ open class AntBuilder(private val tasks: AntBuilder.() -> Unit) {
 	fun p(name: String): String {
 		return PropertyHelper.getPropertyHelper(project).parseProperties("\${$name}").toString()
 	}
+
+	fun resolveFile(pathname: String?): File? {
+		return if (pathname != null) project.resolveFile(pathname) else null
+	}
 }
 
-fun fileOrNull(pathname: String?): File? {
-	return if (pathname != null) File(pathname) else null
+fun Task.resolveFile(pathname: String?): File? {
+	return if (pathname != null) project.resolveFile(pathname) else null
 }
 
 //---- enum LogLevel ----------------------------------------------------------

@@ -16,12 +16,15 @@
 
 package com.devcharly.kotlin.ant
 
+import org.apache.tools.ant.Task
 import org.apache.tools.ant.types.FileSet
 
 interface IFileSetNested {
+	val task: Task
+
 	fun fileset(dir: String, nested: (KFileSet.() -> Unit)? = null) {
 		val fileset = FileSet()
-		fileset.dir = fileOrNull(dir)
+		fileset.dir = task.resolveFile(dir)
 		if (nested != null)
 			nested(KFileSet(fileset))
 		_addFileset(fileset)

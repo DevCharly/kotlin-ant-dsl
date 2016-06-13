@@ -22,6 +22,6 @@ fun AntBuilder.property(name: String? = null, value: String? = null, file: Strin
 	Property().execute("property") { task ->
 		task.name = name
 		task.value = value
-		task.file = fileOrNull(file)
+		task.file = resolveFile(file)
 	}
 }

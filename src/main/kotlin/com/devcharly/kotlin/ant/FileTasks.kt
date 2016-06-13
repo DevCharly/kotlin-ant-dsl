@@ -18,23 +18,22 @@ package com.devcharly.kotlin.ant
 
 import org.apache.tools.ant.taskdefs.*
 import org.apache.tools.ant.types.FileSet
-import java.io.File
 
 fun AntBuilder.copy(file: String? = null, tofile: String? = null, todir: String? = null,
 					overwrite: Boolean = false,
 					nested: (CopyNested.() -> Unit)? = null)
 {
 	Copy().execute("copy") { task ->
-		task.setFile(fileOrNull(file))
-		task.setTofile(fileOrNull(tofile))
-		task.setTodir(fileOrNull(todir))
+		task.setFile(resolveFile(file))
+		task.setTofile(resolveFile(tofile))
+		task.setTodir(resolveFile(todir))
 		task.setOverwrite(overwrite)
 		if (nested != null)
 			nested(CopyNested(task))
 	}
 }
 
-class CopyNested(val task: Copy) : IFileSetNested {
+class CopyNested(override val task: Copy) : IFileSetNested {
 	override fun _addFileset(fileset: FileSet) {
 		task.addFileset(fileset)
 	}
@@ -42,19 +41,19 @@ class CopyNested(val task: Copy) : IFileSetNested {
 
 fun AntBuilder.delete(file: String? = null, dir: String? = null) {
 	Delete().execute("delete") { task ->
-		task.setFile(fileOrNull(file))
-		task.setDir(fileOrNull(dir))
+		task.setFile(resolveFile(file))
+		task.setDir(resolveFile(dir))
 	}
 }
 
 fun AntBuilder.mkdir(dir: String) {
 	Mkdir().execute("mkdir") { task ->
-		task.dir = File(dir)
+		task.dir = resolveFile(dir)
 	}
 }
 
 fun AntBuilder.touch(file: String) {
 	Touch().execute("touch") { task ->
-		task.setFile(File(file))
+		task.setFile(resolveFile(file))
 	}
 }
