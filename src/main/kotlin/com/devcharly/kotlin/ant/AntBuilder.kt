@@ -84,10 +84,10 @@ fun Task.resolveFile(pathname: String?): File? {
 
 //---- enum LogLevel ----------------------------------------------------------
 
-enum class LogLevel(val level: Int) {
-	ERR(Project.MSG_ERR),
-	WARN(Project.MSG_WARN),
-	INFO(Project.MSG_INFO),
-	VERBOSE(Project.MSG_VERBOSE),
-	DEBUG(Project.MSG_DEBUG)
+enum class LogLevel(val level: Int, val str: String) {
+	ERR(Project.MSG_ERR, "error"),
+	WARN(Project.MSG_WARN, "warn"),
+	INFO(Project.MSG_INFO, "info"),
+	VERBOSE(Project.MSG_VERBOSE, "verbose"),
+	DEBUG(Project.MSG_DEBUG, "debug")
 }

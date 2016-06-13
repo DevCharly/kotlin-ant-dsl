@@ -11,6 +11,18 @@ val project = project {
 
 	antTask("echo") {
 		echo("Hello World")
+		echo {
+			+"aa"
+			+"bb"
+			+"cc"
+		}
+		echo(level = LogLevel.ERR) {
+			+"""
+				111
+				22
+				3
+			"""
+		}
 	}
 
 	antTask("property") {
@@ -20,8 +32,9 @@ val project = project {
 
 	antTask("files", basedir = "_files_") {
 		touch("file.txt")
+		echo("content2\n", file = "file2.txt", append = true)
 		copy("file.txt", todir = "dir", overwrite = true)
-		copy("file.txt", tofile = "dir/file2.txt")
+		copy("file2.txt", tofile = "dir/file2.txt")
 		delete("file.txt")
 	}
 

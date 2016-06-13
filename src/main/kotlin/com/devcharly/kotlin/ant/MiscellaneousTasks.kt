@@ -18,8 +18,29 @@ package com.devcharly.kotlin.ant
 
 import org.apache.tools.ant.taskdefs.*
 
-fun AntBuilder.echo(message: String) {
+//---- echo -------------------------------------------------------------------
+
+fun AntBuilder.echo(message: String? = null, file: String? = null,
+					append: Boolean = false, level: LogLevel = LogLevel.WARN,
+					encoding: String = "", force: Boolean = false,
+					nested: (KEcho.() -> Unit)? = null)
+{
 	Echo().execute("echo") { task ->
 		task.setMessage(message)
+		if (file != null)
+			task.setFile(resolveFile(file))
+		task.setAppend(append)
+		if (level != LogLevel.WARN)
+			task.setLevel(Echo.EchoLevel().apply { value = level.str })
+		task.setEncoding(encoding)
+		task.setForce(force)
+		if (nested != null)
+			nested(KEcho(task))
+	}
+}
+
+class KEcho(val task: Echo) {
+	operator fun String.unaryPlus() {
+		task.addText(this)
 	}
 }
