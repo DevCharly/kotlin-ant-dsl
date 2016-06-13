@@ -43,10 +43,20 @@ class KCopy(override val task: Copy) : IFileSetNested, IDirSetNested {
 
 //---- delete -----------------------------------------------------------------
 
-fun AntBuilder.delete(file: String? = null, dir: String? = null) {
+fun AntBuilder.delete(file: String? = null, dir: String? = null,
+					  nested: (KDelete.() -> Unit)? = null)
+{
 	Delete().execute("delete") { task ->
 		task.setFile(resolveFile(file))
 		task.setDir(resolveFile(dir))
+		if (nested != null)
+			nested(KDelete(task))
+	}
+}
+
+class KDelete(override val task: Delete) : IFileSetNested, IDirSetNested {
+	override fun _addResourceCollection(res: ResourceCollection) {
+		task.add(res)
 	}
 }
 
