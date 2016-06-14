@@ -20,6 +20,8 @@ val project = project {
 The primary goal is support migration of Ant builds to Kobalt.
 You can use your custom Ant tasks in Kobalt. Or use built-it Ant tasks.
 
+[Examples](examples/kobalt/src/Build.kt)
+
 
 ## Kotlin AntBuilder
 
