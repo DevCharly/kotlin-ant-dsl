@@ -13,6 +13,7 @@ val project = project {
 	}
 
 	assemble {
+		// Kobalt plugin (includes ant.jar)
 		mavenJars {
 			jar {
 				fatJar = true
@@ -20,6 +21,14 @@ val project = project {
 				exclude("**/kotlin-stdlib-*.jar")
 				exclude("**/kotlin-runtime-*.jar")
 			}
+		}
+
+		// Kotlin AntBuilder only
+		jar {
+			name = "kotlin-antbuilder-$version.jar"
+
+			exclude("**/com/devcharly/kobalt/**")
+			exclude("**/kobalt-plugin.xml")
 		}
 	}
 
