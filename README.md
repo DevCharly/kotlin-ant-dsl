@@ -40,7 +40,7 @@ AntBuilder {
 ```
 
 
-Define a AntBuilder function to use a custom Ant task:
+Define an AntBuilder function to use a custom Ant task:
 
 ```kotlin
 fun AntBuilder.myanttask(attr1: String, attr2: String) {
