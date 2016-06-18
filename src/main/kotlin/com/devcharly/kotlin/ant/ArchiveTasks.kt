@@ -16,6 +16,8 @@
 
 package com.devcharly.kotlin.ant
 
+import org.apache.tools.ant.taskdefs.BZip2
+import org.apache.tools.ant.taskdefs.GZip
 import org.apache.tools.ant.taskdefs.Jar
 import org.apache.tools.ant.taskdefs.Manifest
 import org.apache.tools.ant.taskdefs.Tar
@@ -23,6 +25,28 @@ import org.apache.tools.ant.taskdefs.Zip
 import org.apache.tools.ant.types.ResourceCollection
 import org.apache.tools.ant.types.spi.Provider
 import org.apache.tools.ant.types.spi.Service
+
+//---- bzip2 ------------------------------------------------------------------
+
+//TODO nested resource
+fun AntBuilder.bzip2(src: String? = null, destfile: String) {
+	BZip2().execute("bzip2") { task ->
+		if (src != null)
+			task.setSrc(resolveFile(src))
+		task.setDestfile(resolveFile(destfile))
+	}
+}
+
+//---- gzip -------------------------------------------------------------------
+
+//TODO nested resource
+fun AntBuilder.gzip(src: String? = null, destfile: String) {
+	GZip().execute("gzip") { task ->
+		if (src != null)
+			task.setSrc(resolveFile(src))
+		task.setDestfile(resolveFile(destfile))
+	}
+}
 
 //---- zip --------------------------------------------------------------------
 

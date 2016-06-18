@@ -72,6 +72,9 @@ val project = project {
 		tar("out1.tar") {
 			tarfileset(dir = "dir", username = "user1", uid = 123, filemode = "600")
 		}
+
+		bzip2(src = "out1.tar", destfile = "out1.tar.bz2")
+		gzip(src = "out1.tar", destfile = "out1.tar.gz")
 	}
 
 	antTask("jar", basedir = "_zip_") {
