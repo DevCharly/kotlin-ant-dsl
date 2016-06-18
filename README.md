@@ -63,10 +63,12 @@ AntBuilder {
 
 ### Tasks
 
+  * [bunzip2](http://ant.apache.org/manual/Tasks/unpack.html) (partial)
   * [bzip2](http://ant.apache.org/manual/Tasks/pack.html) (partial)
   * [copy](http://ant.apache.org/manual/Tasks/copy.html) (partial)
   * [delete](http://ant.apache.org/manual/Tasks/delete.html) (partial)
   * [echo](http://ant.apache.org/manual/Tasks/echo.html)
+  * [gunzip](http://ant.apache.org/manual/Tasks/unpack.html) (partial)
   * [gzip](http://ant.apache.org/manual/Tasks/pack.html) (partial)
   * [jar](http://ant.apache.org/manual/Tasks/jar.html) (partial)
   * [mkdir](http://ant.apache.org/manual/Tasks/mkdir.html)

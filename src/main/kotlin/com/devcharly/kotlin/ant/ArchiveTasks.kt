@@ -16,7 +16,9 @@
 
 package com.devcharly.kotlin.ant
 
+import org.apache.tools.ant.taskdefs.BUnzip2
 import org.apache.tools.ant.taskdefs.BZip2
+import org.apache.tools.ant.taskdefs.GUnzip
 import org.apache.tools.ant.taskdefs.GZip
 import org.apache.tools.ant.taskdefs.Jar
 import org.apache.tools.ant.taskdefs.Manifest
@@ -37,6 +39,18 @@ fun AntBuilder.bzip2(src: String? = null, destfile: String) {
 	}
 }
 
+//---- bunzip2 ----------------------------------------------------------------
+
+//TODO nested resource
+fun AntBuilder.bunzip2(src: String? = null, dest: String? = null) {
+	BUnzip2().execute("bunzip2") { task ->
+		if (src != null)
+			task.setSrc(resolveFile(src))
+		if (dest != null)
+			task.setDest(resolveFile(dest))
+	}
+}
+
 //---- gzip -------------------------------------------------------------------
 
 //TODO nested resource
@@ -45,6 +59,18 @@ fun AntBuilder.gzip(src: String? = null, destfile: String) {
 		if (src != null)
 			task.setSrc(resolveFile(src))
 		task.setDestfile(resolveFile(destfile))
+	}
+}
+
+//---- gunzip -----------------------------------------------------------------
+
+//TODO nested resource
+fun AntBuilder.gunzip(src: String? = null, dest: String? = null) {
+	GUnzip().execute("gunzip") { task ->
+		if (src != null)
+			task.setSrc(resolveFile(src))
+		if (dest != null)
+			task.setDest(resolveFile(dest))
 	}
 }
 

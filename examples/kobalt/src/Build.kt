@@ -75,6 +75,9 @@ val project = project {
 
 		bzip2(src = "out1.tar", destfile = "out1.tar.bz2")
 		gzip(src = "out1.tar", destfile = "out1.tar.gz")
+
+		bunzip2(src = "out1.tar.bz2", dest = "out1b.tar")
+		gunzip(src = "out1.tar.gz", dest = "out1g.tar")
 	}
 
 	antTask("jar", basedir = "_zip_") {
