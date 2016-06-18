@@ -18,6 +18,7 @@ package com.devcharly.kotlin.ant
 
 import org.apache.tools.ant.taskdefs.Jar
 import org.apache.tools.ant.taskdefs.Manifest
+import org.apache.tools.ant.taskdefs.Tar
 import org.apache.tools.ant.taskdefs.Zip
 import org.apache.tools.ant.types.ResourceCollection
 import org.apache.tools.ant.types.spi.Provider
@@ -47,6 +48,43 @@ open class KZip(override val task: Zip)
 		task.add(res)
 	}
 }
+
+//---- tar --------------------------------------------------------------------
+
+fun AntBuilder.tar(destfile: String, basedir: String? = null,
+                   longfile: TarLongFileMode = TarLongFileMode.WARN,
+                   includes: String? = null, includesfile: String? = null,
+                   excludes: String? = null, excludesfile: String? = null,
+                   defaultexcludes: Boolean = true,
+                   compression: TarCompressionMethod = TarCompressionMethod.NONE,
+                   encoding: String? = null,
+                   nested: (KTar.() -> Unit)? = null)
+{
+	Tar().execute("tar") { task ->
+		task.setDestFile(resolveFile(destfile))
+		task.setBasedir(resolveFile(basedir))
+		if (longfile != TarLongFileMode.WARN)
+			task.setLongfile( Tar.TarLongFileMode().apply { value = longfile.name.toLowerCase() })
+		task._init(includes, includesfile, excludes, excludesfile, defaultexcludes)
+		if (compression != TarCompressionMethod.NONE)
+			task.setCompression(Tar.TarCompressionMethod().apply { value = compression.name.toLowerCase() })
+		if (encoding != null)
+			task.setEncoding(encoding)
+		if (nested != null)
+			nested(KTar(task))
+	}
+}
+
+open class KTar(override val task: Tar)
+	: IFileSetNested, ITarFileSetNested
+{
+	override fun _addResourceCollection(res: ResourceCollection) {
+		task.add(res)
+	}
+}
+
+enum class TarLongFileMode { WARN, FAIL, TRUNCATE, GNU, POSIX, OMIT }
+enum class TarCompressionMethod { NONE, GZIP, BZIP2 }
 
 //---- jar --------------------------------------------------------------------
 

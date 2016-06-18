@@ -68,6 +68,12 @@ val project = project {
 		}
 	}
 
+	antTask("tar", basedir = "_zip_", logLevel = LogLevel.VERBOSE) {
+		tar("out1.tar") {
+			tarfileset(dir = "dir", username = "user1", uid = 123, filemode = "600")
+		}
+	}
+
 	antTask("jar", basedir = "_zip_") {
 		jar("out1.jar", basedir = "dir") {
 			manifest {

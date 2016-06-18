@@ -172,3 +172,46 @@ interface IZipFileSetNested : IFileSetNested {
 		_addResourceCollection(zipfileset)
 	}
 }
+
+//---- TarFileSet -------------------------------------------------------------
+
+interface ITarFileSetNested : IFileSetNested {
+	fun tarfileset(
+			// fileset
+			dir: String? = null, file: String? = null,
+			defaultexcludes: Boolean = true,
+			includes: String? = null, includesfile: String? = null,
+			excludes: String? = null, excludesfile: String? = null,
+			casesensitive: Boolean = true, followsymlinks: Boolean = true,
+			erroronmissingdir: Boolean = true,
+			// tarfileset
+			prefix: String? = null, fullpath: String? = null, src: String? = null,
+			filemode: String? = null, dirmode: String? = null,
+			username: String? = null, group: String? = null,
+			uid: Int? = null, gid: Int? = null,
+			encoding: String? = null, erroronmissingarchive: Boolean = true,
+			nested: (KFileSet.() -> Unit)? = null)
+	{
+		val tarfileset = TarFileSet()
+		task.project.setProjectReference(tarfileset);
+		if (dir != null)
+			tarfileset.dir = task.resolveFile(dir)
+		if (file != null)
+			tarfileset.setFile(task.resolveFile(file))
+		if (!defaultexcludes)
+			tarfileset.defaultexcludes = defaultexcludes
+		tarfileset._init(includes, includesfile, excludes, excludesfile, casesensitive, followsymlinks, erroronmissingdir)
+		tarfileset._init(prefix, fullpath, src, filemode, dirmode, encoding, erroronmissingarchive)
+		if (username != null)
+			tarfileset.userName = username
+		if (group != null)
+			tarfileset.group = group
+		if (uid != null)
+			tarfileset.uid = uid
+		if (gid != null)
+			tarfileset.gid = gid
+		if (nested != null)
+			nested(KFileSet(tarfileset))
+		_addResourceCollection(tarfileset)
+	}
+}
