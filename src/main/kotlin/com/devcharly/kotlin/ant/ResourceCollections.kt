@@ -99,8 +99,7 @@ interface IDirSetNested : IResourceCollectionNested {
 	{
 		val dirset = DirSet()
 		task.project.setProjectReference(dirset);
-		if (dir != null)
-			dirset.dir = task.resolveFile(dir)
+		dirset.dir = task.resolveFile(dir)
 		dirset._init(includes, includesfile, excludes, excludesfile, casesensitive, followsymlinks, erroronmissingdir)
 		if (nested != null)
 			nested(KDirSet(dirset))
