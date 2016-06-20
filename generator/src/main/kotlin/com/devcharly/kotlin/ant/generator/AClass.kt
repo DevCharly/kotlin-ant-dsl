@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 the original author or authors.
+ * Copyright 2016 Karl Tauber
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ fun aClass(cls: Class<*>): AClass {
 
 //---- class AClass -----------------------------------------------------------
 
-class AClass( var name: String, val superName: String, val interfaces: Array<String>)
+class AClass(var name: String, val superName: String, val interfaces: Array<String>)
 {
 	val methods = ArrayList<AMethod>()
 
