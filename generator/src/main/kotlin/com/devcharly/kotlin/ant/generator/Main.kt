@@ -20,14 +20,18 @@ import org.apache.tools.ant.taskdefs.*
 import java.io.FileWriter
 
 fun main(args: Array<String>) {
+	genTask(BUnzip2::class.java, "src dest", "srcResource")
+	genTask(BZip2::class.java, "src destfile", "zipfile srcResource")
 	genTask(Echo::class.java)
+	genTask(GUnzip::class.java, "src dest", "srcResource")
+	genTask(GZip::class.java, "src destfile", "zipfile srcResource")
 	genTask(Mkdir::class.java)
 	genTask(Property::class.java, "name value location refid resource file url environment classpath classpathref prefix prefixValues relative basedir")
 	genTask(Touch::class.java)
 }
 
-fun genTask(taskType: Class<*>, order: String? = null) {
-	val task = reflectTask(taskType, order)
+fun genTask(taskType: Class<*>, order: String? = null, exclude: String? = null) {
+	val task = reflectTask(taskType, order, exclude)
 	val code = genTaskFile(task)
 
 	val filename = "src/main/kotlin/com/devcharly/kotlin/ant/${task.taskName}.kt"

@@ -19,7 +19,7 @@ package com.devcharly.kotlin.ant.generator
 import org.apache.tools.ant.Project
 import java.util.*
 
-fun reflectTask(taskType: Class<*>, order: String? = null): Task {
+fun reflectTask(taskType: Class<*>, order: String? = null, exclude: String? = null): Task {
 	val aClass = aClass(taskType, org.apache.tools.ant.Task::class.java)
 
 	val params = ArrayList<TaskParam>()
@@ -49,6 +49,11 @@ fun reflectTask(taskType: Class<*>, order: String? = null): Task {
 
 			params.add(TaskParam(paramName, method.name, paramType.name, constructWithProject))
 		}
+	}
+
+	if (exclude != null) {
+		val excludeList = exclude.split(' ')
+		params.removeIf { excludeList.contains(it.name) }
 	}
 
 	if (order != null) {
