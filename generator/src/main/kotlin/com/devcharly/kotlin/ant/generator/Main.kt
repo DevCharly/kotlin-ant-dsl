@@ -16,25 +16,23 @@
 
 package com.devcharly.kotlin.ant.generator
 
-import org.apache.tools.ant.taskdefs.Echo
-import org.apache.tools.ant.taskdefs.Mkdir
-import org.apache.tools.ant.taskdefs.Touch
+import org.apache.tools.ant.taskdefs.*
 import java.io.FileWriter
 
 fun main(args: Array<String>) {
-	val taskTypes = arrayOf(
-			Echo::class.java,
-			Mkdir::class.java,
-			Touch::class.java
-	)
-	taskTypes.forEach { type ->
-		val task = reflectTask(type)
-		val code = genTaskFile(task)
+	genTask(Echo::class.java)
+	genTask(Mkdir::class.java)
+	genTask(Property::class.java, "name value location refid resource file url environment classpath classpathref prefix prefixValues relative basedir")
+	genTask(Touch::class.java)
+}
 
-		val filename = "src/main/kotlin/com/devcharly/kotlin/ant/${task.taskName}.kt"
-		println(filename)
-		FileWriter(filename).use {
-			it.write(code.replace("\n", System.getProperty("line.separator")))
-		}
+fun genTask(taskType: Class<*>, order: String? = null) {
+	val task = reflectTask(taskType, order)
+	val code = genTaskFile(task)
+
+	val filename = "src/main/kotlin/com/devcharly/kotlin/ant/${task.taskName}.kt"
+	println("Generate $filename")
+	FileWriter(filename).use {
+		it.write(code.replace("\n", System.getProperty("line.separator")))
 	}
 }

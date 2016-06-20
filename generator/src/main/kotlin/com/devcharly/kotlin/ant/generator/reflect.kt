@@ -18,7 +18,7 @@ package com.devcharly.kotlin.ant.generator
 
 import java.util.*
 
-fun reflectTask(taskType: Class<*>): Task {
+fun reflectTask(taskType: Class<*>, order: String? = null): Task {
 	val aClass = aClass(taskType)
 
 	val params = ArrayList<TaskParam>()
@@ -35,6 +35,17 @@ fun reflectTask(taskType: Class<*>): Task {
 				continue // not yet supported parameter type
 
 			params.add(TaskParam(paramName, aMethod.name, paramType))
+		}
+	}
+
+	if (order != null) {
+		val orderList = order.split(' ')
+		params.sortBy {
+			val orderIndex = orderList.indexOf(it.name)
+			if (orderIndex >= 0)
+				orderIndex
+			else
+				orderList.size + params.indexOfFirst { param -> it.name == param.name }
 		}
 	}
 
