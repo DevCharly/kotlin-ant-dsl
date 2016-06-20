@@ -59,19 +59,3 @@ class KDelete(override val task: Delete) : IFileSetNested, IDirSetNested {
 		task.add(res)
 	}
 }
-
-//---- mkdir ------------------------------------------------------------------
-
-fun AntBuilder.mkdir(dir: String) {
-	Mkdir().execute("mkdir") { task ->
-		task.dir = resolveFile(dir)
-	}
-}
-
-//---- touch ------------------------------------------------------------------
-
-fun AntBuilder.touch(file: String) {
-	Touch().execute("touch") { task ->
-		task.setFile(resolveFile(file))
-	}
-}

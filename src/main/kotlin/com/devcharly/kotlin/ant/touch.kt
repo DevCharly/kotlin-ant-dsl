@@ -14,25 +14,30 @@
  * limitations under the License.
  */
 
-package com.devcharly.kotlin.ant.generator
+package com.devcharly.kotlin.ant
 
-import org.apache.tools.ant.taskdefs.Mkdir
 import org.apache.tools.ant.taskdefs.Touch
-import java.io.FileWriter
 
-fun main(args: Array<String>) {
-	val taskTypes = arrayOf(
-			Mkdir::class.java,
-			Touch::class.java
-	)
-	taskTypes.forEach { type ->
-		val task = reflectTask(type)
-		val code = genTaskFile(task)
-
-		val filename = "src/main/kotlin/com/devcharly/kotlin/ant/${task.taskName}.kt"
-		println(filename)
-		FileWriter(filename).use {
-			it.write(code)
-		}
+fun AntBuilder.touch(
+	file: String? = null,
+	millis: Long? = null,
+	datetime: String? = null,
+	mkdirs: Boolean? = null,
+	verbose: Boolean? = null,
+	pattern: String? = null)
+{
+	Touch().execute("touch") { task ->
+		if (file != null)
+			task.setFile(resolveFile(file))
+		if (millis != null)
+			task.setMillis(millis)
+		if (datetime != null)
+			task.setDatetime(datetime)
+		if (mkdirs != null)
+			task.setMkdirs(mkdirs)
+		if (verbose != null)
+			task.setVerbose(verbose)
+		if (pattern != null)
+			task.setPattern(pattern)
 	}
 }
