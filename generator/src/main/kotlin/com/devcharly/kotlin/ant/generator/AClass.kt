@@ -46,7 +46,7 @@ fun aClass(cls: Class<*>, stopClass: Class<*>? = null): AClass {
 		methods.add(method)
 	}
 
-	// use ASM to order methods
+	// use ASM to order methods and remove deprecated methods
 	val visitor = AClassVisitor(methods)
 	var cls2 = cls
 	while (cls2 != java.lang.Object::class.java) {
@@ -104,7 +104,8 @@ private class AClassVisitor(val methods: ArrayList<Method>)
 		var i = 0
 		for (method in methods) {
 			if (method.name == name && Type.getType(method).descriptor == desc) {
-				orderedMethods.add(method)
+				if (access and ACC_DEPRECATED == 0)
+					orderedMethods.add(method)
 				methods.removeAt(i)
 				break
 			}
