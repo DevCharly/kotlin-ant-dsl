@@ -16,28 +16,44 @@
 
 package com.devcharly.kotlin.ant.generator
 
-import org.apache.tools.ant.ProjectComponent
-import org.apache.tools.ant.Task
 import java.util.*
 
-class TaskParam(val name: String, val method: String, val type: Class<*>)
-class TaskNested()
-class TaskInfo(val type: Class<*>, val params: Array<TaskParam>, val nested: Array<TaskNested>)
+fun reflectTask(taskType: Class<*>): Task {
+	val aClass = aClass(taskType)
 
-fun reflectTaskInfo(taskType: Class<*>) : TaskInfo {
 	val params = ArrayList<TaskParam>()
 	val nested = ArrayList<TaskNested>()
 
-	for (m in taskType.methods) {
-		if (m.declaringClass == Task::class.java || m.declaringClass == ProjectComponent::class.java)
-			continue
+	for (aMethod in aClass.methods) {
+		if (aMethod.name.startsWith("set") && aMethod.parameterTypes.size == 1) {
+			val paramName = aMethod.name.substring(3).decapitalize()
+			val paramType = aMethod.parameterTypes[0]
 
-		if (m.name.startsWith("set") && m.parameterCount == 1) {
-			val name = m.name.substring(3).toLowerCase()
-			var type = m.parameterTypes[0]
-			params.add(TaskParam(name, m.name, type))
+			if (paramType.contains('.') &&
+					paramType != "java.lang.String" &&
+					paramType != "java.io.File")
+				continue // not yet supported parameter type
+
+			params.add(TaskParam(paramName, aMethod.name, paramType))
 		}
 	}
 
-	return TaskInfo(taskType, params.toTypedArray(), nested.toTypedArray())
+	return Task(taskType, params.toTypedArray(), nested.toTypedArray())
 }
+
+//---- class Task -------------------------------------------------------------
+
+class Task(val type: Class<*>,
+           val params: Array<TaskParam>,
+           val nested: Array<TaskNested>)
+{
+	val taskName = type.simpleName!!.toLowerCase()
+}
+
+//---- class TaskParam --------------------------------------------------------
+
+class TaskParam(val name: String, val method: String, val type: String)
+
+//---- class TaskNested -------------------------------------------------------
+
+class TaskNested()

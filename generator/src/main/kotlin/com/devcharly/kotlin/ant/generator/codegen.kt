@@ -16,14 +16,12 @@
 
 package com.devcharly.kotlin.ant.generator
 
-import java.io.File
-
-fun genTaskFun(taskInfo: TaskInfo): String {
+fun genTaskFun(task: Task): String {
 	var params = ""
 	var init = ""
 
 	// build parameters and initialization
-	taskInfo.params.forEach {
+	task.params.forEach {
 		val name = it.name
 		val method = it.method
 		var type = it.type
@@ -37,35 +35,35 @@ fun genTaskFun(taskInfo: TaskInfo): String {
 	}
 
 	// build function
-	val taskName = taskInfo.type.simpleName!!.toLowerCase()
-	val funCode = "fun AntBuilder.$taskName(\n" +
+	val funCode = "fun AntBuilder.${task.taskName}(\n" +
 			params + ")\n" +
 			"{\n" +
-			"\t${taskInfo.type.simpleName}().execute(\"$taskName\") { task ->\n" +
+			"\t${task.type.simpleName}().execute(\"${task.taskName}\") { task ->\n" +
 			init +
 			"\t}\n" +
 			"}\n"
 	return funCode
 }
 
-private fun paramType(type: Class<*>): String {
+private fun paramType(type: String): String {
 	return when (type) {
-		Boolean::class.java -> "Boolean"
-		Byte::class.java -> "Byte"
-		Short::class.java -> "Short"
-		Int::class.java -> "Int"
-		Long::class.java -> "Long"
-		Char::class.java -> "Char"
-		Float::class.java -> "Float"
-		Double::class.java -> "Double"
-		File::class.java -> "String"
-		else -> type.simpleName
+		"java.lang.String" -> "String"
+		"boolean" -> "Boolean"
+		"byte" -> "Byte"
+		"short" -> "Short"
+		"int" -> "Int"
+		"long" -> "Long"
+		"char" -> "Char"
+		"float" -> "Float"
+		"double" -> "Double"
+		"java.io.File" -> "String"
+		else -> type
 	}
 }
 
-private fun init(type: Class<*>, name: String): String {
+private fun init(type: String, name: String): String {
 	return when (type) {
-		File::class.java -> "resolveFile($name)"
+		"java.io.File" -> "resolveFile($name)"
 		else -> name
 	}
 }
