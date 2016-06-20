@@ -21,6 +21,8 @@ import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes.*
 import org.objectweb.asm.Type
+import java.lang.reflect.Method
+import java.lang.reflect.Modifier
 import java.util.*
 
 /**
@@ -29,53 +31,85 @@ import java.util.*
  * Uses ASM to preserve the method order, which is mostly identical
  * to the order used in Ant task parameters documentation.
  */
-fun aClass(cls: Class<*>): AClass {
-	val resName = cls.name.replace('.', '/') + ".class"
-	val visitor = AClassVisitor()
-	cls.classLoader.getResourceAsStream(resName).use {
-		ClassReader(it).accept(visitor, ClassReader.SKIP_CODE + ClassReader.SKIP_DEBUG)
+fun aClass(cls: Class<*>, stopClass: Class<*>? = null): AClass {
+	// use reflection to get methods (including methods from superclasses)
+	val methods = ArrayList<Method>()
+	for (method in cls.methods) {
+		if (method.isBridge ||
+			method.isSynthetic ||
+			method.isVarArgs ||
+			Modifier.isStatic(method.modifiers) ||
+			method.getAnnotation(java.lang.Deprecated::class.java) != null ||
+			isStopClass(method.declaringClass, stopClass))
+		  continue
+
+		methods.add(method)
 	}
-	return visitor.aClass
+
+	// use ASM to order methods
+	val visitor = AClassVisitor(methods)
+	var cls2 = cls
+	while (cls2 != java.lang.Object::class.java) {
+		val resName = cls2.name.replace('.', '/') + ".class"
+		cls2.classLoader.getResourceAsStream(resName).use {
+			ClassReader(it).accept(visitor, ClassReader.SKIP_CODE + ClassReader.SKIP_DEBUG)
+		}
+
+		cls2 = cls2.superclass
+		if (stopClass != null && cls2 == stopClass)
+			break
+	}
+	if (visitor.methods.size > 0)
+		throw IllegalStateException()
+
+	val aClass = AClass(cls)
+	aClass.methods.addAll(visitor.orderedMethods)
+	return aClass
+}
+
+private fun isStopClass(cls: Class<*>, stopClass: Class<*>?): Boolean {
+	if (stopClass == null)
+		return false
+
+	var stopCls = stopClass
+	while (stopCls != null) {
+		if (stopCls == cls)
+			return true
+		stopCls = stopCls.superclass
+	}
+	return false
 }
 
 //---- class AClass -----------------------------------------------------------
 
-class AClass(var name: String, val superName: String, val interfaces: Array<String>)
+class AClass(var cls: Class<*>)
 {
-	val methods = ArrayList<AMethod>()
+	val methods = ArrayList<Method>()
 
-	fun getMethod(name: String, vararg parameterTypes: String): AMethod? {
+	fun getMethod(name: String, vararg parameterTypes: Class<*>): Method? {
 		return methods.find { it.name == name && Arrays.equals(it.parameterTypes, parameterTypes) }
 	}
 }
 
-//---- class AMethod ----------------------------------------------------------
-
-class AMethod(val name: String, val parameterTypes: Array<out String>)
-
 //---- class AClassVisitor ----------------------------------------------------
 
-private class AClassVisitor
+private class AClassVisitor(val methods: ArrayList<Method>)
 	: ClassVisitor(ASM5)
 {
-	lateinit var aClass: AClass
-
-	override fun visit(version: Int, access: Int, name: String?,
-	                   signature: String?, superName: String?,
-	                   interfaces: Array<String>?)
-	{
-		aClass = AClass(name!!.replace('/', '.'), superName!!.replace('/', '.'),
-				interfaces!!.map { s -> s.replace('/', '.') }.toTypedArray())
-	}
+	val orderedMethods = ArrayList<Method>()
 
 	override fun visitMethod(access: Int, name: String, desc: String?,
 	                         signature: String?, exceptions: Array<out String>?): MethodVisitor?
 	{
-		if (access and ACC_PUBLIC == 0 || access and (ACC_STATIC + ACC_DEPRECATED) != 0)
-			return null
-
-		val argTypes = Type.getArgumentTypes(desc)
-		aClass.methods.add(AMethod(name, argTypes.map { type -> type.className }.toTypedArray()))
+		var i = 0
+		for (method in methods) {
+			if (method.name == name && Type.getType(method).descriptor == desc) {
+				orderedMethods.add(method)
+				methods.removeAt(i)
+				break
+			}
+			i++
+		}
 		return null
 	}
 }

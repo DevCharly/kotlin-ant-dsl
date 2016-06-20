@@ -20,35 +20,34 @@ import org.apache.tools.ant.Project
 import java.util.*
 
 fun reflectTask(taskType: Class<*>, order: String? = null): Task {
-	val aClass = aClass(taskType)
+	val aClass = aClass(taskType, org.apache.tools.ant.Task::class.java)
 
 	val params = ArrayList<TaskParam>()
 	val nested = ArrayList<TaskNested>()
 
-	for (aMethod in aClass.methods) {
-		if (aMethod.name.startsWith("set") && aMethod.parameterTypes.size == 1) {
-			val paramName = aMethod.name.substring(3).decapitalize()
-			val paramType = aMethod.parameterTypes[0]
+	for (method in aClass.methods) {
+		if (method.name.startsWith("set") && method.parameterTypes.size == 1) {
+			val paramName = method.name.substring(3).decapitalize()
+			val paramType = method.parameterTypes[0]
 			var constructWithProject = false
 
-			if (paramType.contains('.') &&
-				paramType != "java.lang.String" &&
-				paramType != "java.io.File")
+			if (paramType.name.contains('.') &&
+				paramType != java.lang.String::class.java &&
+				paramType != java.io.File::class.java)
 			{
-				val paramClass = taskType.classLoader.loadClass(paramType)
 				try {
-					paramClass.getConstructor(Project::class.java, java.lang.String::class.java)
+					paramType.getConstructor(Project::class.java, java.lang.String::class.java)
 					constructWithProject = true
 				} catch (ex: NoSuchMethodException) {
 					try {
-						paramClass.getConstructor(java.lang.String::class.java)
+						paramType.getConstructor(java.lang.String::class.java)
 					} catch (ex: NoSuchMethodException) {
 						continue // not supported parameter type
 					}
 				}
 			}
 
-			params.add(TaskParam(paramName, aMethod.name, paramType, constructWithProject))
+			params.add(TaskParam(paramName, method.name, paramType.name, constructWithProject))
 		}
 	}
 
@@ -63,7 +62,7 @@ fun reflectTask(taskType: Class<*>, order: String? = null): Task {
 		}
 	}
 
-	val addTextMethod = aClass.getMethod("addText", "java.lang.String")
+	val addTextMethod = aClass.getMethod("addText", java.lang.String::class.java)
 
 	return Task(taskType, params.toTypedArray(), nested.toTypedArray(), addTextMethod != null)
 }
