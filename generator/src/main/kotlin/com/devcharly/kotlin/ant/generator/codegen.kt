@@ -37,6 +37,12 @@ const val HEADER = """/*
 package com.devcharly.kotlin.ant
 """
 
+const val DO_NOT_EDIT = """
+/******************************************************************************
+DO NOT EDIT - this file was generated
+******************************************************************************/
+"""
+
 fun genTaskFile(task: Task): String {
 	var code = HEADER
 
@@ -47,6 +53,7 @@ fun genTaskFile(task: Task): String {
 	imports.sorted().forEach {
 		code += "import $it\n"
 	}
+	code += DO_NOT_EDIT
 	code += '\n'
 	code += funCode
 

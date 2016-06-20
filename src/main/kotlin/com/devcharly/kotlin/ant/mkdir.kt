@@ -18,6 +18,10 @@ package com.devcharly.kotlin.ant
 
 import org.apache.tools.ant.taskdefs.Mkdir
 
+/******************************************************************************
+DO NOT EDIT - this file was generated
+******************************************************************************/
+
 fun AntBuilder.mkdir(
 	dir: String? = null)
 {
