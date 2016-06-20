@@ -83,7 +83,7 @@ fun genTaskFun(task: Task, imports: HashSet<String>): String {
 		params += "\t$name: ${paramType(type)}? = null"
 
 		init += "\t\tif ($name != null)\n"
-		init += "\t\t\ttask.${method}(${init(type, name)})\n"
+		init += "\t\t\ttask.${method}(${init(type, name, it.constructWithProject, imports)})\n"
 	}
 	if (!task.nested.isEmpty() || task.nestedText) {
 		params += ",\n\tnested: (K${task.type.simpleName}.() -> Unit)? = null"
@@ -130,13 +130,26 @@ private fun paramType(type: String): String {
 		"float" -> "Float"
 		"double" -> "Double"
 		"java.io.File" -> "String"
-		else -> type
+		else -> "String"
 	}
 }
 
-private fun init(type: String, name: String): String {
+private fun init(type: String, name: String, constructWithProject: Boolean, imports: HashSet<String>): String {
 	return when (type) {
+		"java.lang.String" -> name
+		"boolean" -> name
+		"byte" -> name
+		"short" -> name
+		"int" -> name
+		"long" -> name
+		"char" -> name
+		"float" -> name
+		"double" -> name
 		"java.io.File" -> "resolveFile($name)"
-		else -> name
+		else -> {
+			imports.add(type)
+			val simpleType = type.substringAfterLast('.')
+			if (constructWithProject) "$simpleType(project, $name)" else "$simpleType($name)"
+		}
 	}
 }

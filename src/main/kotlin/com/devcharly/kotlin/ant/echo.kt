@@ -17,6 +17,7 @@
 package com.devcharly.kotlin.ant
 
 import org.apache.tools.ant.taskdefs.Echo
+import org.apache.tools.ant.types.Resource
 
 /******************************************************************************
 DO NOT EDIT - this file was generated
@@ -25,6 +26,7 @@ DO NOT EDIT - this file was generated
 fun AntBuilder.echo(
 	message: String? = null,
 	file: String? = null,
+	output: String? = null,
 	append: Boolean? = null,
 	encoding: String? = null,
 	force: Boolean? = null,
@@ -35,6 +37,8 @@ fun AntBuilder.echo(
 			task.setMessage(message)
 		if (file != null)
 			task.setFile(resolveFile(file))
+		if (output != null)
+			task.setOutput(Resource(output))
 		if (append != null)
 			task.setAppend(append)
 		if (encoding != null)

@@ -16,6 +16,7 @@
 
 package com.devcharly.kotlin.ant.generator
 
+import org.apache.tools.ant.Project
 import java.util.*
 
 fun reflectTask(taskType: Class<*>, order: String? = null): Task {
@@ -28,13 +29,26 @@ fun reflectTask(taskType: Class<*>, order: String? = null): Task {
 		if (aMethod.name.startsWith("set") && aMethod.parameterTypes.size == 1) {
 			val paramName = aMethod.name.substring(3).decapitalize()
 			val paramType = aMethod.parameterTypes[0]
+			var constructWithProject = false
 
 			if (paramType.contains('.') &&
-					paramType != "java.lang.String" &&
-					paramType != "java.io.File")
-				continue // not yet supported parameter type
+				paramType != "java.lang.String" &&
+				paramType != "java.io.File")
+			{
+				val paramClass = taskType.classLoader.loadClass(paramType)
+				try {
+					paramClass.getConstructor(Project::class.java, java.lang.String::class.java)
+					constructWithProject = true
+				} catch (ex: NoSuchMethodException) {
+					try {
+						paramClass.getConstructor(java.lang.String::class.java)
+					} catch (ex: NoSuchMethodException) {
+						continue // not supported parameter type
+					}
+				}
+			}
 
-			params.add(TaskParam(paramName, aMethod.name, paramType))
+			params.add(TaskParam(paramName, aMethod.name, paramType, constructWithProject))
 		}
 	}
 
@@ -66,7 +80,7 @@ class Task(val type: Class<*>,
 
 //---- class TaskParam --------------------------------------------------------
 
-class TaskParam(val name: String, val method: String, val type: String)
+class TaskParam(val name: String, val method: String, val type: String, val constructWithProject: Boolean)
 
 //---- class TaskNested -------------------------------------------------------
 

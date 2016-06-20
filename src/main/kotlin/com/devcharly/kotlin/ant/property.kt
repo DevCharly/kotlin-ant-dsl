@@ -16,7 +16,10 @@
 
 package com.devcharly.kotlin.ant
 
+import java.net.URL
 import org.apache.tools.ant.taskdefs.Property
+import org.apache.tools.ant.types.Path
+import org.apache.tools.ant.types.Reference
 
 /******************************************************************************
 DO NOT EDIT - this file was generated
@@ -26,13 +29,17 @@ fun AntBuilder.property(
 	name: String? = null,
 	value: String? = null,
 	location: String? = null,
+	refid: String? = null,
 	resource: String? = null,
 	file: String? = null,
+	url: String? = null,
 	environment: String? = null,
+	classpath: String? = null,
 	prefix: String? = null,
 	prefixValues: Boolean? = null,
 	relative: Boolean? = null,
 	basedir: String? = null,
+	classpathRef: String? = null,
 	nested: (KProperty.() -> Unit)? = null)
 {
 	Property().execute("property") { task ->
@@ -42,12 +49,18 @@ fun AntBuilder.property(
 			task.setValue(value)
 		if (location != null)
 			task.setLocation(resolveFile(location))
+		if (refid != null)
+			task.setRefid(Reference(project, refid))
 		if (resource != null)
 			task.setResource(resource)
 		if (file != null)
 			task.setFile(resolveFile(file))
+		if (url != null)
+			task.setUrl(URL(url))
 		if (environment != null)
 			task.setEnvironment(environment)
+		if (classpath != null)
+			task.setClasspath(Path(project, classpath))
 		if (prefix != null)
 			task.setPrefix(prefix)
 		if (prefixValues != null)
@@ -56,6 +69,8 @@ fun AntBuilder.property(
 			task.setRelative(relative)
 		if (basedir != null)
 			task.setBasedir(resolveFile(basedir))
+		if (classpathRef != null)
+			task.setClasspathRef(Reference(project, classpathRef))
 		if (nested != null)
 			nested(KProperty(task))
 	}
