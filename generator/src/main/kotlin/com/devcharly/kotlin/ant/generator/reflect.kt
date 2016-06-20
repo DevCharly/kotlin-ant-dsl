@@ -38,14 +38,17 @@ fun reflectTask(taskType: Class<*>): Task {
 		}
 	}
 
-	return Task(taskType, params.toTypedArray(), nested.toTypedArray())
+	val addTextMethod = aClass.getMethod("addText", "java.lang.String")
+
+	return Task(taskType, params.toTypedArray(), nested.toTypedArray(), addTextMethod != null)
 }
 
 //---- class Task -------------------------------------------------------------
 
 class Task(val type: Class<*>,
            val params: Array<TaskParam>,
-           val nested: Array<TaskNested>)
+           val nested: Array<TaskNested>,
+           val nestedText: Boolean)
 {
 	val taskName = type.simpleName!!.toLowerCase()
 }

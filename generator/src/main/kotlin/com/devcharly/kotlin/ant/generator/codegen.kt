@@ -48,6 +48,7 @@ fun genTaskFile(task: Task): String {
 
 	val imports = HashSet<String>()
 	val funCode = genTaskFun(task, imports)
+	val nestedCode = genTaskNested(task, imports)
 
 	code += '\n'
 	imports.sorted().forEach {
@@ -56,6 +57,11 @@ fun genTaskFile(task: Task): String {
 	code += DO_NOT_EDIT
 	code += '\n'
 	code += funCode
+
+	if (nestedCode != null) {
+		code += '\n'
+		code += nestedCode
+	}
 
 	return code
 }
@@ -79,6 +85,12 @@ fun genTaskFun(task: Task, imports: HashSet<String>): String {
 		init += "\t\tif ($name != null)\n"
 		init += "\t\t\ttask.${method}(${init(type, name)})\n"
 	}
+	if (!task.nested.isEmpty() || task.nestedText) {
+		params += ",\n\tnested: (K${task.type.simpleName}.() -> Unit)? = null"
+
+		init += "\t\tif (nested != null)\n"
+		init += "\t\t\tnested(K${task.type.simpleName}(task))\n"
+	}
 
 	// build function
 	val funCode = "fun AntBuilder.${task.taskName}(\n" +
@@ -89,6 +101,21 @@ fun genTaskFun(task: Task, imports: HashSet<String>): String {
 			"\t}\n" +
 			"}\n"
 	return funCode
+}
+
+fun genTaskNested(task: Task, imports: HashSet<String>): String? {
+	if (task.nested.isEmpty() && !task.nestedText)
+		return null
+
+	var code = "class K${task.type.simpleName}(val task: ${task.type.simpleName}) {\n"
+	if (task.nestedText) {
+		code += "\toperator fun String.unaryPlus() {\n"
+		code += "\t\ttask.addText(this)\n"
+		code += "\t}\n"
+	}
+	code += "}\n"
+
+	return code
 }
 
 private fun paramType(type: String): String {

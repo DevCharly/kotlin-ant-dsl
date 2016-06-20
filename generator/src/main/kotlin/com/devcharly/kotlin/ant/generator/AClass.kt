@@ -43,11 +43,15 @@ fun aClass(cls: Class<*>): AClass {
 class AClass( var name: String, val superName: String, val interfaces: Array<String>)
 {
 	val methods = ArrayList<AMethod>()
+
+	fun getMethod(name: String, vararg parameterTypes: String): AMethod? {
+		return methods.find { it.name == name && Arrays.equals(it.parameterTypes, parameterTypes) }
+	}
 }
 
 //---- class AMethod ----------------------------------------------------------
 
-data class AMethod(val name: String, val parameterTypes: Array<out String>)
+class AMethod(val name: String, val parameterTypes: Array<out String>)
 
 //---- class AClassVisitor ----------------------------------------------------
 

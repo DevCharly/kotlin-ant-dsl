@@ -16,12 +16,14 @@
 
 package com.devcharly.kotlin.ant.generator
 
+import org.apache.tools.ant.taskdefs.Echo
 import org.apache.tools.ant.taskdefs.Mkdir
 import org.apache.tools.ant.taskdefs.Touch
 import java.io.FileWriter
 
 fun main(args: Array<String>) {
 	val taskTypes = arrayOf(
+			Echo::class.java,
 			Mkdir::class.java,
 			Touch::class.java
 	)
