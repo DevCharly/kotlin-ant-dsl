@@ -34,7 +34,7 @@ fun main(args: Array<String>) {
 		val filename = "src/main/kotlin/com/devcharly/kotlin/ant/${task.taskName}.kt"
 		println(filename)
 		FileWriter(filename).use {
-			it.write(code)
+			it.write(code.replace("\n", System.getProperty("line.separator")))
 		}
 	}
 }
