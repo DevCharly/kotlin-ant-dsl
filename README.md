@@ -1,31 +1,10 @@
-# [Ant] plug-in for [Kobalt] / Kotlin AntBuilder
+# Kotlin Ant DSL
 
-[![Build Status](https://travis-ci.org/DevCharly/kobalt-ant.svg?branch=master)](https://travis-ci.org/DevCharly/kobalt-ant)
+[![Build Status](https://travis-ci.org/DevCharly/kotlin-ant-dsl.svg?branch=master)](https://travis-ci.org/DevCharly/kotlin-ant-dsl)
 
 **This is project is work-in-progress.**
 
-## [Kobalt] build system plug-in
-
-Supports definition of per-project Kobalt tasks (similar to Ant targets)
-and execution of [Ant tasks].
-
-```kotlin
-val project = project {
-    antTask("hello") {
-       echo("Hello World")
-    }
-}
-```
-
-The primary goal is support migration of Ant builds to Kobalt.
-You can use your custom Ant tasks in Kobalt. Or use built-it Ant tasks.
-
-[Examples](examples/kobalt/src/Build.kt)
-
-
-## Kotlin AntBuilder
-
-AntBuilder allows using Ant tasks from Kotlin.
+AntBuilder allows using [Ant] tasks from Kotlin.
 
 ```kotlin
 AntBuilder {
@@ -59,6 +38,7 @@ AntBuilder {
 }.execute()
 ```
 
+
 ## Supported Ant features
 
 ### Tasks
@@ -83,6 +63,11 @@ AntBuilder {
   * [FileSet](http://ant.apache.org/manual/Types/fileset.html)
   * [ZipFileSet](http://ant.apache.org/manual/Types/zipfileset.html)
 
-[Kobalt]: http://beust.com/kobalt
+
+## Who uses Kotlin Ant DSL?
+
+  * [Kobalt build system Ant plug-in](https://github.com/DevCharly/kobalt-ant)
+
+
 [Ant]: http://ant.apache.org/
 [Ant tasks]: http://ant.apache.org/manual/tasksoverview.html
