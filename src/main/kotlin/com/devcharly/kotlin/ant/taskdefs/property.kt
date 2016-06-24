@@ -25,7 +25,7 @@ import org.apache.tools.ant.types.Reference
 DO NOT EDIT - this file was generated
 ******************************************************************************/
 
-fun AntBuilder.property(
+fun Ant.property(
 	name: String? = null,
 	value: String? = null,
 	location: String? = null,

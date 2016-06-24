@@ -23,7 +23,7 @@ import org.apache.tools.ant.types.Resource
 DO NOT EDIT - this file was generated
 ******************************************************************************/
 
-fun AntBuilder.echo(
+fun Ant.echo(
 	message: String? = null,
 	file: String? = null,
 	output: String? = null,

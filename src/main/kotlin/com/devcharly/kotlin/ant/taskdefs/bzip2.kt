@@ -22,7 +22,7 @@ import org.apache.tools.ant.taskdefs.BZip2
 DO NOT EDIT - this file was generated
 ******************************************************************************/
 
-fun AntBuilder.bzip2(
+fun Ant.bzip2(
 	src: String? = null,
 	destfile: String? = null)
 {

@@ -93,7 +93,7 @@ fun genTaskFun(task: Task, imports: HashSet<String>): String {
 	}
 
 	// build function
-	val funCode = "fun AntBuilder.${task.taskName}(\n" +
+	val funCode = "fun Ant.${task.taskName}(\n" +
 			params + ")\n" +
 			"{\n" +
 			"\t${task.type.simpleName}().execute(\"${task.taskName}\") { task ->\n" +

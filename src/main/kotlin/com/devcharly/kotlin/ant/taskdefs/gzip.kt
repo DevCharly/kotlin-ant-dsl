@@ -22,7 +22,7 @@ import org.apache.tools.ant.taskdefs.GZip
 DO NOT EDIT - this file was generated
 ******************************************************************************/
 
-fun AntBuilder.gzip(
+fun Ant.gzip(
 	src: String? = null,
 	destfile: String? = null)
 {

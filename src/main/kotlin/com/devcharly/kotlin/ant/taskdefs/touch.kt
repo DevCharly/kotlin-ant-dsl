@@ -22,7 +22,7 @@ import org.apache.tools.ant.taskdefs.Touch
 DO NOT EDIT - this file was generated
 ******************************************************************************/
 
-fun AntBuilder.touch(
+fun Ant.touch(
 	file: String? = null,
 	millis: Long? = null,
 	datetime: String? = null,

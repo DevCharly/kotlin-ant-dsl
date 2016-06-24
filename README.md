@@ -4,10 +4,10 @@
 
 **This is project is work-in-progress.**
 
-AntBuilder allows using [Ant] tasks from Kotlin.
+Kotlin Ant DSL allows using [Ant] tasks from Kotlin.
 
 ```kotlin
-AntBuilder {
+Ant {
     echo("Hello World")
     mkdir("dir1")
     copy(todir = "dir1") {
@@ -19,10 +19,10 @@ AntBuilder {
 ```
 
 
-Define an AntBuilder function to use a custom Ant task:
+Define a function to use a custom Ant task:
 
 ```kotlin
-fun AntBuilder.myanttask(attr1: String, attr2: String) {
+fun Ant.myanttask(attr1: String, attr2: String) {
     MyAntTask().execute("myanttask") { task ->
         task.setAttr1(attr1)
         task.setAttr2(attr2)
@@ -33,7 +33,7 @@ fun AntBuilder.myanttask(attr1: String, attr2: String) {
 Execute custom Ant Task:
 
 ```kotlin
-AntBuilder {
+Ant {
     myanttask("value1", "value2")
 }.execute()
 ```

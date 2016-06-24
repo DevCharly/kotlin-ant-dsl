@@ -26,11 +26,11 @@ import org.apache.tools.ant.types.spi.Service
 
 //---- zip --------------------------------------------------------------------
 
-fun AntBuilder.zip(destfile: String, basedir: String? = null,
-				   includes: String? = null, includesfile: String? = null,
-				   excludes: String? = null, excludesfile: String? = null,
-				   defaultexcludes: Boolean = true,
-				   nested: (KZip.() -> Unit)? = null)
+fun Ant.zip(destfile: String, basedir: String? = null,
+            includes: String? = null, includesfile: String? = null,
+            excludes: String? = null, excludesfile: String? = null,
+            defaultexcludes: Boolean = true,
+            nested: (KZip.() -> Unit)? = null)
 {
 	Zip().execute("zip") { task ->
 		task.setDestFile(resolveFile(destfile))
@@ -51,14 +51,14 @@ open class KZip(override val task: Zip)
 
 //---- tar --------------------------------------------------------------------
 
-fun AntBuilder.tar(destfile: String, basedir: String? = null,
-                   longfile: TarLongFileMode = TarLongFileMode.WARN,
-                   includes: String? = null, includesfile: String? = null,
-                   excludes: String? = null, excludesfile: String? = null,
-                   defaultexcludes: Boolean = true,
-                   compression: TarCompressionMethod = TarCompressionMethod.NONE,
-                   encoding: String? = null,
-                   nested: (KTar.() -> Unit)? = null)
+fun Ant.tar(destfile: String, basedir: String? = null,
+            longfile: TarLongFileMode = TarLongFileMode.WARN,
+            includes: String? = null, includesfile: String? = null,
+            excludes: String? = null, excludesfile: String? = null,
+            defaultexcludes: Boolean = true,
+            compression: TarCompressionMethod = TarCompressionMethod.NONE,
+            encoding: String? = null,
+            nested: (KTar.() -> Unit)? = null)
 {
 	Tar().execute("tar") { task ->
 		task.setDestFile(resolveFile(destfile))
@@ -88,11 +88,11 @@ enum class TarCompressionMethod { NONE, GZIP, BZIP2 }
 
 //---- jar --------------------------------------------------------------------
 
-fun AntBuilder.jar(destfile: String, basedir: String? = null,
-				   includes: String? = null, includesfile: String? = null,
-				   excludes: String? = null, excludesfile: String? = null,
-				   defaultexcludes: Boolean = true,
-				   nested: (KJar.() -> Unit)? = null)
+fun Ant.jar(destfile: String, basedir: String? = null,
+            includes: String? = null, includesfile: String? = null,
+            excludes: String? = null, excludesfile: String? = null,
+            defaultexcludes: Boolean = true,
+            nested: (KJar.() -> Unit)? = null)
 {
 	Jar().execute("jar") { task ->
 		task.setDestFile(resolveFile(destfile))

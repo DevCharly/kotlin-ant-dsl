@@ -22,7 +22,7 @@ import org.apache.tools.ant.taskdefs.GUnzip
 DO NOT EDIT - this file was generated
 ******************************************************************************/
 
-fun AntBuilder.gunzip(
+fun Ant.gunzip(
 	src: String? = null,
 	dest: String? = null)
 {

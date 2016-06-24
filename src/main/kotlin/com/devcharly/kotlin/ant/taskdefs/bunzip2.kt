@@ -22,7 +22,7 @@ import org.apache.tools.ant.taskdefs.BUnzip2
 DO NOT EDIT - this file was generated
 ******************************************************************************/
 
-fun AntBuilder.bunzip2(
+fun Ant.bunzip2(
 	src: String? = null,
 	dest: String? = null)
 {

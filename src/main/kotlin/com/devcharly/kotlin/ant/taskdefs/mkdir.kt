@@ -22,7 +22,7 @@ import org.apache.tools.ant.taskdefs.Mkdir
 DO NOT EDIT - this file was generated
 ******************************************************************************/
 
-fun AntBuilder.mkdir(
+fun Ant.mkdir(
 	dir: String? = null)
 {
 	Mkdir().execute("mkdir") { task ->

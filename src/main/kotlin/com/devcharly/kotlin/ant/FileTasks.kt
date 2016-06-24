@@ -21,9 +21,9 @@ import org.apache.tools.ant.types.ResourceCollection
 
 //---- copy -------------------------------------------------------------------
 
-fun AntBuilder.copy(file: String? = null, tofile: String? = null, todir: String? = null,
-					overwrite: Boolean = false,
-					nested: (KCopy.() -> Unit)? = null)
+fun Ant.copy(file: String? = null, tofile: String? = null, todir: String? = null,
+             overwrite: Boolean = false,
+             nested: (KCopy.() -> Unit)? = null)
 {
 	Copy().execute("copy") { task ->
 		task.setFile(resolveFile(file))
@@ -43,8 +43,8 @@ class KCopy(override val task: Copy) : IFileSetNested, IDirSetNested {
 
 //---- delete -----------------------------------------------------------------
 
-fun AntBuilder.delete(file: String? = null, dir: String? = null,
-					  nested: (KDelete.() -> Unit)? = null)
+fun Ant.delete(file: String? = null, dir: String? = null,
+               nested: (KDelete.() -> Unit)? = null)
 {
 	Delete().execute("delete") { task ->
 		task.setFile(resolveFile(file))

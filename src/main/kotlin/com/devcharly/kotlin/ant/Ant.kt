@@ -23,7 +23,7 @@ import org.apache.tools.ant.Target
 import org.apache.tools.ant.Task
 import java.io.File
 
-open class AntBuilder(private val tasks: AntBuilder.() -> Unit) {
+open class Ant(private val tasks: Ant.() -> Unit) {
 	lateinit var project: Project
 	lateinit var target: Target
 
@@ -43,7 +43,7 @@ open class AntBuilder(private val tasks: AntBuilder.() -> Unit) {
 		// create Ant target
 		target = Target()
 		target.project = project
-		target.name = "AntBuilder" // TODO
+		target.name = "Ant" // TODO
 
 		// execute Ant tasks
 		tasks(this)
