@@ -25,3 +25,13 @@ val project = project {
 	}
 */
 }
+
+val generator = project {
+    name = "kotlin-ant-dsl-generator"
+    directory = "generator"
+
+    dependencies {
+        compile("org.apache.ant:ant:1.9.7")
+        compile("org.ow2.asm:asm:5.1")
+    }
+}
