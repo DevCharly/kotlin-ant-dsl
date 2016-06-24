@@ -34,7 +34,7 @@ fun genTask(taskType: Class<*>, order: String? = null, exclude: String? = null) 
 	val task = reflectTask(taskType, order, exclude)
 	val code = genTaskFile(task)
 
-	val filename = "src/main/kotlin/com/devcharly/kotlin/ant/${task.taskName}.kt"
+	val filename = "src/main/kotlin/com/devcharly/kotlin/ant/taskdefs/${task.taskName}.kt"
 	println("Generate $filename")
 	FileWriter(filename).use {
 		it.write(code.replace("\n", System.getProperty("line.separator")))
