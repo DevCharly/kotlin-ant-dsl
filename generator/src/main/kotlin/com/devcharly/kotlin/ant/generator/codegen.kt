@@ -44,11 +44,23 @@ DO NOT EDIT - this file was generated
 """
 
 fun genTaskFile(task: Task): String {
-	var code = HEADER
-
 	val imports = HashSet<String>()
 	val funCode = genTaskFun(task, imports)
 	val nestedCode = genTaskNested(task, imports)
+
+	var code = genFileHeader(imports)
+	code += funCode
+
+	if (nestedCode != null) {
+		code += '\n'
+		code += nestedCode
+	}
+
+	return code
+}
+
+fun genFileHeader(imports: Set<String>): String {
+	var code = HEADER
 
 	code += '\n'
 	imports.sorted().forEach {
@@ -56,12 +68,6 @@ fun genTaskFile(task: Task): String {
 	}
 	code += DO_NOT_EDIT
 	code += '\n'
-	code += funCode
-
-	if (nestedCode != null) {
-		code += '\n'
-		code += nestedCode
-	}
 
 	return code
 }
