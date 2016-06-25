@@ -36,7 +36,7 @@ fun Ant.echo(
 		if (message != null)
 			task.setMessage(message)
 		if (file != null)
-			task.setFile(resolveFile(file))
+			task.setFile(project.resolveFile(file))
 		if (output != null)
 			task.setOutput(Resource(output))
 		if (append != null)

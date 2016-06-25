@@ -32,7 +32,7 @@ fun Ant.touch(
 {
 	Touch().execute("touch") { task ->
 		if (file != null)
-			task.setFile(resolveFile(file))
+			task.setFile(project.resolveFile(file))
 		if (millis != null)
 			task.setMillis(millis)
 		if (datetime != null)

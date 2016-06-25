@@ -28,8 +28,8 @@ fun Ant.gzip(
 {
 	GZip().execute("gzip") { task ->
 		if (src != null)
-			task.setSrc(resolveFile(src))
+			task.setSrc(project.resolveFile(src))
 		if (destfile != null)
-			task.setDestfile(resolveFile(destfile))
+			task.setDestfile(project.resolveFile(destfile))
 	}
 }

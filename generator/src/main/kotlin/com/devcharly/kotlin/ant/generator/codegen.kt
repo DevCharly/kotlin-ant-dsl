@@ -145,7 +145,7 @@ private fun init(type: String, name: String, constructWithProject: Boolean, impo
 		"char" -> name
 		"float" -> name
 		"double" -> name
-		"java.io.File" -> "resolveFile($name)"
+		"java.io.File" -> "project.resolveFile($name)"
 		else -> {
 			imports.add(type)
 			val simpleType = type.substringAfterLast('.')

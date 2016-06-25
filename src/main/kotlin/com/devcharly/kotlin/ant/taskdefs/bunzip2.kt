@@ -28,8 +28,8 @@ fun Ant.bunzip2(
 {
 	BUnzip2().execute("bunzip2") { task ->
 		if (src != null)
-			task.setSrc(resolveFile(src))
+			task.setSrc(project.resolveFile(src))
 		if (dest != null)
-			task.setDest(resolveFile(dest))
+			task.setDest(project.resolveFile(dest))
 	}
 }

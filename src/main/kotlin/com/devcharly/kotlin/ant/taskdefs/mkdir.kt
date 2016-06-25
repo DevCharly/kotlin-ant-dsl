@@ -27,6 +27,6 @@ fun Ant.mkdir(
 {
 	Mkdir().execute("mkdir") { task ->
 		if (dir != null)
-			task.setDir(resolveFile(dir))
+			task.setDir(project.resolveFile(dir))
 	}
 }
