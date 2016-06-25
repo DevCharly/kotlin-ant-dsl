@@ -69,28 +69,9 @@ fun genTaskFile(task: Task): String {
 fun genTaskFun(task: Task, imports: HashSet<String>): String {
 	imports.add(task.type.name)
 
-	var params = ""
-	var init = ""
-
 	// build parameters and initialization
-	task.params.forEach {
-		val name = it.name
-		val method = it.method
-		var type = it.type
-
-		if (!params.isEmpty())
-			params += ",\n"
-		params += "\t$name: ${paramType(type)}? = null"
-
-		init += "\t\tif ($name != null)\n"
-		init += "\t\t\ttask.${method}(${init(type, name, it.constructWithProject, imports)})\n"
-	}
-	if (!task.nested.isEmpty() || task.nestedText) {
-		params += ",\n\tnested: (K${task.type.simpleName}.() -> Unit)? = null"
-
-		init += "\t\tif (nested != null)\n"
-		init += "\t\t\tnested(K${task.type.simpleName}(task))\n"
-	}
+	val params = genParams(task, "\t", imports)
+	val init = genInit(task, "task", "\t\t", imports)
 
 	// build function
 	val funCode = "fun Ant.${task.taskName}(\n" +
@@ -101,6 +82,40 @@ fun genTaskFun(task: Task, imports: HashSet<String>): String {
 			"\t}\n" +
 			"}\n"
 	return funCode
+}
+
+private fun genParams(task: Task, indent: String, imports: HashSet<String>): String {
+	var params = ""
+
+	task.params.forEach {
+		if (!params.isEmpty())
+			params += ",\n"
+		params += "${indent}${it.name}: ${paramType(it.type)}? = null"
+	}
+
+	if (!task.nested.isEmpty() || task.nestedText)
+		params += ",\n${indent}nested: (K${task.type.simpleName}.() -> Unit)? = null"
+
+	return params
+}
+
+private fun genInit(task: Task, varName: String, indent: String, imports: HashSet<String>): String {
+	var init = ""
+
+	// build parameters and initialization
+	task.params.forEach {
+		val varNameDot = if (varName == "") "" else "$varName."
+		init += "${indent}if (${it.name} != null)\n"
+		init += "${indent}\t$varNameDot${it.method}(${init(it.type, it.name, it.constructWithProject, imports)})\n"
+	}
+
+	if (!task.nested.isEmpty() || task.nestedText) {
+		val varName2 = if (varName == "") "this" else varName
+		init += "${indent}if (nested != null)\n"
+		init += "${indent}\tnested(K${task.type.simpleName}($varName2))\n"
+	}
+
+	return init
 }
 
 fun genTaskNested(task: Task, imports: HashSet<String>): String? {
