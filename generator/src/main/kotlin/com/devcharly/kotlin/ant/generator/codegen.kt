@@ -67,8 +67,10 @@ fun genTypeFile(task: Task): String {
 
 	var code = genFileHeader(imports)
 	code += nestedInterface
-	code += "\n"
-	code += initFunCode
+	if (initFunCode != null) {
+		code += "\n"
+		code += initFunCode
+	}
 
 	return code
 }
@@ -104,7 +106,10 @@ fun genTaskFun(task: Task, imports: HashSet<String>): String {
 	return funCode
 }
 
-fun genTypeInitFun(task: Task, imports: HashSet<String>): String {
+fun genTypeInitFun(task: Task, imports: HashSet<String>): String? {
+	if (task.type.isInterface)
+		return null
+
 	imports.add(task.type.name)
 
 	// build parameters and initialization
@@ -124,13 +129,15 @@ fun genTypeNestedInterface(task: Task, body: String?, imports: HashSet<String>):
 	imports.add(task.type.name)
 
 	return "interface I${task.type.simpleName}Nested : INestedComponent {\n" +
-		body +
-		(if (body != null) "\n" else "") +
+		(if (body != null) "$body\n" else "") +
 		"\tfun _add${task.type.simpleName}(value: ${task.type.simpleName})\n" +
 		"}\n"
 }
 
-fun genTypeNestedFun(task: Task, forType: String?, indent: String, imports: HashSet<String>): String {
+fun genTypeNestedFun(task: Task, forType: String?, indent: String, imports: HashSet<String>): String? {
+	if (task.type.isInterface)
+		return null
+
 	val params = genParams(task, true, "${indent}\t", imports)
 
 	var addCode = "${indent}\t_add${task.type.simpleName}(${task.type.simpleName}().apply {\n" +

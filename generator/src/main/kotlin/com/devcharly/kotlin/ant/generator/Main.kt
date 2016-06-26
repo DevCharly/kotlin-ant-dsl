@@ -21,6 +21,8 @@ import org.apache.tools.ant.types.*
 import java.io.FileWriter
 
 fun main(args: Array<String>) {
+	genType(ResourceCollection::class.java)
+
 	genType(FileSet::class.java, exclude = "refid")
 	genType(ZipFileSet::class.java, exclude = "refid")
 	genType(TarFileSet::class.java, exclude = "refid")
