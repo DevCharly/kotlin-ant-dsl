@@ -59,6 +59,20 @@ fun genTaskFile(task: Task): String {
 	return code
 }
 
+fun genTypeFile(task: Task): String {
+	val imports = HashSet<String>()
+	val nestedFunCode = genTypeNestedFun(task, null, "\t", imports)
+	val nestedInterface = genTypeNestedInterface(task, nestedFunCode, imports)
+	val initFunCode = genTypeInitFun(task, imports)
+
+	var code = genFileHeader(imports)
+	code += nestedInterface
+	code += "\n"
+	code += initFunCode
+
+	return code
+}
+
 fun genFileHeader(imports: Set<String>): String {
 	var code = HEADER
 
@@ -76,7 +90,7 @@ fun genTaskFun(task: Task, imports: HashSet<String>): String {
 	imports.add(task.type.name)
 
 	// build parameters and initialization
-	val params = genParams(task, "\t", imports)
+	val params = genParams(task, true, "\t", imports)
 	val init = genInit(task, "task", "\t\t", imports)
 
 	// build function
@@ -90,17 +104,70 @@ fun genTaskFun(task: Task, imports: HashSet<String>): String {
 	return funCode
 }
 
-private fun genParams(task: Task, indent: String, imports: HashSet<String>): String {
+fun genTypeInitFun(task: Task, imports: HashSet<String>): String {
+	imports.add(task.type.name)
+
+	// build parameters and initialization
+	val params = genParams(task, false, "\t", imports)
+	val init = genInit(task, "", "\t", imports)
+
+	// build function
+	val funCode = "fun ${task.type.simpleName}._init(\n" +
+			params + ")\n" +
+			"{\n" +
+			init +
+			"}\n"
+	return funCode
+}
+
+fun genTypeNestedInterface(task: Task, body: String?, imports: HashSet<String>): String {
+	imports.add(task.type.name)
+
+	return "interface I${task.type.simpleName}Nested : INestedComponent {\n" +
+		body +
+		(if (body != null) "\n" else "") +
+		"\tfun _add${task.type.simpleName}(value: ${task.type.simpleName})\n" +
+		"}\n"
+}
+
+fun genTypeNestedFun(task: Task, forType: String?, indent: String, imports: HashSet<String>): String {
+	val params = genParams(task, true, "${indent}\t", imports)
+
+	var addCode = "${indent}\t_add${task.type.simpleName}(${task.type.simpleName}().apply {\n" +
+		"${indent}\t\tcomponent.project.setProjectReference(this);\n" +
+		"${indent}\t\t_init("
+	task.params.forEachIndexed { i, param ->
+		addCode += param.name
+		if (i < task.params.size - 1)
+			addCode += if ((i + 1) % 4 == 0) ",\n${indent}\t\t\t" else ", "
+	}
+	addCode += ")\n" +
+		"${indent}\t})\n"
+
+	val forTypeInterface = if (forType != null) "I${task.type.simpleName}Nested." else ""
+	return "${indent}fun $forTypeInterface${task.taskName}(\n" +
+		params + ")\n" +
+		"${indent}{\n" +
+		addCode +
+		"${indent}}\n"
+}
+
+private fun genParams(task: Task, initNull: Boolean, indent: String, imports: HashSet<String>): String {
 	var params = ""
 
 	task.params.forEach {
 		if (!params.isEmpty())
 			params += ",\n"
-		params += "${indent}${it.name}: ${paramType(it.type)}? = null"
+		params += "${indent}${it.name}: ${paramType(it.type)}?"
+		if (initNull)
+			params += " = null"
 	}
 
-	if (!task.nested.isEmpty() || task.nestedText)
-		params += ",\n${indent}nested: (K${task.type.simpleName}.() -> Unit)? = null"
+	if (!task.nested.isEmpty() || task.nestedText) {
+		params += ",\n${indent}nested: (K${task.type.simpleName}.() -> Unit)?"
+		if (initNull)
+			params += " = null"
+	}
 
 	return params
 }

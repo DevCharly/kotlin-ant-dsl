@@ -17,7 +17,7 @@
 package com.devcharly.kotlin.ant
 
 import org.apache.tools.ant.taskdefs.*
-import org.apache.tools.ant.types.ResourceCollection
+import org.apache.tools.ant.types.*
 
 //---- copy -------------------------------------------------------------------
 
@@ -35,10 +35,9 @@ fun Ant.copy(file: String? = null, tofile: String? = null, todir: String? = null
 	}
 }
 
-class KCopy(override val task: Copy) : IFileSetNested, IDirSetNested {
-	override fun _addResourceCollection(res: ResourceCollection) {
-		task.add(res)
-	}
+class KCopy(override val component: Copy) : IFileSetNested, IDirSetNested {
+	override fun _addFileSet(value: FileSet) = component.add(value)
+	override fun _addDirSet(value: DirSet) = component.add(value)
 }
 
 //---- delete -----------------------------------------------------------------
@@ -54,8 +53,7 @@ fun Ant.delete(file: String? = null, dir: String? = null,
 	}
 }
 
-class KDelete(override val task: Delete) : IFileSetNested, IDirSetNested {
-	override fun _addResourceCollection(res: ResourceCollection) {
-		task.add(res)
-	}
+class KDelete(override val component: Delete) : IFileSetNested, IDirSetNested {
+	override fun _addFileSet(value: FileSet) = component.add(value)
+	override fun _addDirSet(value: DirSet) = component.add(value)
 }

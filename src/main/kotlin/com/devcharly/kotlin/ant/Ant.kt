@@ -18,6 +18,7 @@ package com.devcharly.kotlin.ant
 
 import org.apache.tools.ant.DefaultLogger
 import org.apache.tools.ant.Project
+import org.apache.tools.ant.ProjectComponent
 import org.apache.tools.ant.PropertyHelper
 import org.apache.tools.ant.Target
 import org.apache.tools.ant.Task
@@ -80,6 +81,12 @@ open class Ant(private val tasks: Ant.() -> Unit) {
 
 fun Task.resolveFile(pathname: String?): File? {
 	return if (pathname != null) project.resolveFile(pathname) else null
+}
+
+//---- interface INestedComponent ---------------------------------------------
+
+interface INestedComponent {
+	val component: ProjectComponent
 }
 
 //---- enum LogLevel ----------------------------------------------------------

@@ -20,7 +20,7 @@ import org.apache.tools.ant.taskdefs.Jar
 import org.apache.tools.ant.taskdefs.Manifest
 import org.apache.tools.ant.taskdefs.Tar
 import org.apache.tools.ant.taskdefs.Zip
-import org.apache.tools.ant.types.ResourceCollection
+import org.apache.tools.ant.types.*
 import org.apache.tools.ant.types.spi.Provider
 import org.apache.tools.ant.types.spi.Service
 
@@ -41,12 +41,11 @@ fun Ant.zip(destfile: String, basedir: String? = null,
 	}
 }
 
-open class KZip(override val task: Zip)
+open class KZip(override val component: Zip)
 	: IFileSetNested, IZipFileSetNested
 {
-	override fun _addResourceCollection(res: ResourceCollection) {
-		task.add(res)
-	}
+	override fun _addFileSet(value: FileSet) = component.add(value)
+	override fun _addZipFileSet(value: ZipFileSet) = component.add(value)
 }
 
 //---- tar --------------------------------------------------------------------
@@ -75,12 +74,11 @@ fun Ant.tar(destfile: String, basedir: String? = null,
 	}
 }
 
-open class KTar(override val task: Tar)
+open class KTar(override val component: Tar)
 	: IFileSetNested, ITarFileSetNested
 {
-	override fun _addResourceCollection(res: ResourceCollection) {
-		task.add(res)
-	}
+	override fun _addFileSet(value: FileSet) = component.add(value)
+	override fun _addTarFileSet(value: TarFileSet) = component.add(value)
 }
 
 enum class TarLongFileMode { WARN, FAIL, TRUNCATE, GNU, POSIX, OMIT }
@@ -103,20 +101,20 @@ fun Ant.jar(destfile: String, basedir: String? = null,
 	}
 }
 
-class KJar(override val task: Jar)
-	: KZip(task)
+class KJar(override val component: Jar)
+	: KZip(component)
 {
 	fun manifest(init: KManifest.() -> Unit) {
 		val manifest = Manifest()
 		init(KManifest(manifest))
-		task.addConfiguredManifest(manifest)
+		component.addConfiguredManifest(manifest)
 	}
 
 	fun service(type: String, vararg providers: String) {
 		val service = Service()
 		service.type = type
 		providers.forEach { service.addConfiguredProvider(Provider().apply { className = it }) }
-		task.addConfiguredService(service)
+		component.addConfiguredService(service)
 	}
 }
 

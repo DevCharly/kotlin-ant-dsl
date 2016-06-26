@@ -38,6 +38,7 @@ fun aClass(cls: Class<*>, stopClass: Class<*>? = null): AClass {
 		if (method.isBridge ||
 			method.isSynthetic ||
 			method.isVarArgs ||
+			method.isDefault ||
 			Modifier.isStatic(method.modifiers) ||
 			method.getAnnotation(java.lang.Deprecated::class.java) != null ||
 			isStopClass(method.declaringClass, stopClass))

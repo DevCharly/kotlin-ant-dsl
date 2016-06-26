@@ -17,9 +17,15 @@
 package com.devcharly.kotlin.ant.generator
 
 import org.apache.tools.ant.taskdefs.*
+import org.apache.tools.ant.types.*
 import java.io.FileWriter
 
 fun main(args: Array<String>) {
+	genType(FileSet::class.java, exclude = "refid")
+	genType(ZipFileSet::class.java, exclude = "refid")
+	genType(TarFileSet::class.java, exclude = "refid")
+	genType(DirSet::class.java, exclude = "refid")
+
 	genTask(BUnzip2::class.java, "src dest", "srcResource")
 	genTask(BZip2::class.java, "src destfile", "zipfile srcResource")
 	genTask(Echo::class.java)
@@ -35,6 +41,13 @@ fun genTask(taskType: Class<*>, order: String? = null, exclude: String? = null) 
 	val code = genTaskFile(task)
 
 	writeCode("src/main/kotlin/com/devcharly/kotlin/ant/taskdefs/${task.taskName}.kt", code)
+}
+
+fun genType(typeType: Class<*>, order: String? = null, exclude: String? = null) {
+	val task = reflectTask(typeType, order, exclude)
+	val code = genTypeFile(task)
+
+	writeCode("src/main/kotlin/com/devcharly/kotlin/ant/types/${task.taskName}.kt", code)
 }
 
 fun writeCode(filename: String, code: String) {
