@@ -71,10 +71,9 @@ fun reflectTask(taskType: Class<*>, order: String? = null, exclude: String? = nu
 	// use Ant IntrospectionHelper
 	val ih = IntrospectionHelper.getHelper(taskType)
 	val addTypeMethods = ih.extensionPoints.sortedBy { it.parameterTypes[0].simpleName }.toTypedArray()
+	val addTextMethod = if (ih.supportsCharacters()) ih.addTextMethod else null
 
-	val addTextMethod = aClass.getMethod("addText", java.lang.String::class.java)
-
-	return Task(taskType, params.toTypedArray(), addTypeMethods, addTextMethod != null)
+	return Task(taskType, params.toTypedArray(), addTypeMethods, addTextMethod)
 }
 
 //---- class Task -------------------------------------------------------------
@@ -82,10 +81,10 @@ fun reflectTask(taskType: Class<*>, order: String? = null, exclude: String? = nu
 class Task(val type: Class<*>,
            val params: Array<TaskParam>,
 		   val addTypeMethods: Array<Method>,
-           val nestedText: Boolean)
+           val addTextMethod: Method?)
 {
 	val taskName = type.simpleName!!.toLowerCase()
-	val hasNested = !addTypeMethods.isEmpty() || nestedText
+	val hasNested = !addTypeMethods.isEmpty() || addTextMethod != null
 }
 
 //---- class TaskParam --------------------------------------------------------
