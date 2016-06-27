@@ -16,14 +16,15 @@
 
 package com.devcharly.kotlin.ant.generator
 
+import org.apache.tools.ant.IntrospectionHelper
 import org.apache.tools.ant.Project
+import java.lang.reflect.Method
 import java.util.*
 
 fun reflectTask(taskType: Class<*>, order: String? = null, exclude: String? = null): Task {
 	val aClass = aClass(taskType, org.apache.tools.ant.Task::class.java)
 
 	val params = ArrayList<TaskParam>()
-	val nested = ArrayList<TaskNested>()
 
 	for (method in aClass.methods) {
 		if (method.name.startsWith("set") && method.parameterTypes.size == 1) {
@@ -67,26 +68,26 @@ fun reflectTask(taskType: Class<*>, order: String? = null, exclude: String? = nu
 		}
 	}
 
+	// use Ant IntrospectionHelper
+	val ih = IntrospectionHelper.getHelper(taskType)
+	val addTypeMethods = ih.extensionPoints.sortedBy { it.parameterTypes[0].simpleName }.toTypedArray()
+
 	val addTextMethod = aClass.getMethod("addText", java.lang.String::class.java)
 
-	return Task(taskType, params.toTypedArray(), nested.toTypedArray(), addTextMethod != null)
+	return Task(taskType, params.toTypedArray(), addTypeMethods, addTextMethod != null)
 }
 
 //---- class Task -------------------------------------------------------------
 
 class Task(val type: Class<*>,
            val params: Array<TaskParam>,
-           val nested: Array<TaskNested>,
+		   val addTypeMethods: Array<Method>,
            val nestedText: Boolean)
 {
 	val taskName = type.simpleName!!.toLowerCase()
-	val hasNested = !nested.isEmpty() || nestedText
+	val hasNested = !addTypeMethods.isEmpty() || nestedText
 }
 
 //---- class TaskParam --------------------------------------------------------
 
 class TaskParam(val name: String, val method: String, val type: String, val constructWithProject: Boolean)
-
-//---- class TaskNested -------------------------------------------------------
-
-class TaskNested()

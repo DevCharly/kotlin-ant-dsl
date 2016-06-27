@@ -76,8 +76,8 @@ fun Ant.property(
 	}
 }
 
-class KProperty(val task: Property) {
+class KProperty(val component: Property) {
 	operator fun String.unaryPlus() {
-		task.addText(this)
+		component.addText(this)
 	}
 }

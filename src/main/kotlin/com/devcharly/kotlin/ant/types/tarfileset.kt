@@ -17,7 +17,9 @@
 package com.devcharly.kotlin.ant
 
 import org.apache.tools.ant.types.Resource
+import org.apache.tools.ant.types.ResourceCollection
 import org.apache.tools.ant.types.TarFileSet
+import org.apache.tools.ant.types.selectors.FileSelector
 
 /******************************************************************************
 DO NOT EDIT - this file was generated
@@ -47,7 +49,8 @@ interface ITarFileSetNested : INestedComponent {
 		caseSensitive: Boolean? = null,
 		followSymlinks: Boolean? = null,
 		maxLevelsOfSymlinks: Int? = null,
-		errorOnMissingDir: Boolean? = null)
+		errorOnMissingDir: Boolean? = null,
+		nested: (KTarFileSet.() -> Unit)? = null)
 	{
 		_addTarFileSet(TarFileSet().apply {
 			component.project.setProjectReference(this);
@@ -56,7 +59,7 @@ interface ITarFileSetNested : INestedComponent {
 				prefix, fullpath, encoding, fileMode,
 				dirMode, file, includes, excludes,
 				includesfile, excludesfile, defaultexcludes, caseSensitive,
-				followSymlinks, maxLevelsOfSymlinks, errorOnMissingDir)
+				followSymlinks, maxLevelsOfSymlinks, errorOnMissingDir, nested)
 		})
 	}
 
@@ -86,7 +89,8 @@ fun TarFileSet._init(
 	caseSensitive: Boolean?,
 	followSymlinks: Boolean?,
 	maxLevelsOfSymlinks: Int?,
-	errorOnMissingDir: Boolean?)
+	errorOnMissingDir: Boolean?,
+	nested: (KTarFileSet.() -> Unit)?)
 {
 	if (userName != null)
 		setUserName(userName)
@@ -134,4 +138,11 @@ fun TarFileSet._init(
 		setMaxLevelsOfSymlinks(maxLevelsOfSymlinks)
 	if (errorOnMissingDir != null)
 		setErrorOnMissingDir(errorOnMissingDir)
+	if (nested != null)
+		nested(KTarFileSet(this))
+}
+
+class KTarFileSet(override val component: TarFileSet) : IFileSelectorNested, IResourceCollectionNested {
+	override fun _addFileSelector(value: FileSelector) = component.add(value)
+	override fun _addResourceCollection(value: ResourceCollection) = component.addConfigured(value)
 }

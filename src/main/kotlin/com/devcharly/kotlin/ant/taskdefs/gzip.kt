@@ -17,6 +17,7 @@
 package com.devcharly.kotlin.ant
 
 import org.apache.tools.ant.taskdefs.GZip
+import org.apache.tools.ant.types.ResourceCollection
 
 /******************************************************************************
 DO NOT EDIT - this file was generated
@@ -24,12 +25,19 @@ DO NOT EDIT - this file was generated
 
 fun Ant.gzip(
 	src: String? = null,
-	destfile: String? = null)
+	destfile: String? = null,
+	nested: (KGZip.() -> Unit)? = null)
 {
 	GZip().execute("gzip") { task ->
 		if (src != null)
 			task.setSrc(project.resolveFile(src))
 		if (destfile != null)
 			task.setDestfile(project.resolveFile(destfile))
+		if (nested != null)
+			nested(KGZip(task))
 	}
+}
+
+class KGZip(override val component: GZip) : IResourceCollectionNested {
+	override fun _addResourceCollection(value: ResourceCollection) = component.addConfigured(value)
 }

@@ -17,6 +17,7 @@
 package com.devcharly.kotlin.ant
 
 import org.apache.tools.ant.taskdefs.BUnzip2
+import org.apache.tools.ant.types.ResourceCollection
 
 /******************************************************************************
 DO NOT EDIT - this file was generated
@@ -24,12 +25,19 @@ DO NOT EDIT - this file was generated
 
 fun Ant.bunzip2(
 	src: String? = null,
-	dest: String? = null)
+	dest: String? = null,
+	nested: (KBUnzip2.() -> Unit)? = null)
 {
 	BUnzip2().execute("bunzip2") { task ->
 		if (src != null)
 			task.setSrc(project.resolveFile(src))
 		if (dest != null)
 			task.setDest(project.resolveFile(dest))
+		if (nested != null)
+			nested(KBUnzip2(task))
 	}
+}
+
+class KBUnzip2(override val component: BUnzip2) : IResourceCollectionNested {
+	override fun _addResourceCollection(value: ResourceCollection) = component.addConfigured(value)
 }

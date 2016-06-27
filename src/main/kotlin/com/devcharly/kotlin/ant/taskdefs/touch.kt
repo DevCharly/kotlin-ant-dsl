@@ -17,6 +17,8 @@
 package com.devcharly.kotlin.ant
 
 import org.apache.tools.ant.taskdefs.Touch
+import org.apache.tools.ant.types.ResourceCollection
+import org.apache.tools.ant.util.FileNameMapper
 
 /******************************************************************************
 DO NOT EDIT - this file was generated
@@ -28,7 +30,8 @@ fun Ant.touch(
 	datetime: String? = null,
 	mkdirs: Boolean? = null,
 	verbose: Boolean? = null,
-	pattern: String? = null)
+	pattern: String? = null,
+	nested: (KTouch.() -> Unit)? = null)
 {
 	Touch().execute("touch") { task ->
 		if (file != null)
@@ -43,5 +46,12 @@ fun Ant.touch(
 			task.setVerbose(verbose)
 		if (pattern != null)
 			task.setPattern(pattern)
+		if (nested != null)
+			nested(KTouch(task))
 	}
+}
+
+class KTouch(override val component: Touch) : IFileNameMapperNested, IResourceCollectionNested {
+	override fun _addFileNameMapper(value: FileNameMapper) = component.add(value)
+	override fun _addResourceCollection(value: ResourceCollection) = component.add(value)
 }

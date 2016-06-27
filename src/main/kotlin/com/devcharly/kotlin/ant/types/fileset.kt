@@ -17,6 +17,7 @@
 package com.devcharly.kotlin.ant
 
 import org.apache.tools.ant.types.FileSet
+import org.apache.tools.ant.types.selectors.FileSelector
 
 /******************************************************************************
 DO NOT EDIT - this file was generated
@@ -34,13 +35,14 @@ interface IFileSetNested : INestedComponent {
 		caseSensitive: Boolean? = null,
 		followSymlinks: Boolean? = null,
 		maxLevelsOfSymlinks: Int? = null,
-		errorOnMissingDir: Boolean? = null)
+		errorOnMissingDir: Boolean? = null,
+		nested: (KFileSet.() -> Unit)? = null)
 	{
 		_addFileSet(FileSet().apply {
 			component.project.setProjectReference(this);
 			_init(dir, file, includes, excludes,
 				includesfile, excludesfile, defaultexcludes, caseSensitive,
-				followSymlinks, maxLevelsOfSymlinks, errorOnMissingDir)
+				followSymlinks, maxLevelsOfSymlinks, errorOnMissingDir, nested)
 		})
 	}
 
@@ -58,7 +60,8 @@ fun FileSet._init(
 	caseSensitive: Boolean?,
 	followSymlinks: Boolean?,
 	maxLevelsOfSymlinks: Int?,
-	errorOnMissingDir: Boolean?)
+	errorOnMissingDir: Boolean?,
+	nested: (KFileSet.() -> Unit)?)
 {
 	if (dir != null)
 		setDir(project.resolveFile(dir))
@@ -82,4 +85,10 @@ fun FileSet._init(
 		setMaxLevelsOfSymlinks(maxLevelsOfSymlinks)
 	if (errorOnMissingDir != null)
 		setErrorOnMissingDir(errorOnMissingDir)
+	if (nested != null)
+		nested(KFileSet(this))
+}
+
+class KFileSet(override val component: FileSet) : IFileSelectorNested {
+	override fun _addFileSelector(value: FileSelector) = component.add(value)
 }

@@ -46,14 +46,14 @@ DO NOT EDIT - this file was generated
 fun genTaskFile(task: Task): String {
 	val imports = HashSet<String>()
 	val funCode = genTaskFun(task, imports)
-	val nestedCode = genTaskNested(task, imports)
+	val nestedClassCode = genNestedClass(task, imports)
 
 	var code = genFileHeader(imports)
 	code += funCode
 
-	if (nestedCode != null) {
+	if (nestedClassCode != null) {
 		code += '\n'
-		code += nestedCode
+		code += nestedClassCode
 	}
 
 	return code
@@ -64,12 +64,18 @@ fun genTypeFile(task: Task): String {
 	val nestedFunCode = genTypeNestedFun(task, null, "\t", imports)
 	val nestedInterface = genTypeNestedInterface(task, nestedFunCode, imports)
 	val initFunCode = genTypeInitFun(task, imports)
+	val nestedClassCode = genNestedClass(task, imports)
 
 	var code = genFileHeader(imports)
 	code += nestedInterface
 	if (initFunCode != null) {
 		code += "\n"
 		code += initFunCode
+	}
+
+	if (nestedClassCode != null) {
+		code += '\n'
+		code += nestedClassCode
 	}
 
 	return code
@@ -148,6 +154,8 @@ fun genTypeNestedFun(task: Task, forType: String?, indent: String, imports: Hash
 		if (i < task.params.size - 1)
 			addCode += if ((i + 1) % 4 == 0) ",\n${indent}\t\t\t" else ", "
 	}
+	if (task.hasNested)
+		addCode += ", nested"
 	addCode += ")\n" +
 		"${indent}\t})\n"
 
@@ -198,14 +206,26 @@ private fun genInit(task: Task, varName: String, indent: String, imports: HashSe
 	return init
 }
 
-fun genTaskNested(task: Task, imports: HashSet<String>): String? {
+fun genNestedClass(task: Task, imports: HashSet<String>): String? {
 	if (!task.hasNested)
 		return null
 
-	var code = "class K${task.type.simpleName}(val task: ${task.type.simpleName}) {\n"
+	val consOvr = if (task.addTypeMethods.isEmpty()) "" else "override "
+	var code = "class K${task.type.simpleName}(${consOvr}val component: ${task.type.simpleName})"
+	task.addTypeMethods.forEachIndexed { i, addTypeMethod ->
+		code += if (i == 0) " : " else ", "
+		code += "I${addTypeMethod.parameterTypes[0].simpleName}Nested"
+	}
+	code += " {\n"
+	task.addTypeMethods.forEach { addTypeMethod ->
+		val type = addTypeMethod.parameterTypes[0]
+		imports.add(type.name)
+		code += "\toverride fun _add${type.simpleName}(value: ${type.simpleName}) = component.${addTypeMethod.name}(value)\n"
+	}
+
 	if (task.nestedText) {
 		code += "\toperator fun String.unaryPlus() {\n"
-		code += "\t\ttask.addText(this)\n"
+		code += "\t\tcomponent.addText(this)\n"
 		code += "\t}\n"
 	}
 	code += "}\n"

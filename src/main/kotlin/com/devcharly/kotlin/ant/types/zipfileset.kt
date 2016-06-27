@@ -17,7 +17,9 @@
 package com.devcharly.kotlin.ant
 
 import org.apache.tools.ant.types.Resource
+import org.apache.tools.ant.types.ResourceCollection
 import org.apache.tools.ant.types.ZipFileSet
+import org.apache.tools.ant.types.selectors.FileSelector
 
 /******************************************************************************
 DO NOT EDIT - this file was generated
@@ -43,7 +45,8 @@ interface IZipFileSetNested : INestedComponent {
 		caseSensitive: Boolean? = null,
 		followSymlinks: Boolean? = null,
 		maxLevelsOfSymlinks: Int? = null,
-		errorOnMissingDir: Boolean? = null)
+		errorOnMissingDir: Boolean? = null,
+		nested: (KZipFileSet.() -> Unit)? = null)
 	{
 		_addZipFileSet(ZipFileSet().apply {
 			component.project.setProjectReference(this);
@@ -51,7 +54,7 @@ interface IZipFileSetNested : INestedComponent {
 				prefix, fullpath, encoding, fileMode,
 				dirMode, file, includes, excludes,
 				includesfile, excludesfile, defaultexcludes, caseSensitive,
-				followSymlinks, maxLevelsOfSymlinks, errorOnMissingDir)
+				followSymlinks, maxLevelsOfSymlinks, errorOnMissingDir, nested)
 		})
 	}
 
@@ -77,7 +80,8 @@ fun ZipFileSet._init(
 	caseSensitive: Boolean?,
 	followSymlinks: Boolean?,
 	maxLevelsOfSymlinks: Int?,
-	errorOnMissingDir: Boolean?)
+	errorOnMissingDir: Boolean?,
+	nested: (KZipFileSet.() -> Unit)?)
 {
 	if (dir != null)
 		setDir(project.resolveFile(dir))
@@ -117,4 +121,11 @@ fun ZipFileSet._init(
 		setMaxLevelsOfSymlinks(maxLevelsOfSymlinks)
 	if (errorOnMissingDir != null)
 		setErrorOnMissingDir(errorOnMissingDir)
+	if (nested != null)
+		nested(KZipFileSet(this))
+}
+
+class KZipFileSet(override val component: ZipFileSet) : IFileSelectorNested, IResourceCollectionNested {
+	override fun _addFileSelector(value: FileSelector) = component.add(value)
+	override fun _addResourceCollection(value: ResourceCollection) = component.addConfigured(value)
 }

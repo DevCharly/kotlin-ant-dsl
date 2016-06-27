@@ -17,6 +17,7 @@
 package com.devcharly.kotlin.ant
 
 import org.apache.tools.ant.taskdefs.GUnzip
+import org.apache.tools.ant.types.ResourceCollection
 
 /******************************************************************************
 DO NOT EDIT - this file was generated
@@ -24,12 +25,19 @@ DO NOT EDIT - this file was generated
 
 fun Ant.gunzip(
 	src: String? = null,
-	dest: String? = null)
+	dest: String? = null,
+	nested: (KGUnzip.() -> Unit)? = null)
 {
 	GUnzip().execute("gunzip") { task ->
 		if (src != null)
 			task.setSrc(project.resolveFile(src))
 		if (dest != null)
 			task.setDest(project.resolveFile(dest))
+		if (nested != null)
+			nested(KGUnzip(task))
 	}
+}
+
+class KGUnzip(override val component: GUnzip) : IResourceCollectionNested {
+	override fun _addResourceCollection(value: ResourceCollection) = component.addConfigured(value)
 }
