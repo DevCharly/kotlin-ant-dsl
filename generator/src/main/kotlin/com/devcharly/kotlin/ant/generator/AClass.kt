@@ -52,7 +52,7 @@ fun aClass(cls: Class<*>, stopClass: Class<*>? = null): AClass {
 	var cls2: Class<*>? = cls
 	while (cls2 != null && cls2 != java.lang.Object::class.java) {
 		val resName = cls2.name.replace('.', '/') + ".class"
-		cls2.classLoader.getResourceAsStream(resName).use {
+		cls.classLoader.getResourceAsStream(resName).use {
 			ClassReader(it).accept(visitor, ClassReader.SKIP_CODE + ClassReader.SKIP_DEBUG)
 		}
 
