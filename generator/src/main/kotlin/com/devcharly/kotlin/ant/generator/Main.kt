@@ -24,11 +24,11 @@ import java.io.FileWriter
 
 fun main(args: Array<String>) {
 	// Types
-	genType(DirSet::class.java, exclude = "refid")
-	genType(FileSet::class.java, exclude = "refid")
+	genType(DirSet::class.java, baseInterface = ResourceCollection::class.java, exclude = "refid")
+	genType(FileSet::class.java, baseInterface = ResourceCollection::class.java, exclude = "refid")
 	genType(ResourceCollection::class.java)
-	genType(TarFileSet::class.java, exclude = "refid")
-	genType(ZipFileSet::class.java, exclude = "refid")
+	genType(TarFileSet::class.java, baseInterface = ResourceCollection::class.java, exclude = "refid")
+	genType(ZipFileSet::class.java, baseInterface = ResourceCollection::class.java, exclude = "refid")
 
 	// Selectors
 	genType(FileSelector::class.java, folder = "selectors")
@@ -54,9 +54,9 @@ fun genTask(taskType: Class<*>, order: String? = null, exclude: String? = null) 
 	writeCode("src/main/kotlin/com/devcharly/kotlin/ant/taskdefs/${task.taskName}.kt", code)
 }
 
-fun genType(typeType: Class<*>, order: String? = null, exclude: String? = null, folder: String = "types") {
+fun genType(typeType: Class<*>, baseInterface: Class<*>? = null, order: String? = null, exclude: String? = null, folder: String = "types") {
 	val task = reflectTask(typeType, order, exclude)
-	val code = genTypeFile(task)
+	val code = genTypeFile(task, baseInterface)
 
 	writeCode("src/main/kotlin/com/devcharly/kotlin/ant/$folder/${task.taskName}.kt", code)
 }

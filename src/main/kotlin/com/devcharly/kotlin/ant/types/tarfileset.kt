@@ -66,6 +66,80 @@ interface ITarFileSetNested : INestedComponent {
 	fun _addTarFileSet(value: TarFileSet)
 }
 
+fun IFileSetNested.tarfileset(
+	userName: String? = null,
+	uid: Int? = null,
+	group: String? = null,
+	gid: Int? = null,
+	dir: String? = null,
+	src: String? = null,
+	srcResource: String? = null,
+	errorOnMissingArchive: Boolean? = null,
+	prefix: String? = null,
+	fullpath: String? = null,
+	encoding: String? = null,
+	fileMode: String? = null,
+	dirMode: String? = null,
+	file: String? = null,
+	includes: String? = null,
+	excludes: String? = null,
+	includesfile: String? = null,
+	excludesfile: String? = null,
+	defaultexcludes: Boolean? = null,
+	caseSensitive: Boolean? = null,
+	followSymlinks: Boolean? = null,
+	maxLevelsOfSymlinks: Int? = null,
+	errorOnMissingDir: Boolean? = null,
+	nested: (KTarFileSet.() -> Unit)? = null)
+{
+	_addFileSet(TarFileSet().apply {
+		component.project.setProjectReference(this);
+		_init(userName, uid, group, gid,
+			dir, src, srcResource, errorOnMissingArchive,
+			prefix, fullpath, encoding, fileMode,
+			dirMode, file, includes, excludes,
+			includesfile, excludesfile, defaultexcludes, caseSensitive,
+			followSymlinks, maxLevelsOfSymlinks, errorOnMissingDir, nested)
+	})
+}
+
+fun IResourceCollectionNested.tarfileset(
+	userName: String? = null,
+	uid: Int? = null,
+	group: String? = null,
+	gid: Int? = null,
+	dir: String? = null,
+	src: String? = null,
+	srcResource: String? = null,
+	errorOnMissingArchive: Boolean? = null,
+	prefix: String? = null,
+	fullpath: String? = null,
+	encoding: String? = null,
+	fileMode: String? = null,
+	dirMode: String? = null,
+	file: String? = null,
+	includes: String? = null,
+	excludes: String? = null,
+	includesfile: String? = null,
+	excludesfile: String? = null,
+	defaultexcludes: Boolean? = null,
+	caseSensitive: Boolean? = null,
+	followSymlinks: Boolean? = null,
+	maxLevelsOfSymlinks: Int? = null,
+	errorOnMissingDir: Boolean? = null,
+	nested: (KTarFileSet.() -> Unit)? = null)
+{
+	_addResourceCollection(TarFileSet().apply {
+		component.project.setProjectReference(this);
+		_init(userName, uid, group, gid,
+			dir, src, srcResource, errorOnMissingArchive,
+			prefix, fullpath, encoding, fileMode,
+			dirMode, file, includes, excludes,
+			includesfile, excludesfile, defaultexcludes, caseSensitive,
+			followSymlinks, maxLevelsOfSymlinks, errorOnMissingDir, nested)
+	})
+}
+
 fun TarFileSet._init(
 	userName: String?,
 	uid: Int?,

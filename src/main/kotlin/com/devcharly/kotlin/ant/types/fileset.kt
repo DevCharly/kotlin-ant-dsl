@@ -49,6 +49,28 @@ interface IFileSetNested : INestedComponent {
 	fun _addFileSet(value: FileSet)
 }
 
+fun IResourceCollectionNested.fileset(
+	dir: String? = null,
+	file: String? = null,
+	includes: String? = null,
+	excludes: String? = null,
+	includesfile: String? = null,
+	excludesfile: String? = null,
+	defaultexcludes: Boolean? = null,
+	caseSensitive: Boolean? = null,
+	followSymlinks: Boolean? = null,
+	maxLevelsOfSymlinks: Int? = null,
+	errorOnMissingDir: Boolean? = null,
+	nested: (KFileSet.() -> Unit)? = null)
+{
+	_addResourceCollection(FileSet().apply {
+		component.project.setProjectReference(this);
+		_init(dir, file, includes, excludes,
+			includesfile, excludesfile, defaultexcludes, caseSensitive,
+			followSymlinks, maxLevelsOfSymlinks, errorOnMissingDir, nested)
+	})
+}
+
 fun FileSet._init(
 	dir: String?,
 	file: String?,

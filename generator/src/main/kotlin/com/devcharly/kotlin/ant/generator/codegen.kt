@@ -16,6 +16,7 @@
 
 package com.devcharly.kotlin.ant.generator
 
+import java.lang.reflect.Modifier
 import java.util.*
 
 const val HEADER = """/*
@@ -59,7 +60,7 @@ fun genTaskFile(task: Task): String {
 	return code
 }
 
-fun genTypeFile(task: Task): String {
+fun genTypeFile(task: Task, baseInterface: Class<*>? = null): String {
 	val imports = HashSet<String>()
 	val nestedFunCode = genTypeNestedFun(task, null, "\t", imports)
 	val nestedInterface = genTypeNestedInterface(task, nestedFunCode, imports)
@@ -68,6 +69,21 @@ fun genTypeFile(task: Task): String {
 
 	var code = genFileHeader(imports)
 	code += nestedInterface
+
+	if (baseInterface != null && task.type != baseInterface && baseInterface.isAssignableFrom(task.type)) {
+		var cls: Class<*>? = task.type.superclass
+		while (cls != null && baseInterface.isAssignableFrom(cls)) {
+			if (!Modifier.isAbstract(cls.modifiers)) {
+				code += "\n"
+				code += genTypeNestedFun(task, cls.simpleName, "", imports)
+			}
+			cls = cls.superclass
+		}
+
+		code += "\n"
+		code += genTypeNestedFun(task, baseInterface.simpleName, "", imports)
+	}
+
 	if (initFunCode != null) {
 		code += "\n"
 		code += initFunCode
@@ -146,7 +162,8 @@ fun genTypeNestedFun(task: Task, forType: String?, indent: String, imports: Hash
 
 	val params = genParams(task, true, "${indent}\t", imports)
 
-	var addCode = "${indent}\t_add${task.type.simpleName}(${task.type.simpleName}().apply {\n" +
+	val addType = if (forType != null) forType else task.type.simpleName
+	var addCode = "${indent}\t_add${addType}(${task.type.simpleName}().apply {\n" +
 		"${indent}\t\tcomponent.project.setProjectReference(this);\n" +
 		"${indent}\t\t_init("
 	task.params.forEachIndexed { i, param ->
@@ -159,7 +176,7 @@ fun genTypeNestedFun(task: Task, forType: String?, indent: String, imports: Hash
 	addCode += ")\n" +
 		"${indent}\t})\n"
 
-	val forTypeInterface = if (forType != null) "I${task.type.simpleName}Nested." else ""
+	val forTypeInterface = if (forType != null) "I${forType}Nested." else ""
 	return "${indent}fun $forTypeInterface${task.taskName}(\n" +
 		params + ")\n" +
 		"${indent}{\n" +

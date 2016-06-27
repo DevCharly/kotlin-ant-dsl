@@ -61,6 +61,70 @@ interface IZipFileSetNested : INestedComponent {
 	fun _addZipFileSet(value: ZipFileSet)
 }
 
+fun IFileSetNested.zipfileset(
+	dir: String? = null,
+	src: String? = null,
+	srcResource: String? = null,
+	errorOnMissingArchive: Boolean? = null,
+	prefix: String? = null,
+	fullpath: String? = null,
+	encoding: String? = null,
+	fileMode: String? = null,
+	dirMode: String? = null,
+	file: String? = null,
+	includes: String? = null,
+	excludes: String? = null,
+	includesfile: String? = null,
+	excludesfile: String? = null,
+	defaultexcludes: Boolean? = null,
+	caseSensitive: Boolean? = null,
+	followSymlinks: Boolean? = null,
+	maxLevelsOfSymlinks: Int? = null,
+	errorOnMissingDir: Boolean? = null,
+	nested: (KZipFileSet.() -> Unit)? = null)
+{
+	_addFileSet(ZipFileSet().apply {
+		component.project.setProjectReference(this);
+		_init(dir, src, srcResource, errorOnMissingArchive,
+			prefix, fullpath, encoding, fileMode,
+			dirMode, file, includes, excludes,
+			includesfile, excludesfile, defaultexcludes, caseSensitive,
+			followSymlinks, maxLevelsOfSymlinks, errorOnMissingDir, nested)
+	})
+}
+
+fun IResourceCollectionNested.zipfileset(
+	dir: String? = null,
+	src: String? = null,
+	srcResource: String? = null,
+	errorOnMissingArchive: Boolean? = null,
+	prefix: String? = null,
+	fullpath: String? = null,
+	encoding: String? = null,
+	fileMode: String? = null,
+	dirMode: String? = null,
+	file: String? = null,
+	includes: String? = null,
+	excludes: String? = null,
+	includesfile: String? = null,
+	excludesfile: String? = null,
+	defaultexcludes: Boolean? = null,
+	caseSensitive: Boolean? = null,
+	followSymlinks: Boolean? = null,
+	maxLevelsOfSymlinks: Int? = null,
+	errorOnMissingDir: Boolean? = null,
+	nested: (KZipFileSet.() -> Unit)? = null)
+{
+	_addResourceCollection(ZipFileSet().apply {
+		component.project.setProjectReference(this);
+		_init(dir, src, srcResource, errorOnMissingArchive,
+			prefix, fullpath, encoding, fileMode,
+			dirMode, file, includes, excludes,
+			includesfile, excludesfile, defaultexcludes, caseSensitive,
+			followSymlinks, maxLevelsOfSymlinks, errorOnMissingDir, nested)
+	})
+}
+
 fun ZipFileSet._init(
 	dir: String?,
 	src: String?,

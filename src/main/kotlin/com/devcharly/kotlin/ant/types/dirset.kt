@@ -49,6 +49,28 @@ interface IDirSetNested : INestedComponent {
 	fun _addDirSet(value: DirSet)
 }
 
+fun IResourceCollectionNested.dirset(
+	dir: String? = null,
+	file: String? = null,
+	includes: String? = null,
+	excludes: String? = null,
+	includesfile: String? = null,
+	excludesfile: String? = null,
+	defaultexcludes: Boolean? = null,
+	caseSensitive: Boolean? = null,
+	followSymlinks: Boolean? = null,
+	maxLevelsOfSymlinks: Int? = null,
+	errorOnMissingDir: Boolean? = null,
+	nested: (KDirSet.() -> Unit)? = null)
+{
+	_addResourceCollection(DirSet().apply {
+		component.project.setProjectReference(this);
+		_init(dir, file, includes, excludes,
+			includesfile, excludesfile, defaultexcludes, caseSensitive,
+			followSymlinks, maxLevelsOfSymlinks, errorOnMissingDir, nested)
+	})
+}
+
 fun DirSet._init(
 	dir: String?,
 	file: String?,
