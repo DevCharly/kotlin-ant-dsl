@@ -97,12 +97,22 @@ fun genTypeFile(task: Task, baseInterface: Class<*>? = null): String {
 	return code
 }
 
+fun genTypeInitFile(task: Task): String {
+	val imports = HashSet<String>()
+	val initFunCode = genTypeInitFun(task, imports)
+
+	var code = genFileHeader(imports)
+	code += initFunCode
+
+	return code
+}
+
 fun genFileHeader(imports: Set<String>): String {
 	var code = HEADER
 
 	code += '\n'
 	imports.sorted().forEach {
-		code += "import $it\n"
+		code += "import ${it.replace('$', '.')}\n"
 	}
 	code += DO_NOT_EDIT
 	code += '\n'

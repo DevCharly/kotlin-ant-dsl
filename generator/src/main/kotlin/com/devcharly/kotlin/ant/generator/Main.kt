@@ -26,6 +26,8 @@ fun main(args: Array<String>) {
 	// Types
 	genType(DirSet::class.java, baseInterface = ResourceCollection::class.java, exclude = "refid")
 	genType(FileSet::class.java, baseInterface = ResourceCollection::class.java, exclude = "refid")
+	genType(PatternSet::class.java, exclude = "refid")
+	genTypeInit(PatternSet.NameEntry::class.java)
 	genType(ResourceCollection::class.java)
 	genType(TarFileSet::class.java, baseInterface = ResourceCollection::class.java, exclude = "refid")
 	genType(ZipFileSet::class.java, baseInterface = ResourceCollection::class.java, exclude = "refid")
@@ -57,6 +59,13 @@ fun genTask(taskType: Class<*>, order: String? = null, exclude: String? = null) 
 fun genType(typeType: Class<*>, baseInterface: Class<*>? = null, order: String? = null, exclude: String? = null, folder: String = "types") {
 	val task = reflectTask(typeType, order, exclude)
 	val code = genTypeFile(task, baseInterface)
+
+	writeCode("src/main/kotlin/com/devcharly/kotlin/ant/$folder/${task.taskName}.kt", code)
+}
+
+fun genTypeInit(typeType: Class<*>, order: String? = null, exclude: String? = null, folder: String = "types") {
+	val task = reflectTask(typeType, order, exclude)
+	val code = genTypeInitFile(task)
 
 	writeCode("src/main/kotlin/com/devcharly/kotlin/ant/$folder/${task.taskName}.kt", code)
 }

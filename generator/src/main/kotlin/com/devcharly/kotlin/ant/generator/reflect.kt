@@ -28,9 +28,13 @@ fun reflectTask(taskType: Class<*>, order: String? = null, exclude: String? = nu
 
 	for (method in aClass.methods) {
 		if (method.name.startsWith("set") && method.parameterTypes.size == 1) {
-			val paramName = method.name.substring(3).decapitalize()
+			var paramName = method.name.substring(3).decapitalize()
 			val paramType = method.parameterTypes[0]
 			var constructWithProject = false
+
+			// avoid reserved names in parameters
+			if (paramName in "if")
+				paramName = paramName.capitalize()
 
 			if (paramType.name.contains('.') &&
 				paramType != java.lang.String::class.java &&
