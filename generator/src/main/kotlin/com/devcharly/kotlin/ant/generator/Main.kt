@@ -24,13 +24,13 @@ import java.io.FileWriter
 
 fun main(args: Array<String>) {
 	// Types
-	genType(DirSet::class.java, baseInterface = ResourceCollection::class.java, exclude = "refid")
-	genType(FileSet::class.java, baseInterface = ResourceCollection::class.java, exclude = "refid")
-	genType(PatternSet::class.java, exclude = "refid")
+	genType(DirSet::class.java, baseInterface = ResourceCollection::class.java)
+	genType(FileSet::class.java, baseInterface = ResourceCollection::class.java)
+	genType(PatternSet::class.java)
 	genTypeInit(PatternSet.NameEntry::class.java)
 	genType(ResourceCollection::class.java)
-	genType(TarFileSet::class.java, baseInterface = ResourceCollection::class.java, exclude = "refid")
-	genType(ZipFileSet::class.java, baseInterface = ResourceCollection::class.java, exclude = "refid")
+	genType(TarFileSet::class.java, baseInterface = ResourceCollection::class.java)
+	genType(ZipFileSet::class.java, baseInterface = ResourceCollection::class.java)
 
 	// Selectors
 	genType(FileSelector::class.java, folder = "selectors")

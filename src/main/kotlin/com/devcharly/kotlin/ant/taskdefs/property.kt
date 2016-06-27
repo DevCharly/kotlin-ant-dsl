@@ -29,7 +29,6 @@ fun Ant.property(
 	name: String? = null,
 	value: String? = null,
 	location: String? = null,
-	refid: String? = null,
 	resource: String? = null,
 	file: String? = null,
 	url: String? = null,
@@ -49,8 +48,6 @@ fun Ant.property(
 			task.setValue(value)
 		if (location != null)
 			task.setLocation(project.resolveFile(location))
-		if (refid != null)
-			task.setRefid(Reference(project, refid))
 		if (resource != null)
 			task.setResource(resource)
 		if (file != null)
