@@ -38,6 +38,7 @@ fun reflectTask(taskType: Class<*>, order: String? = null, exclude: String? = nu
 
 	val params = ArrayList<TaskParam>()
 
+	val reserved = arrayOf("if", "when")
 	for (method in aClass.methods) {
 		if (method.name.startsWith("set") && method.parameterTypes.size == 1) {
 			var paramName = method.name.substring(3).decapitalize()
@@ -45,7 +46,7 @@ fun reflectTask(taskType: Class<*>, order: String? = null, exclude: String? = nu
 			var constructWithProject = false
 
 			// avoid reserved names in parameters
-			if (paramName in "if")
+			if (paramName in reserved)
 				paramName = paramName.capitalize()
 
 			if (paramType.name.contains('.') &&
