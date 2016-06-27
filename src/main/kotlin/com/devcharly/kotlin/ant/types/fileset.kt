@@ -112,5 +112,20 @@ fun FileSet._init(
 }
 
 class KFileSet(override val component: FileSet) : IFileSelectorNested {
+	fun patternset(includes: String? = null, excludes: String? = null, includesfile: String? = null, excludesfile: String? = null, nested: (KPatternSet.() -> Unit)? = null) {
+		component.createPatternSet().apply {
+			_init(includes, excludes, includesfile, excludesfile, nested)
+		}
+	}
+	fun include(name: String? = null, If: String? = null, unless: String? = null) {
+		component.createInclude().apply {
+			_init(name, If, unless)
+		}
+	}
+	fun exclude(name: String? = null, If: String? = null, unless: String? = null) {
+		component.createExclude().apply {
+			_init(name, If, unless)
+		}
+	}
 	override fun _addFileSelector(value: FileSelector) = component.add(value)
 }

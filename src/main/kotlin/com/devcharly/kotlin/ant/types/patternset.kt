@@ -27,11 +27,12 @@ interface IPatternSetNested : INestedComponent {
 		includes: String? = null,
 		excludes: String? = null,
 		includesfile: String? = null,
-		excludesfile: String? = null)
+		excludesfile: String? = null,
+		nested: (KPatternSet.() -> Unit)? = null)
 	{
 		_addPatternSet(PatternSet().apply {
 			component.project.setProjectReference(this);
-			_init(includes, excludes, includesfile, excludesfile)
+			_init(includes, excludes, includesfile, excludesfile, nested)
 		})
 	}
 
@@ -42,7 +43,8 @@ fun PatternSet._init(
 	includes: String?,
 	excludes: String?,
 	includesfile: String?,
-	excludesfile: String?)
+	excludesfile: String?,
+	nested: (KPatternSet.() -> Unit)?)
 {
 	if (includes != null)
 		setIncludes(includes)
@@ -52,4 +54,24 @@ fun PatternSet._init(
 		setIncludesfile(project.resolveFile(includesfile))
 	if (excludesfile != null)
 		setExcludesfile(project.resolveFile(excludesfile))
+	if (nested != null)
+		nested(KPatternSet(this))
+}
+
+class KPatternSet(val component: PatternSet) {
+	fun patternset(includes: String? = null, excludes: String? = null, includesfile: String? = null, excludesfile: String? = null, nested: (KPatternSet.() -> Unit)? = null) {
+		component.addConfiguredPatternset(PatternSet().apply {
+			_init(includes, excludes, includesfile, excludesfile, nested)
+		})
+	}
+	fun include(name: String? = null, If: String? = null, unless: String? = null) {
+		component.createInclude().apply {
+			_init(name, If, unless)
+		}
+	}
+	fun exclude(name: String? = null, If: String? = null, unless: String? = null) {
+		component.createExclude().apply {
+			_init(name, If, unless)
+		}
+	}
 }

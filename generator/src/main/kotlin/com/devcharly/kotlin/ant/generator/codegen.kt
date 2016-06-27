@@ -244,6 +244,23 @@ fun genNestedClass(task: Task, imports: HashSet<String>): String? {
 		code += "I${addTypeMethod.parameterTypes[0].simpleName}Nested"
 	}
 	code += " {\n"
+
+	task.nested.forEach {
+		val n = reflectTask(it.type)
+		val nestedInitCode = "apply {\n" +
+			"\t\t\t_init(${n.params.joinToString { it.name }}${if (n.hasNested) ", nested" else ""})\n" +
+			"\t\t}"
+
+		code += "\tfun ${it.name}(${genParams(n, true, "", imports).replace('\n', ' ')}) {\n"
+		if (it.method.parameterCount == 0)
+			code += "\t\tcomponent.${it.method.name}().$nestedInitCode\n"
+		else {
+			code += "\t\tcomponent.${it.method.name}(${it.type.simpleName}().$nestedInitCode)\n"
+			imports.add(it.type.name)
+		}
+		code += "\t}\n"
+	}
+
 	task.addTypeMethods.forEach { addTypeMethod ->
 		val type = addTypeMethod.parameterTypes[0]
 		imports.add(type.name)

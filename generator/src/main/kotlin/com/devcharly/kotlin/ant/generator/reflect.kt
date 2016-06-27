@@ -56,6 +56,9 @@ fun reflectTask(taskType: Class<*>, order: String? = null, exclude: String? = nu
 		}
 	}
 
+	// always exclude refid
+	params.removeIf { it.name == "refid" }
+
 	if (exclude != null) {
 		val excludeList = exclude.split(' ')
 		params.removeIf { excludeList.contains(it.name) }
@@ -77,20 +80,38 @@ fun reflectTask(taskType: Class<*>, order: String? = null, exclude: String? = nu
 	val addTypeMethods = ih.extensionPoints.sortedBy { it.parameterTypes[0].simpleName }.toTypedArray()
 	val addTextMethod = if (ih.supportsCharacters()) ih.addTextMethod else null
 
-	return Task(taskType, params.toTypedArray(), addTypeMethods, addTextMethod)
+	val supported = arrayOf("patternset", "include", "exclude") //TODO
+	val nested = ArrayList<TaskNested>()
+	ih.nestedElementMap.forEach {
+		if (it.key in supported) {
+			val em = ih.getElementMethod(it.key)
+			nested.add(TaskNested(it.key, it.value, em))
+		}
+	}
+
+	// same order as in source code
+	nested.sortBy { aClass.methods.indexOf(it.method) }
+
+	return Task(taskType, params.toTypedArray(), nested.toTypedArray(), addTypeMethods, addTextMethod)
 }
 
 //---- class Task -------------------------------------------------------------
 
 class Task(val type: Class<*>,
            val params: Array<TaskParam>,
+		   val nested: Array<TaskNested>,
 		   val addTypeMethods: Array<Method>,
            val addTextMethod: Method?)
 {
 	val taskName = type.simpleName!!.toLowerCase()
-	val hasNested = !addTypeMethods.isEmpty() || addTextMethod != null
+	val hasNested = !nested.isEmpty() || !addTypeMethods.isEmpty() || addTextMethod != null
 }
 
 //---- class TaskParam --------------------------------------------------------
 
 class TaskParam(val name: String, val method: String, val type: String, val constructWithProject: Boolean)
+
+
+//---- class TaskNested -------------------------------------------------------
+
+class TaskNested(val name: String, val type: Class<*>, val method: Method)
