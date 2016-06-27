@@ -223,11 +223,8 @@ fun genNestedClass(task: Task, imports: HashSet<String>): String? {
 		code += "\toverride fun _add${type.simpleName}(value: ${type.simpleName}) = component.${addTypeMethod.name}(value)\n"
 	}
 
-	if (task.nestedText) {
-		code += "\toperator fun String.unaryPlus() {\n"
-		code += "\t\tcomponent.addText(this)\n"
-		code += "\t}\n"
-	}
+	if (task.nestedText)
+		code += "\toperator fun String.unaryPlus() = component.addText(this)\n"
 	code += "}\n"
 
 	return code

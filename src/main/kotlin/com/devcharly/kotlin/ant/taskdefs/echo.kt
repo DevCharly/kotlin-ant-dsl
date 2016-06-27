@@ -51,7 +51,5 @@ fun Ant.echo(
 }
 
 class KEcho(val component: Echo) {
-	operator fun String.unaryPlus() {
-		component.addText(this)
-	}
+	operator fun String.unaryPlus() = component.addText(this)
 }
