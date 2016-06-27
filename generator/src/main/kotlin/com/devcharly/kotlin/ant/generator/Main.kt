@@ -18,16 +18,25 @@ package com.devcharly.kotlin.ant.generator
 
 import org.apache.tools.ant.taskdefs.*
 import org.apache.tools.ant.types.*
+import org.apache.tools.ant.types.selectors.*
+import org.apache.tools.ant.util.FileNameMapper
 import java.io.FileWriter
 
 fun main(args: Array<String>) {
-	genType(ResourceCollection::class.java)
-
-	genType(FileSet::class.java, exclude = "refid")
-	genType(ZipFileSet::class.java, exclude = "refid")
-	genType(TarFileSet::class.java, exclude = "refid")
+	// Types
 	genType(DirSet::class.java, exclude = "refid")
+	genType(FileSet::class.java, exclude = "refid")
+	genType(ResourceCollection::class.java)
+	genType(TarFileSet::class.java, exclude = "refid")
+	genType(ZipFileSet::class.java, exclude = "refid")
 
+	// Selectors
+	genType(FileSelector::class.java, folder = "selectors")
+
+	// Util
+	genType(FileNameMapper::class.java, folder = "util")
+
+	// Tasks
 	genTask(BUnzip2::class.java, "src dest", "srcResource")
 	genTask(BZip2::class.java, "src destfile", "zipfile srcResource")
 	genTask(Echo::class.java)
@@ -45,11 +54,11 @@ fun genTask(taskType: Class<*>, order: String? = null, exclude: String? = null) 
 	writeCode("src/main/kotlin/com/devcharly/kotlin/ant/taskdefs/${task.taskName}.kt", code)
 }
 
-fun genType(typeType: Class<*>, order: String? = null, exclude: String? = null) {
+fun genType(typeType: Class<*>, order: String? = null, exclude: String? = null, folder: String = "types") {
 	val task = reflectTask(typeType, order, exclude)
 	val code = genTypeFile(task)
 
-	writeCode("src/main/kotlin/com/devcharly/kotlin/ant/types/${task.taskName}.kt", code)
+	writeCode("src/main/kotlin/com/devcharly/kotlin/ant/$folder/${task.taskName}.kt", code)
 }
 
 fun writeCode(filename: String, code: String) {
