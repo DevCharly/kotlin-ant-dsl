@@ -24,6 +24,18 @@ import java.util.*
 fun reflectTask(taskType: Class<*>, order: String? = null, exclude: String? = null): Task {
 	val aClass = aClass(taskType, org.apache.tools.ant.Task::class.java)
 
+	var projectAtConstructor = false
+	try {
+		taskType.getConstructor()
+	} catch (ex: NoSuchMethodException) {
+		try {
+			taskType.getConstructor(Project::class.java)
+			projectAtConstructor = true
+		} catch (ex: NoSuchMethodException) {
+			// ignore
+		}
+	}
+
 	val params = ArrayList<TaskParam>()
 
 	for (method in aClass.methods) {
@@ -92,12 +104,13 @@ fun reflectTask(taskType: Class<*>, order: String? = null, exclude: String? = nu
 	// same order as in source code
 	nested.sortBy { aClass.methods.indexOf(it.method) }
 
-	return Task(taskType, params.toTypedArray(), nested.toTypedArray(), addTypeMethods, addTextMethod)
+	return Task(taskType, projectAtConstructor, params.toTypedArray(), nested.toTypedArray(), addTypeMethods, addTextMethod)
 }
 
 //---- class Task -------------------------------------------------------------
 
 class Task(val type: Class<*>,
+		   val projectAtConstructor: Boolean,
            val params: Array<TaskParam>,
 		   val nested: Array<TaskNested>,
 		   val addTypeMethods: Array<Method>,

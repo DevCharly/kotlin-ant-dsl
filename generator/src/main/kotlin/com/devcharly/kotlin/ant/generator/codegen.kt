@@ -173,7 +173,8 @@ fun genTypeNestedFun(task: Task, forType: String?, indent: String, imports: Hash
 	val params = genParams(task, true, "${indent}\t", imports)
 
 	val addType = if (forType != null) forType else task.type.simpleName
-	var addCode = "${indent}\t_add${addType}(${task.type.simpleName}().apply {\n" +
+	val constrParam = if (task.projectAtConstructor) "component.project" else ""
+	var addCode = "${indent}\t_add${addType}(${task.type.simpleName}($constrParam).apply {\n" +
 		"${indent}\t\tcomponent.project.setProjectReference(this);\n" +
 		"${indent}\t\t_init("
 	task.params.forEachIndexed { i, param ->
@@ -255,7 +256,8 @@ fun genNestedClass(task: Task, imports: HashSet<String>): String? {
 		if (it.method.parameterCount == 0)
 			code += "\t\tcomponent.${it.method.name}().$nestedInitCode\n"
 		else {
-			code += "\t\tcomponent.${it.method.name}(${it.type.simpleName}().$nestedInitCode)\n"
+			val constrParam = if (n.projectAtConstructor) "component.project" else ""
+			code += "\t\tcomponent.${it.method.name}(${it.type.simpleName}($constrParam).$nestedInitCode)\n"
 			imports.add(it.type.name)
 		}
 		code += "\t}\n"
