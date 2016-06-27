@@ -48,7 +48,9 @@ fun main(args: Array<String>) {
 	genTask(GZip::class.java, "src destfile", "zipfile srcResource")
 	genTask(Mkdir::class.java)
 	genTask(Property::class.java, "name value location refid resource file url environment classpath classpathref prefix prefixValues relative basedir")
+	genTask(Tar::class.java)
 	genTask(Touch::class.java)
+	genTask(Zip::class.java)
 }
 
 fun genTask(taskType: Class<*>, order: String? = null, exclude: String? = null) {

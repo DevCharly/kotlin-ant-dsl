@@ -18,71 +18,9 @@ package com.devcharly.kotlin.ant
 
 import org.apache.tools.ant.taskdefs.Jar
 import org.apache.tools.ant.taskdefs.Manifest
-import org.apache.tools.ant.taskdefs.Tar
-import org.apache.tools.ant.taskdefs.Zip
 import org.apache.tools.ant.types.*
 import org.apache.tools.ant.types.spi.Provider
 import org.apache.tools.ant.types.spi.Service
-
-//---- zip --------------------------------------------------------------------
-
-fun Ant.zip(destfile: String, basedir: String? = null,
-            includes: String? = null, includesfile: String? = null,
-            excludes: String? = null, excludesfile: String? = null,
-            defaultexcludes: Boolean = true,
-            nested: (KZip.() -> Unit)? = null)
-{
-	Zip().execute("zip") { task ->
-		task.setDestFile(resolveFile(destfile))
-		task.setBasedir(resolveFile(basedir))
-		task._init(includes, includesfile, excludes, excludesfile, defaultexcludes)
-		if (nested != null)
-			nested(KZip(task))
-	}
-}
-
-open class KZip(override val component: Zip)
-	: IFileSetNested, IZipFileSetNested
-{
-	override fun _addFileSet(value: FileSet) = component.add(value)
-	override fun _addZipFileSet(value: ZipFileSet) = component.add(value)
-}
-
-//---- tar --------------------------------------------------------------------
-
-fun Ant.tar(destfile: String, basedir: String? = null,
-            longfile: TarLongFileMode = TarLongFileMode.WARN,
-            includes: String? = null, includesfile: String? = null,
-            excludes: String? = null, excludesfile: String? = null,
-            defaultexcludes: Boolean = true,
-            compression: TarCompressionMethod = TarCompressionMethod.NONE,
-            encoding: String? = null,
-            nested: (KTar.() -> Unit)? = null)
-{
-	Tar().execute("tar") { task ->
-		task.setDestFile(resolveFile(destfile))
-		task.setBasedir(resolveFile(basedir))
-		if (longfile != TarLongFileMode.WARN)
-			task.setLongfile( Tar.TarLongFileMode().apply { value = longfile.name.toLowerCase() })
-		task._init(includes, includesfile, excludes, excludesfile, defaultexcludes)
-		if (compression != TarCompressionMethod.NONE)
-			task.setCompression(Tar.TarCompressionMethod().apply { value = compression.name.toLowerCase() })
-		if (encoding != null)
-			task.setEncoding(encoding)
-		if (nested != null)
-			nested(KTar(task))
-	}
-}
-
-open class KTar(override val component: Tar)
-	: IFileSetNested, ITarFileSetNested
-{
-	override fun _addFileSet(value: FileSet) = component.add(value)
-	override fun _addTarFileSet(value: TarFileSet) = component.add(value)
-}
-
-enum class TarLongFileMode { WARN, FAIL, TRUNCATE, GNU, POSIX, OMIT }
-enum class TarCompressionMethod { NONE, GZIP, BZIP2 }
 
 //---- jar --------------------------------------------------------------------
 
@@ -102,7 +40,7 @@ fun Ant.jar(destfile: String, basedir: String? = null,
 }
 
 class KJar(override val component: Jar)
-	: KZip(component)
+	: IResourceCollectionNested
 {
 	fun manifest(init: KManifest.() -> Unit) {
 		val manifest = Manifest()
@@ -116,6 +54,8 @@ class KJar(override val component: Jar)
 		providers.forEach { service.addConfiguredProvider(Provider().apply { className = it }) }
 		component.addConfiguredService(service)
 	}
+
+	override fun _addResourceCollection(value: ResourceCollection) = component.add(value)
 }
 
 class KManifest(val manifest: Manifest) {
