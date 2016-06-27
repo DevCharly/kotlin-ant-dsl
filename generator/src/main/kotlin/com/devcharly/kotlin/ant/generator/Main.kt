@@ -41,6 +41,8 @@ fun main(args: Array<String>) {
 	// Tasks
 	genTask(BUnzip2::class.java, "src dest", "srcResource")
 	genTask(BZip2::class.java, "src destfile", "zipfile srcResource")
+	genTask(Copy::class.java)
+	genTask(Delete::class.java)
 	genTask(Echo::class.java)
 	genTask(GUnzip::class.java, "src dest", "srcResource")
 	genTask(GZip::class.java, "src destfile", "zipfile srcResource")
