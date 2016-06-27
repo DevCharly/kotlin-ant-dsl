@@ -80,6 +80,7 @@ class Task(val type: Class<*>,
            val nestedText: Boolean)
 {
 	val taskName = type.simpleName!!.toLowerCase()
+	val hasNested = !nested.isEmpty() || nestedText
 }
 
 //---- class TaskParam --------------------------------------------------------

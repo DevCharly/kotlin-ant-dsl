@@ -170,7 +170,7 @@ private fun genParams(task: Task, initNull: Boolean, indent: String, imports: Ha
 			params += " = null"
 	}
 
-	if (!task.nested.isEmpty() || task.nestedText) {
+	if (task.hasNested) {
 		params += ",\n${indent}nested: (K${task.type.simpleName}.() -> Unit)?"
 		if (initNull)
 			params += " = null"
@@ -189,7 +189,7 @@ private fun genInit(task: Task, varName: String, indent: String, imports: HashSe
 		init += "${indent}\t$varNameDot${it.method}(${init(it.type, it.name, it.constructWithProject, imports)})\n"
 	}
 
-	if (!task.nested.isEmpty() || task.nestedText) {
+	if (task.hasNested) {
 		val varName2 = if (varName == "") "this" else varName
 		init += "${indent}if (nested != null)\n"
 		init += "${indent}\tnested(K${task.type.simpleName}($varName2))\n"
@@ -199,7 +199,7 @@ private fun genInit(task: Task, varName: String, indent: String, imports: HashSe
 }
 
 fun genTaskNested(task: Task, imports: HashSet<String>): String? {
-	if (task.nested.isEmpty() && !task.nestedText)
+	if (!task.hasNested)
 		return null
 
 	var code = "class K${task.type.simpleName}(val task: ${task.type.simpleName}) {\n"
