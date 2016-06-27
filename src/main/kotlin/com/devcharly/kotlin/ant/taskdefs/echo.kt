@@ -28,6 +28,7 @@ fun Ant.echo(
 	file: String? = null,
 	output: String? = null,
 	append: Boolean? = null,
+	level: EchoLevel? = null,
 	encoding: String? = null,
 	force: Boolean? = null,
 	nested: (KEcho.() -> Unit)? = null)
@@ -41,6 +42,8 @@ fun Ant.echo(
 			task.setOutput(Resource(output))
 		if (append != null)
 			task.setAppend(append)
+		if (level != null)
+			task.setLevel(Echo.EchoLevel().apply { value = level.value })
 		if (encoding != null)
 			task.setEncoding(encoding)
 		if (force != null)
@@ -53,3 +56,5 @@ fun Ant.echo(
 class KEcho(val component: Echo) {
 	operator fun String.unaryPlus() = component.addText(this)
 }
+
+enum class EchoLevel(val value: String) { ERROR("error"), WARN("warn"), WARNING("warning"), INFO("info"), VERBOSE("verbose"), DEBUG("debug") }

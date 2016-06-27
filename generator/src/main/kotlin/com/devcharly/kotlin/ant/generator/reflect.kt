@@ -18,6 +18,7 @@ package com.devcharly.kotlin.ant.generator
 
 import org.apache.tools.ant.IntrospectionHelper
 import org.apache.tools.ant.Project
+import org.apache.tools.ant.types.EnumeratedAttribute
 import java.lang.reflect.Method
 import java.util.*
 
@@ -60,12 +61,13 @@ fun reflectTask(taskType: Class<*>, order: String? = null, exclude: String? = nu
 					try {
 						paramType.getConstructor(java.lang.String::class.java)
 					} catch (ex: NoSuchMethodException) {
-						continue // not supported parameter type
+						if (!EnumeratedAttribute::class.java.isAssignableFrom(paramType))
+							continue // not supported parameter type
 					}
 				}
 			}
 
-			params.add(TaskParam(paramName, method.name, paramType.name, constructWithProject))
+			params.add(TaskParam(paramName, method.name, paramType, constructWithProject))
 		}
 	}
 
@@ -123,7 +125,7 @@ class Task(val type: Class<*>,
 
 //---- class TaskParam --------------------------------------------------------
 
-class TaskParam(val name: String, val method: String, val type: String, val constructWithProject: Boolean)
+class TaskParam(val name: String, val method: String, val type: Class<*>, val constructWithProject: Boolean)
 
 
 //---- class TaskNested -------------------------------------------------------

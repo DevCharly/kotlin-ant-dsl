@@ -16,6 +16,7 @@
 
 package com.devcharly.kotlin.ant.generator
 
+import org.apache.tools.ant.types.EnumeratedAttribute
 import java.lang.reflect.Modifier
 import java.util.*
 
@@ -56,6 +57,8 @@ fun genTaskFile(task: Task): String {
 		code += '\n'
 		code += nestedClassCode
 	}
+
+	code += genEnum(task)
 
 	return code
 }
@@ -276,8 +279,25 @@ fun genNestedClass(task: Task, imports: HashSet<String>): String? {
 	return code
 }
 
-private fun paramType(type: String): String {
-	return when (type) {
+fun genEnum(task: Task): String {
+	var code = ""
+
+	task.params.forEach {
+		if (EnumeratedAttribute::class.java.isAssignableFrom(it.type)) {
+			if (code.isEmpty())
+				code += "\n"
+			code += "enum class ${it.type.simpleName}(val value: String) { "
+			val e = it.type.newInstance() as EnumeratedAttribute
+			code += e.values.joinToString { "${it.toUpperCase().replace('-', '_')}(\"$it\")" }
+			code += " }\n"
+		}
+	}
+
+	return code
+}
+
+private fun paramType(type: Class<*>): String {
+	return when (type.name) {
 		"java.lang.String" -> "String"
 		"boolean" -> "Boolean"
 		"byte" -> "Byte"
@@ -288,12 +308,16 @@ private fun paramType(type: String): String {
 		"float" -> "Float"
 		"double" -> "Double"
 		"java.io.File" -> "String"
-		else -> "String"
+		else ->
+			if (EnumeratedAttribute::class.java.isAssignableFrom(type))
+				type.simpleName
+			else
+				"String"
 	}
 }
 
-private fun init(type: String, name: String, constructWithProject: Boolean, imports: HashSet<String>): String {
-	return when (type) {
+private fun init(type: Class<*>, name: String, constructWithProject: Boolean, imports: HashSet<String>): String {
+	return when (type.name) {
 		"java.lang.String" -> name
 		"boolean" -> name
 		"byte" -> name
@@ -305,9 +329,14 @@ private fun init(type: String, name: String, constructWithProject: Boolean, impo
 		"double" -> name
 		"java.io.File" -> "project.resolveFile($name)"
 		else -> {
-			imports.add(type)
-			val simpleType = type.substringAfterLast('.')
-			if (constructWithProject) "$simpleType(project, $name)" else "$simpleType($name)"
+			if (EnumeratedAttribute::class.java.isAssignableFrom(type)) {
+				val simpleType = type.name.substringAfterLast('.').replace('$', '.')
+				"$simpleType().apply { value = $name.value }"
+			} else {
+				imports.add(type.name)
+				val simpleType = type.name.substringAfterLast('.')
+				if (constructWithProject) "$simpleType(project, $name)" else "$simpleType($name)"
+			}
 		}
 	}
 }
