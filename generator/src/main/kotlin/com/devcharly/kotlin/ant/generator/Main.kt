@@ -19,6 +19,7 @@ package com.devcharly.kotlin.ant.generator
 import org.apache.tools.ant.taskdefs.*
 import org.apache.tools.ant.types.*
 import org.apache.tools.ant.types.selectors.*
+import org.apache.tools.ant.types.spi.Service
 import org.apache.tools.ant.util.FileNameMapper
 import java.io.FileWriter
 
@@ -26,6 +27,9 @@ fun main(args: Array<String>) {
 	// Types
 	genType(DirSet::class.java, baseInterface = ResourceCollection::class.java)
 	genType(FileSet::class.java, baseInterface = ResourceCollection::class.java)
+	genType(Manifest::class.java)
+	genType(Manifest.Attribute::class.java)
+	genType(Manifest.Section::class.java)
 	genType(PatternSet::class.java)
 	genTypeInit(PatternSet.NameEntry::class.java)
 	genType(ResourceCollection::class.java)
@@ -34,6 +38,9 @@ fun main(args: Array<String>) {
 
 	// Selectors
 	genType(FileSelector::class.java, folder = "selectors")
+
+	// SPI
+	genType(Service::class.java, folder = "spi", order = "type provider")
 
 	// Util
 	genType(FileNameMapper::class.java, folder = "util")
@@ -46,6 +53,7 @@ fun main(args: Array<String>) {
 	genTask(Echo::class.java)
 	genTask(GUnzip::class.java, "src dest", "srcResource")
 	genTask(GZip::class.java, "src destfile", "zipfile srcResource")
+	genTask(Jar::class.java)
 	genTask(Mkdir::class.java)
 	genTask(Property::class.java, "name value location refid resource file url environment classpath classpathref prefix prefixValues relative basedir")
 	genTask(Tar::class.java)

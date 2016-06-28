@@ -185,8 +185,11 @@ fun genTypeNestedFun(task: Task, forType: String?, indent: String, imports: Hash
 		if (i < task.params.size - 1)
 			addCode += if ((i + 1) % 4 == 0) ",\n${indent}\t\t\t" else ", "
 	}
-	if (task.hasNested)
-		addCode += ", nested"
+	if (task.hasNested) {
+		if (!task.params.isEmpty())
+			addCode += ", "
+		addCode += "nested"
+	}
 	addCode += ")\n" +
 		"${indent}\t})\n"
 
@@ -210,7 +213,9 @@ private fun genParams(task: Task, initNull: Boolean, indent: String, imports: Ha
 	}
 
 	if (task.hasNested) {
-		params += ",\n${indent}nested: (K${task.type.simpleName}.() -> Unit)?"
+		if (!task.params.isEmpty())
+			params += ",\n"
+		params += "${indent}nested: (K${task.type.simpleName}.() -> Unit)?"
 		if (initNull)
 			params += " = null"
 	}
@@ -251,8 +256,14 @@ fun genNestedClass(task: Task, imports: HashSet<String>): String? {
 
 	task.nested.forEach {
 		val n = reflectTask(it.type)
-		val nestedInitCode = "apply {\n" +
-			"\t\t\t_init(${n.params.joinToString { it.name }}${if (n.hasNested) ", nested" else ""})\n" +
+		var nestedInitCode = "apply {\n" +
+			"\t\t\t_init(${n.params.joinToString { it.name }}"
+		if (n.hasNested) {
+			if (!n.params.isEmpty())
+				nestedInitCode += ", "
+			nestedInitCode += "nested"
+		}
+		nestedInitCode += ")\n" +
 			"\t\t}"
 
 		code += "\tfun ${it.name}(${genParams(n, true, "", imports).replace('\n', ' ')}) {\n"
@@ -281,16 +292,26 @@ fun genNestedClass(task: Task, imports: HashSet<String>): String? {
 
 fun genEnum(task: Task): String {
 	var code = ""
+	var enums = HashSet<Class<*>>()
 
-	task.params.forEach {
-		if (EnumeratedAttribute::class.java.isAssignableFrom(it.type)) {
-			if (code.isEmpty())
-				code += "\n"
-			code += "enum class ${it.type.simpleName}(val value: String) { "
-			val e = it.type.newInstance() as EnumeratedAttribute
-			code += e.values.joinToString { "${it.toUpperCase().replace('-', '_')}(\"$it\")" }
-			code += " }\n"
-		}
+	for (param in task.params) {
+		if (!EnumeratedAttribute::class.java.isAssignableFrom(param.type))
+			continue
+
+		if (!enums.add(param.type))
+			continue
+
+		val enclosingClass = param.type.enclosingClass
+		if (enclosingClass != task.type)
+			continue
+
+		if (code.isEmpty())
+			code += "\n"
+
+		code += "enum class ${param.type.simpleName}(val value: String) { "
+		val e = param.type.newInstance() as EnumeratedAttribute
+		code += e.values.joinToString { "${it.toUpperCase().replace('-', '_')}(\"$it\")" }
+		code += " }\n"
 	}
 
 	return code
@@ -330,6 +351,8 @@ private fun init(type: Class<*>, name: String, constructWithProject: Boolean, im
 		"java.io.File" -> "project.resolveFile($name)"
 		else -> {
 			if (EnumeratedAttribute::class.java.isAssignableFrom(type)) {
+				if (type.enclosingClass != null)
+					imports.add(type.enclosingClass.name)
 				val simpleType = type.name.substringAfterLast('.').replace('$', '.')
 				"$simpleType().apply { value = $name.value }"
 			} else {
