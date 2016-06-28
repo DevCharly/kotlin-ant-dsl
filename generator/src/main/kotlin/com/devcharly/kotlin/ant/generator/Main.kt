@@ -66,24 +66,27 @@ fun genTask(taskType: Class<*>, order: String? = null, exclude: String? = null) 
 	val task = reflectTask(taskType, order, exclude)
 	val code = genTaskFile(task)
 
-	writeCode("src/main/kotlin/com/devcharly/kotlin/ant/taskdefs/${task.taskName}.kt", code)
+	writeCode(taskType, "taskdefs", code)
 }
 
 fun genType(typeType: Class<*>, baseInterface: Class<*>? = null, order: String? = null, exclude: String? = null, folder: String = "types") {
 	val task = reflectTask(typeType, order, exclude)
 	val code = genTypeFile(task, baseInterface)
 
-	writeCode("src/main/kotlin/com/devcharly/kotlin/ant/$folder/${task.taskName}.kt", code)
+	writeCode(typeType, folder, code)
 }
 
 fun genTypeInit(typeType: Class<*>, order: String? = null, exclude: String? = null, folder: String = "types") {
 	val task = reflectTask(typeType, order, exclude)
 	val code = genTypeInitFile(task)
 
-	writeCode("src/main/kotlin/com/devcharly/kotlin/ant/$folder/${task.taskName}.kt", code)
+	writeCode(typeType, folder, code)
 }
 
-fun writeCode(filename: String, code: String) {
+fun writeCode(cls: Class<*>, folder: String, code: String) {
+	val name = cls.name.substringAfterLast('.').replace('$', '-').toLowerCase()
+	val filename = "src/main/kotlin/com/devcharly/kotlin/ant/$folder/$name.kt"
+
 	println("Generate $filename")
 	FileWriter(filename).use {
 		it.write(code.replace("\n", System.getProperty("line.separator")))
