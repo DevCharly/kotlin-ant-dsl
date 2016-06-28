@@ -1,6 +1,12 @@
 import com.devcharly.kotlin.ant.*
+import java.io.File
 
 fun main(args: Array<String>) {
+	// make basedirs used below
+	File("_files_").mkdirs()
+	File("_fileset_").mkdirs()
+	File("_zip_").mkdirs()
+
 	demoEcho()
 	demoProperty()
 	demoFiles()
