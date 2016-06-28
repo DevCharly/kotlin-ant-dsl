@@ -16,7 +16,6 @@
 
 package com.devcharly.kotlin.ant
 
-import org.apache.tools.ant.types.Resource
 import org.apache.tools.ant.types.ResourceCollection
 import org.apache.tools.ant.types.TarFileSet
 import org.apache.tools.ant.types.selectors.FileSelector
@@ -39,7 +38,6 @@ interface ITarFileSetNested : INestedComponent {
 		maxlevelsofsymlinks: Int? = null,
 		erroronmissingdir: Boolean? = null,
 		src: String? = null,
-		srcresource: String? = null,
 		erroronmissingarchive: Boolean? = null,
 		prefix: String? = null,
 		fullpath: String? = null,
@@ -57,9 +55,9 @@ interface ITarFileSetNested : INestedComponent {
 			_init(dir, file, includes, excludes,
 				includesfile, excludesfile, defaultexcludes, casesensitive,
 				followsymlinks, maxlevelsofsymlinks, erroronmissingdir, src,
-				srcresource, erroronmissingarchive, prefix, fullpath,
-				encoding, filemode, dirmode, username,
-				uid, group, gid, nested)
+				erroronmissingarchive, prefix, fullpath, encoding,
+				filemode, dirmode, username, uid,
+				group, gid, nested)
 		})
 	}
 
@@ -79,7 +77,6 @@ fun IFileSetNested.tarfileset(
 	maxlevelsofsymlinks: Int? = null,
 	erroronmissingdir: Boolean? = null,
 	src: String? = null,
-	srcresource: String? = null,
 	erroronmissingarchive: Boolean? = null,
 	prefix: String? = null,
 	fullpath: String? = null,
@@ -97,9 +94,9 @@ fun IFileSetNested.tarfileset(
 		_init(dir, file, includes, excludes,
 			includesfile, excludesfile, defaultexcludes, casesensitive,
 			followsymlinks, maxlevelsofsymlinks, erroronmissingdir, src,
-			srcresource, erroronmissingarchive, prefix, fullpath,
-			encoding, filemode, dirmode, username,
-			uid, group, gid, nested)
+			erroronmissingarchive, prefix, fullpath, encoding,
+			filemode, dirmode, username, uid,
+			group, gid, nested)
 	})
 }
 
@@ -116,7 +113,6 @@ fun IResourceCollectionNested.tarfileset(
 	maxlevelsofsymlinks: Int? = null,
 	erroronmissingdir: Boolean? = null,
 	src: String? = null,
-	srcresource: String? = null,
 	erroronmissingarchive: Boolean? = null,
 	prefix: String? = null,
 	fullpath: String? = null,
@@ -134,9 +130,9 @@ fun IResourceCollectionNested.tarfileset(
 		_init(dir, file, includes, excludes,
 			includesfile, excludesfile, defaultexcludes, casesensitive,
 			followsymlinks, maxlevelsofsymlinks, erroronmissingdir, src,
-			srcresource, erroronmissingarchive, prefix, fullpath,
-			encoding, filemode, dirmode, username,
-			uid, group, gid, nested)
+			erroronmissingarchive, prefix, fullpath, encoding,
+			filemode, dirmode, username, uid,
+			group, gid, nested)
 	})
 }
 
@@ -153,7 +149,6 @@ fun TarFileSet._init(
 	maxlevelsofsymlinks: Int?,
 	erroronmissingdir: Boolean?,
 	src: String?,
-	srcresource: String?,
 	erroronmissingarchive: Boolean?,
 	prefix: String?,
 	fullpath: String?,
@@ -190,8 +185,6 @@ fun TarFileSet._init(
 		setErrorOnMissingDir(erroronmissingdir)
 	if (src != null)
 		setSrc(project.resolveFile(src))
-	if (srcresource != null)
-		setSrcResource(Resource(srcresource))
 	if (erroronmissingarchive != null)
 		setErrorOnMissingArchive(erroronmissingarchive)
 	if (prefix != null)

@@ -16,7 +16,6 @@
 
 package com.devcharly.kotlin.ant
 
-import org.apache.tools.ant.types.Resource
 import org.apache.tools.ant.types.ResourceCollection
 import org.apache.tools.ant.types.ZipFileSet
 import org.apache.tools.ant.types.selectors.FileSelector
@@ -39,7 +38,6 @@ interface IZipFileSetNested : INestedComponent {
 		maxlevelsofsymlinks: Int? = null,
 		erroronmissingdir: Boolean? = null,
 		src: String? = null,
-		srcresource: String? = null,
 		erroronmissingarchive: Boolean? = null,
 		prefix: String? = null,
 		fullpath: String? = null,
@@ -53,8 +51,8 @@ interface IZipFileSetNested : INestedComponent {
 			_init(dir, file, includes, excludes,
 				includesfile, excludesfile, defaultexcludes, casesensitive,
 				followsymlinks, maxlevelsofsymlinks, erroronmissingdir, src,
-				srcresource, erroronmissingarchive, prefix, fullpath,
-				encoding, filemode, dirmode, nested)
+				erroronmissingarchive, prefix, fullpath, encoding,
+				filemode, dirmode, nested)
 		})
 	}
 
@@ -74,7 +72,6 @@ fun IFileSetNested.zipfileset(
 	maxlevelsofsymlinks: Int? = null,
 	erroronmissingdir: Boolean? = null,
 	src: String? = null,
-	srcresource: String? = null,
 	erroronmissingarchive: Boolean? = null,
 	prefix: String? = null,
 	fullpath: String? = null,
@@ -88,8 +85,8 @@ fun IFileSetNested.zipfileset(
 		_init(dir, file, includes, excludes,
 			includesfile, excludesfile, defaultexcludes, casesensitive,
 			followsymlinks, maxlevelsofsymlinks, erroronmissingdir, src,
-			srcresource, erroronmissingarchive, prefix, fullpath,
-			encoding, filemode, dirmode, nested)
+			erroronmissingarchive, prefix, fullpath, encoding,
+			filemode, dirmode, nested)
 	})
 }
 
@@ -106,7 +103,6 @@ fun IResourceCollectionNested.zipfileset(
 	maxlevelsofsymlinks: Int? = null,
 	erroronmissingdir: Boolean? = null,
 	src: String? = null,
-	srcresource: String? = null,
 	erroronmissingarchive: Boolean? = null,
 	prefix: String? = null,
 	fullpath: String? = null,
@@ -120,8 +116,8 @@ fun IResourceCollectionNested.zipfileset(
 		_init(dir, file, includes, excludes,
 			includesfile, excludesfile, defaultexcludes, casesensitive,
 			followsymlinks, maxlevelsofsymlinks, erroronmissingdir, src,
-			srcresource, erroronmissingarchive, prefix, fullpath,
-			encoding, filemode, dirmode, nested)
+			erroronmissingarchive, prefix, fullpath, encoding,
+			filemode, dirmode, nested)
 	})
 }
 
@@ -138,7 +134,6 @@ fun ZipFileSet._init(
 	maxlevelsofsymlinks: Int?,
 	erroronmissingdir: Boolean?,
 	src: String?,
-	srcresource: String?,
 	erroronmissingarchive: Boolean?,
 	prefix: String?,
 	fullpath: String?,
@@ -171,8 +166,6 @@ fun ZipFileSet._init(
 		setErrorOnMissingDir(erroronmissingdir)
 	if (src != null)
 		setSrc(project.resolveFile(src))
-	if (srcresource != null)
-		setSrcResource(Resource(srcresource))
 	if (erroronmissingarchive != null)
 		setErrorOnMissingArchive(erroronmissingarchive)
 	if (prefix != null)

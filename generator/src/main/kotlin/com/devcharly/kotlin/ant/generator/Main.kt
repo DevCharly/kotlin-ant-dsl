@@ -33,8 +33,8 @@ fun main(args: Array<String>) {
 	genType(PatternSet::class.java)
 	genTypeInit(PatternSet.NameEntry::class.java)
 	genType(ResourceCollection::class.java)
-	genType(TarFileSet::class.java, baseInterface = ResourceCollection::class.java)
-	genType(ZipFileSet::class.java, baseInterface = ResourceCollection::class.java)
+	genType(TarFileSet::class.java, baseInterface = ResourceCollection::class.java, exclude = "srcresource")
+	genType(ZipFileSet::class.java, baseInterface = ResourceCollection::class.java, exclude = "srcresource")
 
 	// Selectors
 	genType(FileSelector::class.java, folder = "selectors")
