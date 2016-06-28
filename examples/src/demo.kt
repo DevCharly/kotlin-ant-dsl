@@ -1,22 +1,24 @@
-import com.beust.kobalt.*
-import com.devcharly.kobalt.plugin.ant.*
 import com.devcharly.kotlin.ant.*
 
-val plugins = plugins(
-	file("../kobaltBuild/classes")
-)
+fun main(args: Array<String>) {
+	demoEcho()
+	demoProperty()
+	demoFiles()
+	demoFileset()
+	demoZip()
+	demoTar()
+	demoJar()
+}
 
-val project = project {
-	name = "project"
-
-	antTask("echo") {
+fun demoEcho() {
+	Ant {
 		echo("Hello World")
 		echo {
 			+"aa"
 			+"bb"
 			+"cc"
 		}
-		echo(level = LogLevel.ERR) {
+		echo(level = EchoLevel.ERROR) {
 			+"""
 				111
 				22
@@ -24,21 +26,27 @@ val project = project {
 			"""
 		}
 	}
+}
 
-	antTask("property") {
+fun demoProperty() {
+	Ant {
 		property("place", "World")
 		echo("Hello ${p("place")}")
 	}
+}
 
-	antTask("files", basedir = "_files_") {
+fun demoFiles() {
+	Ant(basedir = "_files_") {
 		touch("file.txt")
 		echo("content2\n", file = "file2.txt", append = true)
 		copy("file.txt", todir = "dir", overwrite = true)
 		copy("file2.txt", tofile = "dir/file2.txt")
 		delete("file.txt")
 	}
+}
 
-	antTask("fileset", basedir = "_fileset_") {
+fun demoFileset() {
+	Ant(basedir = "_fileset_", logLevel = LogLevel.VERBOSE) {
 		mkdir("dir1")
 		mkdir("dir2")
 		touch("dir1/file1.java")
@@ -48,13 +56,15 @@ val project = project {
 		copy(todir = "dir") {
 			fileset("dir1")
 			fileset("dir2") {
-				include(name="**/*.java")
-				exclude(name="**/*Test*")
+				include(name = "**/*.java")
+				exclude(name = "**/*Test*")
 			}
 		}
 	}
+}
 
-	antTask("zip", basedir = "_zip_") {
+fun demoZip() {
+	Ant(basedir = "_zip_") {
 		echo("content1", file = "dir/file1.txt")
 		echo("content2", file = "dir/file2.txt")
 
@@ -67,8 +77,10 @@ val project = project {
 			zipfileset(dir = "dir", prefix = "pre-dir")
 		}
 	}
+}
 
-	antTask("tar", basedir = "_zip_", logLevel = LogLevel.VERBOSE) {
+fun demoTar() {
+	Ant(basedir = "_zip_", logLevel = LogLevel.VERBOSE) {
 		tar("out1.tar") {
 			tarfileset(dir = "dir", username = "user1", uid = 123, filemode = "600")
 		}
@@ -79,17 +91,18 @@ val project = project {
 		bunzip2(src = "out1.tar.bz2", dest = "out1b.tar")
 		gunzip(src = "out1.tar.gz", dest = "out1g.tar")
 	}
+}
 
-	antTask("jar", basedir = "_zip_") {
-		jar("out1.jar", basedir = "dir") {
+fun demoJar() {
+	Ant(basedir = "_zip_") {
+		jar(destfile = "out1.jar", basedir = "dir") {
 			manifest {
 				attribute("Main-Class", "com.myapp.Main")
 				attribute("Class-Path", "common.jar")
 			}
 
-			service("javax.script.ScriptEngineFactory",
-					"org.acme.PinkyLanguage",
-					"org.acme.BrainLanguage")
+			service("javax.script.ScriptEngineFactory", "org.acme.PinkyLanguage")
+			service("javax.script.ScriptEngineFactory", "org.acme.BrainLanguage")
 		}
 	}
 }
