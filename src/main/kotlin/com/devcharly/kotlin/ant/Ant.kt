@@ -24,9 +24,17 @@ import org.apache.tools.ant.Target
 import org.apache.tools.ant.Task
 import java.io.File
 
-open class Ant(private val tasks: Ant.() -> Unit) {
+open class Ant(basedir: String = "", logLevel: LogLevel = LogLevel.INFO,
+			   execute: Boolean = true,
+			   private val tasks: Ant.() -> Unit)
+{
 	lateinit var project: Project
 	lateinit var target: Target
+
+	init {
+		if (execute)
+			execute(basedir, logLevel)
+	}
 
 	fun execute(basedir: String = "", logLevel: LogLevel = LogLevel.INFO) {
 		// create Ant logger

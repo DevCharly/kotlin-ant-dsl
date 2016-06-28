@@ -15,7 +15,7 @@ Ant {
             include(name = "**/*.txt")
         }
     }
-}.execute()
+}
 ```
 
 
@@ -35,7 +35,7 @@ Execute custom Ant Task:
 ```kotlin
 Ant {
     myanttask("value1", "value2")
-}.execute()
+}
 ```
 
 
