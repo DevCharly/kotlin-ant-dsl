@@ -32,11 +32,12 @@ import java.util.*
  * to the order used in Ant task parameters documentation.
  */
 fun aClass(cls: Class<*>): AClass {
+	val aClass = AClass(cls)
+
 	// use reflection to get methods that have deprecated annotation
-	val deprecatedMethods = ArrayList<Method>()
 	for (method in cls.methods) {
 		if (method.getAnnotation(java.lang.Deprecated::class.java) != null) {
-			deprecatedMethods.add(method)
+			aClass.deprecatedMethods.add(method)
 			continue
 		}
 	}
@@ -55,14 +56,13 @@ fun aClass(cls: Class<*>): AClass {
 
 	cls2 = cls
 	while (cls2 != null && cls2 != java.lang.Object::class.java) {
-		val visitor = AClassVisitor(cls)
+		val visitor = AClassVisitor(cls, aClass)
 		val resName = cls2.name.replace('.', '/') + ".class"
 		cls.classLoader.getResourceAsStream(resName).use {
 			ClassReader(it).accept(visitor, ClassReader.SKIP_CODE + ClassReader.SKIP_DEBUG)
 		}
 
 		orderedMethods.addAll(addAtIndex, visitor.orderedMethods)
-		deprecatedMethods.addAll(visitor.deprecatedMethods)
 
 		if (cls2 == lastNonAbstractClass)
 			insertBefore = false
@@ -72,9 +72,11 @@ fun aClass(cls: Class<*>): AClass {
 		cls2 = cls2.superclass
 	}
 
-	val aClass = AClass(cls)
-	aClass.orderedMethods.addAll(orderedMethods)
-	aClass.deprecatedMethods.addAll(deprecatedMethods)
+	orderedMethods.forEachIndexed { i, method ->
+		if (!aClass.orderedMethods.contains(method))
+			aClass.orderedMethods.put(method, i)
+	}
+
 	return aClass
 }
 
@@ -82,17 +84,16 @@ fun aClass(cls: Class<*>): AClass {
 
 class AClass(var cls: Class<*>)
 {
-	val orderedMethods = ArrayList<Method>()
-	val deprecatedMethods = ArrayList<Method>()
+	val orderedMethods = HashMap<Method, Int>()
+	val deprecatedMethods = HashSet<Method>()
 }
 
 //---- class AClassVisitor ----------------------------------------------------
 
-private class AClassVisitor(val cls: Class<*>)
+private class AClassVisitor(val cls: Class<*>, val aClass: AClass)
 	: ClassVisitor(ASM5)
 {
 	val orderedMethods = ArrayList<Method>()
-	val deprecatedMethods = ArrayList<Method>()
 
 	override fun visitMethod(access: Int, name: String, desc: String?,
 	                         signature: String?, exceptions: Array<out String>?): MethodVisitor?
@@ -120,7 +121,7 @@ private class AClassVisitor(val cls: Class<*>)
 		if (access and ACC_DEPRECATED == 0)
 			orderedMethods.add(method)
 		else
-			deprecatedMethods.add(method)
+			aClass.deprecatedMethods.add(method)
 
 		return null
 	}

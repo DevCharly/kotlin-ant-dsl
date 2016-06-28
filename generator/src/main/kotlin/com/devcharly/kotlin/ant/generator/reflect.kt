@@ -105,7 +105,7 @@ fun reflectTask(taskType: Class<*>, order: String? = null, exclude: String? = nu
 	}
 
 	// same order as in source code
-	params.sortBy { aClass.orderedMethods.indexOf(it.method) }
+	params.sortBy { aClass.orderedMethods[it.method] }
 
 	// order attributes
 	if (order != null) {
@@ -134,7 +134,7 @@ fun reflectTask(taskType: Class<*>, order: String? = null, exclude: String? = nu
 	}
 
 	// same order as in source code
-	nested.sortBy { aClass.orderedMethods.indexOf(it.method) }
+	nested.sortBy { aClass.orderedMethods[it.method] }
 
 	return Task(taskType, projectAtConstructor, params.toTypedArray(), nested.toTypedArray(), addTypeMethods, addTextMethod)
 }
