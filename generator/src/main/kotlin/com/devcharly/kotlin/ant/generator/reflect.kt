@@ -23,7 +23,7 @@ import org.apache.tools.ant.types.EnumeratedAttribute
 import java.lang.reflect.Method
 import java.util.*
 
-fun reflectTask(taskType: Class<*>, order: String? = null, exclude: String? = null): Task {
+fun reflectTask(taskType: Class<*>, taskName: String? = null, order: String? = null, exclude: String? = null): Task {
 	val aClass = aClass(taskType)
 
 	// determine whether have to pass project to constructor
@@ -136,19 +136,23 @@ fun reflectTask(taskType: Class<*>, order: String? = null, exclude: String? = nu
 	// same order as in source code
 	nested.sortBy { aClass.orderedMethods[it.method] }
 
-	return Task(taskType, projectAtConstructor, params.toTypedArray(), nested.toTypedArray(), addTypeMethods, addTextMethod)
+	return Task(taskType,
+		taskName ?: taskType.simpleName.toLowerCase(),
+		taskName?.capitalize() ?: taskType.simpleName,
+		projectAtConstructor, params.toTypedArray(), nested.toTypedArray(), addTypeMethods, addTextMethod)
 }
 
 //---- class Task -------------------------------------------------------------
 
 class Task(val type: Class<*>,
+		   val taskName: String,
+		   val nestedClassName: String,
 		   val projectAtConstructor: Boolean,
            val params: Array<TaskParam>,
 		   val nested: Array<TaskNested>,
 		   val addTypeMethods: Array<Method>,
            val addTextMethod: Method?)
 {
-	val taskName = type.simpleName!!.toLowerCase()
 	val hasNested = !nested.isEmpty() || !addTypeMethods.isEmpty() || addTextMethod != null
 }
 

@@ -58,6 +58,10 @@ Ant {
   * [property](http://ant.apache.org/manual/Tasks/property.html)
   * [tar](http://ant.apache.org/manual/Tasks/tar.html)
   * [touch](http://ant.apache.org/manual/Tasks/touch.html)
+  * [unjar](http://ant.apache.org/manual/Tasks/unzip.html)
+  * [untar](http://ant.apache.org/manual/Tasks/unzip.html)
+  * [unwar](http://ant.apache.org/manual/Tasks/unzip.html)
+  * [unzip](http://ant.apache.org/manual/Tasks/unzip.html)
   * [zip](http://ant.apache.org/manual/Tasks/zip.html)
 
 ### Types

@@ -63,32 +63,36 @@ fun main(args: Array<String>) {
 	genTask(Property::class.java, order = "name value location resource file url environment classpath classpathref prefix prefixvalues relative basedir")
 	genTask(Tar::class.java)
 	genTask(Touch::class.java)
+	genTask(Expand::class.java, taskName = "unjar", order = "src dest overwrite encoding")
+	genTask(Untar::class.java, order = "src dest overwrite compression encoding")
+	genTask(Expand::class.java, taskName = "unwar", order = "src dest overwrite encoding")
+	genTask(Expand::class.java, taskName = "unzip", order = "src dest overwrite encoding")
 	genTask(Zip::class.java)
 }
 
-fun genTask(taskType: Class<*>, order: String? = null, exclude: String? = null) {
-	val task = reflectTask(taskType, order, exclude)
+fun genTask(taskType: Class<*>, taskName: String? = null, order: String? = null, exclude: String? = null) {
+	val task = reflectTask(taskType, taskName, order, exclude)
 	val code = genTaskFile(task)
 
-	writeCode(taskType, "taskdefs", code)
+	writeCode(taskType, "taskdefs", code, taskName)
 }
 
 fun genType(typeType: Class<*>, baseInterface: Class<*>? = null, order: String? = null, exclude: String? = null, folder: String = "types") {
-	val task = reflectTask(typeType, order, exclude)
+	val task = reflectTask(typeType, null, order, exclude)
 	val code = genTypeFile(task, baseInterface)
 
 	writeCode(typeType, folder, code)
 }
 
 fun genTypeInit(typeType: Class<*>, order: String? = null, exclude: String? = null, folder: String = "types") {
-	val task = reflectTask(typeType, order, exclude)
+	val task = reflectTask(typeType, null, order, exclude)
 	val code = genTypeInitFile(task)
 
 	writeCode(typeType, folder, code)
 }
 
-fun writeCode(cls: Class<*>, folder: String, code: String) {
-	val name = cls.name.substringAfterLast('.').replace('$', '-').toLowerCase()
+fun writeCode(cls: Class<*>, folder: String, code: String, taskName: String? = null) {
+	val name = taskName ?: cls.name.substringAfterLast('.').replace('$', '-').toLowerCase()
 	val filename = "src/main/kotlin/com/devcharly/kotlin/ant/$folder/$name.kt"
 
 	println("Generate $filename")

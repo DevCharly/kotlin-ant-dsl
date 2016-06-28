@@ -215,7 +215,7 @@ private fun genParams(task: Task, initNull: Boolean, indent: String, imports: Ha
 	if (task.hasNested) {
 		if (!task.params.isEmpty())
 			params += ",\n"
-		params += "${indent}nested: (K${task.type.simpleName}.() -> Unit)?"
+		params += "${indent}nested: (K${task.nestedClassName}.() -> Unit)?"
 		if (initNull)
 			params += " = null"
 	}
@@ -236,7 +236,7 @@ private fun genInit(task: Task, varName: String, indent: String, imports: HashSe
 	if (task.hasNested) {
 		val varName2 = if (varName == "") "this" else varName
 		init += "${indent}if (nested != null)\n"
-		init += "${indent}\tnested(K${task.type.simpleName}($varName2))\n"
+		init += "${indent}\tnested(K${task.nestedClassName}($varName2))\n"
 	}
 
 	return init
@@ -247,7 +247,7 @@ fun genNestedClass(task: Task, imports: HashSet<String>): String? {
 		return null
 
 	val consOvr = if (task.addTypeMethods.isEmpty()) "" else "override "
-	var code = "class K${task.type.simpleName}(${consOvr}val component: ${task.type.simpleName})"
+	var code = "class K${task.nestedClassName}(${consOvr}val component: ${task.type.simpleName})"
 	task.addTypeMethods.forEachIndexed { i, addTypeMethod ->
 		code += if (i == 0) " : " else ", "
 		code += "I${addTypeMethod.parameterTypes[0].simpleName}Nested"
