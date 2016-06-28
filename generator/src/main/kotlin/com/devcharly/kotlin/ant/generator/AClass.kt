@@ -53,22 +53,38 @@ fun aClass(cls: Class<*>): AClass {
 	}
 
 	// use ASM to order methods and remove deprecated methods
-	val visitor = AClassVisitor(methods)
+	val orderedMethods = ArrayList<Method>()
+	var addAtIndex = 0
+	var insertBefore = true
+	var lastNonAbstractClass: Class<*>? = cls
 	var cls2: Class<*>? = cls
 	while (cls2 != null && cls2 != java.lang.Object::class.java) {
+		if (!Modifier.isAbstract(cls2.modifiers))
+			lastNonAbstractClass = cls2
+		cls2 = cls2.superclass
+	}
+
+	cls2 = cls
+	while (cls2 != null && cls2 != java.lang.Object::class.java) {
+		val visitor = AClassVisitor(methods)
 		val resName = cls2.name.replace('.', '/') + ".class"
 		cls.classLoader.getResourceAsStream(resName).use {
 			ClassReader(it).accept(visitor, ClassReader.SKIP_CODE + ClassReader.SKIP_DEBUG)
 		}
 
+		orderedMethods.addAll(addAtIndex, visitor.orderedMethods)
+		deprecatedMethods.addAll(visitor.deprecatedMethods)
+
+		if (cls2 == lastNonAbstractClass)
+			insertBefore = false
+		if (!insertBefore)
+			addAtIndex += visitor.orderedMethods.size
+
 		cls2 = cls2.superclass
 	}
-	if (visitor.methods.size > 0)
-		throw IllegalStateException()
 
 	val aClass = AClass(cls)
-	aClass.orderedMethods.addAll(visitor.orderedMethods)
-	aClass.deprecatedMethods.addAll(visitor.deprecatedMethods)
+	aClass.orderedMethods.addAll(orderedMethods)
 	aClass.deprecatedMethods.addAll(deprecatedMethods)
 	return aClass
 }

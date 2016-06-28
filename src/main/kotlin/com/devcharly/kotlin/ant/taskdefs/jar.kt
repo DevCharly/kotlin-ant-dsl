@@ -28,16 +28,6 @@ DO NOT EDIT - this file was generated
 ******************************************************************************/
 
 fun Ant.jar(
-	whenempty: WhenEmpty? = null,
-	whenmanifestonly: WhenEmpty? = null,
-	strict: StrictMode? = null,
-	index: Boolean? = null,
-	indexmetainf: Boolean? = null,
-	manifestencoding: String? = null,
-	manifest: String? = null,
-	filesetmanifest: FilesetManifestConfig? = null,
-	mergeclasspathattributes: Boolean? = null,
-	flattenattributes: Boolean? = null,
 	destfile: String? = null,
 	basedir: String? = null,
 	compress: Boolean? = null,
@@ -61,29 +51,19 @@ fun Ant.jar(
 	excludesfile: String? = null,
 	casesensitive: Boolean? = null,
 	followsymlinks: Boolean? = null,
+	whenempty: WhenEmpty? = null,
+	whenmanifestonly: WhenEmpty? = null,
+	strict: StrictMode? = null,
+	index: Boolean? = null,
+	indexmetainf: Boolean? = null,
+	manifestencoding: String? = null,
+	manifest: String? = null,
+	filesetmanifest: FilesetManifestConfig? = null,
+	mergeclasspathattributes: Boolean? = null,
+	flattenattributes: Boolean? = null,
 	nested: (KJar.() -> Unit)? = null)
 {
 	Jar().execute("jar") { task ->
-		if (whenempty != null)
-			task.setWhenempty(Zip.WhenEmpty().apply { value = whenempty.value })
-		if (whenmanifestonly != null)
-			task.setWhenmanifestonly(Zip.WhenEmpty().apply { value = whenmanifestonly.value })
-		if (strict != null)
-			task.setStrict(Jar.StrictMode().apply { value = strict.value })
-		if (index != null)
-			task.setIndex(index)
-		if (indexmetainf != null)
-			task.setIndexMetaInf(indexmetainf)
-		if (manifestencoding != null)
-			task.setManifestEncoding(manifestencoding)
-		if (manifest != null)
-			task.setManifest(project.resolveFile(manifest))
-		if (filesetmanifest != null)
-			task.setFilesetmanifest(Jar.FilesetManifestConfig().apply { value = filesetmanifest.value })
-		if (mergeclasspathattributes != null)
-			task.setMergeClassPathAttributes(mergeclasspathattributes)
-		if (flattenattributes != null)
-			task.setFlattenAttributes(flattenattributes)
 		if (destfile != null)
 			task.setDestFile(project.resolveFile(destfile))
 		if (basedir != null)
@@ -130,22 +110,32 @@ fun Ant.jar(
 			task.setCaseSensitive(casesensitive)
 		if (followsymlinks != null)
 			task.setFollowSymlinks(followsymlinks)
+		if (whenempty != null)
+			task.setWhenempty(Zip.WhenEmpty().apply { value = whenempty.value })
+		if (whenmanifestonly != null)
+			task.setWhenmanifestonly(Zip.WhenEmpty().apply { value = whenmanifestonly.value })
+		if (strict != null)
+			task.setStrict(Jar.StrictMode().apply { value = strict.value })
+		if (index != null)
+			task.setIndex(index)
+		if (indexmetainf != null)
+			task.setIndexMetaInf(indexmetainf)
+		if (manifestencoding != null)
+			task.setManifestEncoding(manifestencoding)
+		if (manifest != null)
+			task.setManifest(project.resolveFile(manifest))
+		if (filesetmanifest != null)
+			task.setFilesetmanifest(Jar.FilesetManifestConfig().apply { value = filesetmanifest.value })
+		if (mergeclasspathattributes != null)
+			task.setMergeClassPathAttributes(mergeclasspathattributes)
+		if (flattenattributes != null)
+			task.setFlattenAttributes(flattenattributes)
 		if (nested != null)
 			nested(KJar(task))
 	}
 }
 
 class KJar(override val component: Jar) : IFileSelectorNested, IResourceCollectionNested {
-	fun manifest(nested: (KManifest.() -> Unit)? = null) {
-		component.addConfiguredManifest(Manifest().apply {
-			_init(nested)
-		})
-	}
-	fun service(provider: String? = null, type: String? = null) {
-		component.addConfiguredService(Service().apply {
-			_init(provider, type)
-		})
-	}
 	fun include(name: String? = null, If: String? = null, unless: String? = null) {
 		component.createInclude().apply {
 			_init(name, If, unless)
@@ -160,6 +150,16 @@ class KJar(override val component: Jar) : IFileSelectorNested, IResourceCollecti
 		component.createPatternSet().apply {
 			_init(includes, excludes, includesfile, excludesfile, nested)
 		}
+	}
+	fun manifest(nested: (KManifest.() -> Unit)? = null) {
+		component.addConfiguredManifest(Manifest().apply {
+			_init(nested)
+		})
+	}
+	fun service(provider: String? = null, type: String? = null) {
+		component.addConfiguredService(Service().apply {
+			_init(provider, type)
+		})
 	}
 	override fun _addFileSelector(value: FileSelector) = component.add(value)
 	override fun _addResourceCollection(value: ResourceCollection) = component.add(value)

@@ -27,19 +27,6 @@ DO NOT EDIT - this file was generated
 
 interface ITarFileSetNested : INestedComponent {
 	fun tarfileset(
-		username: String? = null,
-		uid: Int? = null,
-		group: String? = null,
-		gid: Int? = null,
-		dir: String? = null,
-		src: String? = null,
-		srcresource: String? = null,
-		erroronmissingarchive: Boolean? = null,
-		prefix: String? = null,
-		fullpath: String? = null,
-		encoding: String? = null,
-		filemode: String? = null,
-		dirmode: String? = null,
 		file: String? = null,
 		includes: String? = null,
 		excludes: String? = null,
@@ -50,16 +37,29 @@ interface ITarFileSetNested : INestedComponent {
 		followsymlinks: Boolean? = null,
 		maxlevelsofsymlinks: Int? = null,
 		erroronmissingdir: Boolean? = null,
+		dir: String? = null,
+		src: String? = null,
+		srcresource: String? = null,
+		erroronmissingarchive: Boolean? = null,
+		prefix: String? = null,
+		fullpath: String? = null,
+		encoding: String? = null,
+		filemode: String? = null,
+		dirmode: String? = null,
+		username: String? = null,
+		uid: Int? = null,
+		group: String? = null,
+		gid: Int? = null,
 		nested: (KTarFileSet.() -> Unit)? = null)
 	{
 		_addTarFileSet(TarFileSet().apply {
 			component.project.setProjectReference(this);
-			_init(username, uid, group, gid,
-				dir, src, srcresource, erroronmissingarchive,
-				prefix, fullpath, encoding, filemode,
-				dirmode, file, includes, excludes,
-				includesfile, excludesfile, defaultexcludes, casesensitive,
-				followsymlinks, maxlevelsofsymlinks, erroronmissingdir, nested)
+			_init(file, includes, excludes, includesfile,
+				excludesfile, defaultexcludes, casesensitive, followsymlinks,
+				maxlevelsofsymlinks, erroronmissingdir, dir, src,
+				srcresource, erroronmissingarchive, prefix, fullpath,
+				encoding, filemode, dirmode, username,
+				uid, group, gid, nested)
 		})
 	}
 
@@ -67,19 +67,6 @@ interface ITarFileSetNested : INestedComponent {
 }
 
 fun IFileSetNested.tarfileset(
-	username: String? = null,
-	uid: Int? = null,
-	group: String? = null,
-	gid: Int? = null,
-	dir: String? = null,
-	src: String? = null,
-	srcresource: String? = null,
-	erroronmissingarchive: Boolean? = null,
-	prefix: String? = null,
-	fullpath: String? = null,
-	encoding: String? = null,
-	filemode: String? = null,
-	dirmode: String? = null,
 	file: String? = null,
 	includes: String? = null,
 	excludes: String? = null,
@@ -90,33 +77,33 @@ fun IFileSetNested.tarfileset(
 	followsymlinks: Boolean? = null,
 	maxlevelsofsymlinks: Int? = null,
 	erroronmissingdir: Boolean? = null,
+	dir: String? = null,
+	src: String? = null,
+	srcresource: String? = null,
+	erroronmissingarchive: Boolean? = null,
+	prefix: String? = null,
+	fullpath: String? = null,
+	encoding: String? = null,
+	filemode: String? = null,
+	dirmode: String? = null,
+	username: String? = null,
+	uid: Int? = null,
+	group: String? = null,
+	gid: Int? = null,
 	nested: (KTarFileSet.() -> Unit)? = null)
 {
 	_addFileSet(TarFileSet().apply {
 		component.project.setProjectReference(this);
-		_init(username, uid, group, gid,
-			dir, src, srcresource, erroronmissingarchive,
-			prefix, fullpath, encoding, filemode,
-			dirmode, file, includes, excludes,
-			includesfile, excludesfile, defaultexcludes, casesensitive,
-			followsymlinks, maxlevelsofsymlinks, erroronmissingdir, nested)
+		_init(file, includes, excludes, includesfile,
+			excludesfile, defaultexcludes, casesensitive, followsymlinks,
+			maxlevelsofsymlinks, erroronmissingdir, dir, src,
+			srcresource, erroronmissingarchive, prefix, fullpath,
+			encoding, filemode, dirmode, username,
+			uid, group, gid, nested)
 	})
 }
 
 fun IResourceCollectionNested.tarfileset(
-	username: String? = null,
-	uid: Int? = null,
-	group: String? = null,
-	gid: Int? = null,
-	dir: String? = null,
-	src: String? = null,
-	srcresource: String? = null,
-	erroronmissingarchive: Boolean? = null,
-	prefix: String? = null,
-	fullpath: String? = null,
-	encoding: String? = null,
-	filemode: String? = null,
-	dirmode: String? = null,
 	file: String? = null,
 	includes: String? = null,
 	excludes: String? = null,
@@ -127,33 +114,33 @@ fun IResourceCollectionNested.tarfileset(
 	followsymlinks: Boolean? = null,
 	maxlevelsofsymlinks: Int? = null,
 	erroronmissingdir: Boolean? = null,
+	dir: String? = null,
+	src: String? = null,
+	srcresource: String? = null,
+	erroronmissingarchive: Boolean? = null,
+	prefix: String? = null,
+	fullpath: String? = null,
+	encoding: String? = null,
+	filemode: String? = null,
+	dirmode: String? = null,
+	username: String? = null,
+	uid: Int? = null,
+	group: String? = null,
+	gid: Int? = null,
 	nested: (KTarFileSet.() -> Unit)? = null)
 {
 	_addResourceCollection(TarFileSet().apply {
 		component.project.setProjectReference(this);
-		_init(username, uid, group, gid,
-			dir, src, srcresource, erroronmissingarchive,
-			prefix, fullpath, encoding, filemode,
-			dirmode, file, includes, excludes,
-			includesfile, excludesfile, defaultexcludes, casesensitive,
-			followsymlinks, maxlevelsofsymlinks, erroronmissingdir, nested)
+		_init(file, includes, excludes, includesfile,
+			excludesfile, defaultexcludes, casesensitive, followsymlinks,
+			maxlevelsofsymlinks, erroronmissingdir, dir, src,
+			srcresource, erroronmissingarchive, prefix, fullpath,
+			encoding, filemode, dirmode, username,
+			uid, group, gid, nested)
 	})
 }
 
 fun TarFileSet._init(
-	username: String?,
-	uid: Int?,
-	group: String?,
-	gid: Int?,
-	dir: String?,
-	src: String?,
-	srcresource: String?,
-	erroronmissingarchive: Boolean?,
-	prefix: String?,
-	fullpath: String?,
-	encoding: String?,
-	filemode: String?,
-	dirmode: String?,
 	file: String?,
 	includes: String?,
 	excludes: String?,
@@ -164,34 +151,21 @@ fun TarFileSet._init(
 	followsymlinks: Boolean?,
 	maxlevelsofsymlinks: Int?,
 	erroronmissingdir: Boolean?,
+	dir: String?,
+	src: String?,
+	srcresource: String?,
+	erroronmissingarchive: Boolean?,
+	prefix: String?,
+	fullpath: String?,
+	encoding: String?,
+	filemode: String?,
+	dirmode: String?,
+	username: String?,
+	uid: Int?,
+	group: String?,
+	gid: Int?,
 	nested: (KTarFileSet.() -> Unit)?)
 {
-	if (username != null)
-		setUserName(username)
-	if (uid != null)
-		setUid(uid)
-	if (group != null)
-		setGroup(group)
-	if (gid != null)
-		setGid(gid)
-	if (dir != null)
-		setDir(project.resolveFile(dir))
-	if (src != null)
-		setSrc(project.resolveFile(src))
-	if (srcresource != null)
-		setSrcResource(Resource(srcresource))
-	if (erroronmissingarchive != null)
-		setErrorOnMissingArchive(erroronmissingarchive)
-	if (prefix != null)
-		setPrefix(prefix)
-	if (fullpath != null)
-		setFullpath(fullpath)
-	if (encoding != null)
-		setEncoding(encoding)
-	if (filemode != null)
-		setFileMode(filemode)
-	if (dirmode != null)
-		setDirMode(dirmode)
 	if (file != null)
 		setFile(project.resolveFile(file))
 	if (includes != null)
@@ -212,6 +186,32 @@ fun TarFileSet._init(
 		setMaxLevelsOfSymlinks(maxlevelsofsymlinks)
 	if (erroronmissingdir != null)
 		setErrorOnMissingDir(erroronmissingdir)
+	if (dir != null)
+		setDir(project.resolveFile(dir))
+	if (src != null)
+		setSrc(project.resolveFile(src))
+	if (srcresource != null)
+		setSrcResource(Resource(srcresource))
+	if (erroronmissingarchive != null)
+		setErrorOnMissingArchive(erroronmissingarchive)
+	if (prefix != null)
+		setPrefix(prefix)
+	if (fullpath != null)
+		setFullpath(fullpath)
+	if (encoding != null)
+		setEncoding(encoding)
+	if (filemode != null)
+		setFileMode(filemode)
+	if (dirmode != null)
+		setDirMode(dirmode)
+	if (username != null)
+		setUserName(username)
+	if (uid != null)
+		setUid(uid)
+	if (group != null)
+		setGroup(group)
+	if (gid != null)
+		setGid(gid)
 	if (nested != null)
 		nested(KTarFileSet(this))
 }

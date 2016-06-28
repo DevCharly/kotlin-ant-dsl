@@ -27,15 +27,6 @@ DO NOT EDIT - this file was generated
 
 interface IZipFileSetNested : INestedComponent {
 	fun zipfileset(
-		dir: String? = null,
-		src: String? = null,
-		srcresource: String? = null,
-		erroronmissingarchive: Boolean? = null,
-		prefix: String? = null,
-		fullpath: String? = null,
-		encoding: String? = null,
-		filemode: String? = null,
-		dirmode: String? = null,
 		file: String? = null,
 		includes: String? = null,
 		excludes: String? = null,
@@ -46,15 +37,24 @@ interface IZipFileSetNested : INestedComponent {
 		followsymlinks: Boolean? = null,
 		maxlevelsofsymlinks: Int? = null,
 		erroronmissingdir: Boolean? = null,
+		dir: String? = null,
+		src: String? = null,
+		srcresource: String? = null,
+		erroronmissingarchive: Boolean? = null,
+		prefix: String? = null,
+		fullpath: String? = null,
+		encoding: String? = null,
+		filemode: String? = null,
+		dirmode: String? = null,
 		nested: (KZipFileSet.() -> Unit)? = null)
 	{
 		_addZipFileSet(ZipFileSet().apply {
 			component.project.setProjectReference(this);
-			_init(dir, src, srcresource, erroronmissingarchive,
-				prefix, fullpath, encoding, filemode,
-				dirmode, file, includes, excludes,
-				includesfile, excludesfile, defaultexcludes, casesensitive,
-				followsymlinks, maxlevelsofsymlinks, erroronmissingdir, nested)
+			_init(file, includes, excludes, includesfile,
+				excludesfile, defaultexcludes, casesensitive, followsymlinks,
+				maxlevelsofsymlinks, erroronmissingdir, dir, src,
+				srcresource, erroronmissingarchive, prefix, fullpath,
+				encoding, filemode, dirmode, nested)
 		})
 	}
 
@@ -62,15 +62,6 @@ interface IZipFileSetNested : INestedComponent {
 }
 
 fun IFileSetNested.zipfileset(
-	dir: String? = null,
-	src: String? = null,
-	srcresource: String? = null,
-	erroronmissingarchive: Boolean? = null,
-	prefix: String? = null,
-	fullpath: String? = null,
-	encoding: String? = null,
-	filemode: String? = null,
-	dirmode: String? = null,
 	file: String? = null,
 	includes: String? = null,
 	excludes: String? = null,
@@ -81,28 +72,28 @@ fun IFileSetNested.zipfileset(
 	followsymlinks: Boolean? = null,
 	maxlevelsofsymlinks: Int? = null,
 	erroronmissingdir: Boolean? = null,
+	dir: String? = null,
+	src: String? = null,
+	srcresource: String? = null,
+	erroronmissingarchive: Boolean? = null,
+	prefix: String? = null,
+	fullpath: String? = null,
+	encoding: String? = null,
+	filemode: String? = null,
+	dirmode: String? = null,
 	nested: (KZipFileSet.() -> Unit)? = null)
 {
 	_addFileSet(ZipFileSet().apply {
 		component.project.setProjectReference(this);
-		_init(dir, src, srcresource, erroronmissingarchive,
-			prefix, fullpath, encoding, filemode,
-			dirmode, file, includes, excludes,
-			includesfile, excludesfile, defaultexcludes, casesensitive,
-			followsymlinks, maxlevelsofsymlinks, erroronmissingdir, nested)
+		_init(file, includes, excludes, includesfile,
+			excludesfile, defaultexcludes, casesensitive, followsymlinks,
+			maxlevelsofsymlinks, erroronmissingdir, dir, src,
+			srcresource, erroronmissingarchive, prefix, fullpath,
+			encoding, filemode, dirmode, nested)
 	})
 }
 
 fun IResourceCollectionNested.zipfileset(
-	dir: String? = null,
-	src: String? = null,
-	srcresource: String? = null,
-	erroronmissingarchive: Boolean? = null,
-	prefix: String? = null,
-	fullpath: String? = null,
-	encoding: String? = null,
-	filemode: String? = null,
-	dirmode: String? = null,
 	file: String? = null,
 	includes: String? = null,
 	excludes: String? = null,
@@ -113,28 +104,28 @@ fun IResourceCollectionNested.zipfileset(
 	followsymlinks: Boolean? = null,
 	maxlevelsofsymlinks: Int? = null,
 	erroronmissingdir: Boolean? = null,
+	dir: String? = null,
+	src: String? = null,
+	srcresource: String? = null,
+	erroronmissingarchive: Boolean? = null,
+	prefix: String? = null,
+	fullpath: String? = null,
+	encoding: String? = null,
+	filemode: String? = null,
+	dirmode: String? = null,
 	nested: (KZipFileSet.() -> Unit)? = null)
 {
 	_addResourceCollection(ZipFileSet().apply {
 		component.project.setProjectReference(this);
-		_init(dir, src, srcresource, erroronmissingarchive,
-			prefix, fullpath, encoding, filemode,
-			dirmode, file, includes, excludes,
-			includesfile, excludesfile, defaultexcludes, casesensitive,
-			followsymlinks, maxlevelsofsymlinks, erroronmissingdir, nested)
+		_init(file, includes, excludes, includesfile,
+			excludesfile, defaultexcludes, casesensitive, followsymlinks,
+			maxlevelsofsymlinks, erroronmissingdir, dir, src,
+			srcresource, erroronmissingarchive, prefix, fullpath,
+			encoding, filemode, dirmode, nested)
 	})
 }
 
 fun ZipFileSet._init(
-	dir: String?,
-	src: String?,
-	srcresource: String?,
-	erroronmissingarchive: Boolean?,
-	prefix: String?,
-	fullpath: String?,
-	encoding: String?,
-	filemode: String?,
-	dirmode: String?,
 	file: String?,
 	includes: String?,
 	excludes: String?,
@@ -145,26 +136,17 @@ fun ZipFileSet._init(
 	followsymlinks: Boolean?,
 	maxlevelsofsymlinks: Int?,
 	erroronmissingdir: Boolean?,
+	dir: String?,
+	src: String?,
+	srcresource: String?,
+	erroronmissingarchive: Boolean?,
+	prefix: String?,
+	fullpath: String?,
+	encoding: String?,
+	filemode: String?,
+	dirmode: String?,
 	nested: (KZipFileSet.() -> Unit)?)
 {
-	if (dir != null)
-		setDir(project.resolveFile(dir))
-	if (src != null)
-		setSrc(project.resolveFile(src))
-	if (srcresource != null)
-		setSrcResource(Resource(srcresource))
-	if (erroronmissingarchive != null)
-		setErrorOnMissingArchive(erroronmissingarchive)
-	if (prefix != null)
-		setPrefix(prefix)
-	if (fullpath != null)
-		setFullpath(fullpath)
-	if (encoding != null)
-		setEncoding(encoding)
-	if (filemode != null)
-		setFileMode(filemode)
-	if (dirmode != null)
-		setDirMode(dirmode)
 	if (file != null)
 		setFile(project.resolveFile(file))
 	if (includes != null)
@@ -185,6 +167,24 @@ fun ZipFileSet._init(
 		setMaxLevelsOfSymlinks(maxlevelsofsymlinks)
 	if (erroronmissingdir != null)
 		setErrorOnMissingDir(erroronmissingdir)
+	if (dir != null)
+		setDir(project.resolveFile(dir))
+	if (src != null)
+		setSrc(project.resolveFile(src))
+	if (srcresource != null)
+		setSrcResource(Resource(srcresource))
+	if (erroronmissingarchive != null)
+		setErrorOnMissingArchive(erroronmissingarchive)
+	if (prefix != null)
+		setPrefix(prefix)
+	if (fullpath != null)
+		setFullpath(fullpath)
+	if (encoding != null)
+		setEncoding(encoding)
+	if (filemode != null)
+		setFileMode(filemode)
+	if (dirmode != null)
+		setDirMode(dirmode)
 	if (nested != null)
 		nested(KZipFileSet(this))
 }
