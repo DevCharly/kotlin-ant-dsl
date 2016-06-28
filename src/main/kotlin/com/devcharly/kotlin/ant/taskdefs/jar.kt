@@ -34,6 +34,7 @@ fun Ant.jar(
 	filesonly: Boolean? = null,
 	update: Boolean? = null,
 	duplicate: Duplicate? = null,
+	whenempty: WhenEmpty? = null,
 	encoding: String? = null,
 	keepcompression: Boolean? = null,
 	comment: String? = null,
@@ -51,7 +52,6 @@ fun Ant.jar(
 	excludesfile: String? = null,
 	casesensitive: Boolean? = null,
 	followsymlinks: Boolean? = null,
-	whenempty: WhenEmpty? = null,
 	whenmanifestonly: WhenEmpty? = null,
 	strict: StrictMode? = null,
 	index: Boolean? = null,
@@ -76,6 +76,8 @@ fun Ant.jar(
 			task.setUpdate(update)
 		if (duplicate != null)
 			task.setDuplicate(Zip.Duplicate().apply { value = duplicate.value })
+		if (whenempty != null)
+			task.setWhenempty(Zip.WhenEmpty().apply { value = whenempty.value })
 		if (encoding != null)
 			task.setEncoding(encoding)
 		if (keepcompression != null)
@@ -110,8 +112,6 @@ fun Ant.jar(
 			task.setCaseSensitive(casesensitive)
 		if (followsymlinks != null)
 			task.setFollowSymlinks(followsymlinks)
-		if (whenempty != null)
-			task.setWhenempty(Zip.WhenEmpty().apply { value = whenempty.value })
 		if (whenmanifestonly != null)
 			task.setWhenmanifestonly(Zip.WhenEmpty().apply { value = whenmanifestonly.value })
 		if (strict != null)

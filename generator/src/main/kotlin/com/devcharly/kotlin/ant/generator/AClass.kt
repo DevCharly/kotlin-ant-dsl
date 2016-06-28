@@ -32,24 +32,13 @@ import java.util.*
  * to the order used in Ant task parameters documentation.
  */
 fun aClass(cls: Class<*>): AClass {
-	// use reflection to get methods (including methods from superclasses)
-	val methods = ArrayList<Method>()
+	// use reflection to get methods that have deprecated annotation
 	val deprecatedMethods = ArrayList<Method>()
 	for (method in cls.methods) {
-		if (method.isBridge ||
-			method.isSynthetic ||
-			method.isVarArgs ||
-			method.isDefault ||
-			Modifier.isStatic(method.modifiers) ||
-			method.declaringClass == java.lang.Object::class.java)
-		  continue
-
 		if (method.getAnnotation(java.lang.Deprecated::class.java) != null) {
 			deprecatedMethods.add(method)
 			continue
 		}
-
-		methods.add(method)
 	}
 
 	// use ASM to order methods and remove deprecated methods
@@ -66,7 +55,7 @@ fun aClass(cls: Class<*>): AClass {
 
 	cls2 = cls
 	while (cls2 != null && cls2 != java.lang.Object::class.java) {
-		val visitor = AClassVisitor(methods)
+		val visitor = AClassVisitor(cls)
 		val resName = cls2.name.replace('.', '/') + ".class"
 		cls.classLoader.getResourceAsStream(resName).use {
 			ClassReader(it).accept(visitor, ClassReader.SKIP_CODE + ClassReader.SKIP_DEBUG)
@@ -99,7 +88,7 @@ class AClass(var cls: Class<*>)
 
 //---- class AClassVisitor ----------------------------------------------------
 
-private class AClassVisitor(val methods: ArrayList<Method>)
+private class AClassVisitor(val cls: Class<*>)
 	: ClassVisitor(ASM5)
 {
 	val orderedMethods = ArrayList<Method>()
@@ -108,18 +97,31 @@ private class AClassVisitor(val methods: ArrayList<Method>)
 	override fun visitMethod(access: Int, name: String, desc: String?,
 	                         signature: String?, exceptions: Array<out String>?): MethodVisitor?
 	{
-		var i = 0
-		for (method in methods) {
-			if (method.name == name && Type.getType(method).descriptor == desc) {
-				if (access and ACC_DEPRECATED == 0)
-					orderedMethods.add(method)
-				else
-					deprecatedMethods.add(method)
-				methods.removeAt(i)
-				break
+		if (access and ACC_PUBLIC == 0 || name == "<init>")
+			return null
+
+		val parameterTypes = Type.getArgumentTypes(desc).map {
+			when (it.sort) {
+				Type.BOOLEAN -> java.lang.Boolean.TYPE
+				Type.BYTE -> java.lang.Byte.TYPE
+				Type.SHORT -> java.lang.Short.TYPE
+				Type.INT -> java.lang.Integer.TYPE
+				Type.LONG -> java.lang.Long.TYPE
+				Type.FLOAT -> java.lang.Float.TYPE
+				Type.DOUBLE -> java.lang.Double.TYPE
+				Type.CHAR -> java.lang.Character.TYPE
+				Type.ARRAY -> Class.forName(it.getDescriptor().replace('/', '.'))
+				else -> Class.forName(it.className)
 			}
-			i++
-		}
+		}.toTypedArray()
+
+		val method = cls.getMethod(name, *parameterTypes)
+
+		if (access and ACC_DEPRECATED == 0)
+			orderedMethods.add(method)
+		else
+			deprecatedMethods.add(method)
+
 		return null
 	}
 }

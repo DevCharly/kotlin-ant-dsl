@@ -27,6 +27,7 @@ DO NOT EDIT - this file was generated
 
 interface ITarFileSetNested : INestedComponent {
 	fun tarfileset(
+		dir: String? = null,
 		file: String? = null,
 		includes: String? = null,
 		excludes: String? = null,
@@ -37,7 +38,6 @@ interface ITarFileSetNested : INestedComponent {
 		followsymlinks: Boolean? = null,
 		maxlevelsofsymlinks: Int? = null,
 		erroronmissingdir: Boolean? = null,
-		dir: String? = null,
 		src: String? = null,
 		srcresource: String? = null,
 		erroronmissingarchive: Boolean? = null,
@@ -54,9 +54,9 @@ interface ITarFileSetNested : INestedComponent {
 	{
 		_addTarFileSet(TarFileSet().apply {
 			component.project.setProjectReference(this);
-			_init(file, includes, excludes, includesfile,
-				excludesfile, defaultexcludes, casesensitive, followsymlinks,
-				maxlevelsofsymlinks, erroronmissingdir, dir, src,
+			_init(dir, file, includes, excludes,
+				includesfile, excludesfile, defaultexcludes, casesensitive,
+				followsymlinks, maxlevelsofsymlinks, erroronmissingdir, src,
 				srcresource, erroronmissingarchive, prefix, fullpath,
 				encoding, filemode, dirmode, username,
 				uid, group, gid, nested)
@@ -67,6 +67,7 @@ interface ITarFileSetNested : INestedComponent {
 }
 
 fun IFileSetNested.tarfileset(
+	dir: String? = null,
 	file: String? = null,
 	includes: String? = null,
 	excludes: String? = null,
@@ -77,7 +78,6 @@ fun IFileSetNested.tarfileset(
 	followsymlinks: Boolean? = null,
 	maxlevelsofsymlinks: Int? = null,
 	erroronmissingdir: Boolean? = null,
-	dir: String? = null,
 	src: String? = null,
 	srcresource: String? = null,
 	erroronmissingarchive: Boolean? = null,
@@ -94,9 +94,9 @@ fun IFileSetNested.tarfileset(
 {
 	_addFileSet(TarFileSet().apply {
 		component.project.setProjectReference(this);
-		_init(file, includes, excludes, includesfile,
-			excludesfile, defaultexcludes, casesensitive, followsymlinks,
-			maxlevelsofsymlinks, erroronmissingdir, dir, src,
+		_init(dir, file, includes, excludes,
+			includesfile, excludesfile, defaultexcludes, casesensitive,
+			followsymlinks, maxlevelsofsymlinks, erroronmissingdir, src,
 			srcresource, erroronmissingarchive, prefix, fullpath,
 			encoding, filemode, dirmode, username,
 			uid, group, gid, nested)
@@ -104,6 +104,7 @@ fun IFileSetNested.tarfileset(
 }
 
 fun IResourceCollectionNested.tarfileset(
+	dir: String? = null,
 	file: String? = null,
 	includes: String? = null,
 	excludes: String? = null,
@@ -114,7 +115,6 @@ fun IResourceCollectionNested.tarfileset(
 	followsymlinks: Boolean? = null,
 	maxlevelsofsymlinks: Int? = null,
 	erroronmissingdir: Boolean? = null,
-	dir: String? = null,
 	src: String? = null,
 	srcresource: String? = null,
 	erroronmissingarchive: Boolean? = null,
@@ -131,9 +131,9 @@ fun IResourceCollectionNested.tarfileset(
 {
 	_addResourceCollection(TarFileSet().apply {
 		component.project.setProjectReference(this);
-		_init(file, includes, excludes, includesfile,
-			excludesfile, defaultexcludes, casesensitive, followsymlinks,
-			maxlevelsofsymlinks, erroronmissingdir, dir, src,
+		_init(dir, file, includes, excludes,
+			includesfile, excludesfile, defaultexcludes, casesensitive,
+			followsymlinks, maxlevelsofsymlinks, erroronmissingdir, src,
 			srcresource, erroronmissingarchive, prefix, fullpath,
 			encoding, filemode, dirmode, username,
 			uid, group, gid, nested)
@@ -141,6 +141,7 @@ fun IResourceCollectionNested.tarfileset(
 }
 
 fun TarFileSet._init(
+	dir: String?,
 	file: String?,
 	includes: String?,
 	excludes: String?,
@@ -151,7 +152,6 @@ fun TarFileSet._init(
 	followsymlinks: Boolean?,
 	maxlevelsofsymlinks: Int?,
 	erroronmissingdir: Boolean?,
-	dir: String?,
 	src: String?,
 	srcresource: String?,
 	erroronmissingarchive: Boolean?,
@@ -166,6 +166,8 @@ fun TarFileSet._init(
 	gid: Int?,
 	nested: (KTarFileSet.() -> Unit)?)
 {
+	if (dir != null)
+		setDir(project.resolveFile(dir))
 	if (file != null)
 		setFile(project.resolveFile(file))
 	if (includes != null)
@@ -186,8 +188,6 @@ fun TarFileSet._init(
 		setMaxLevelsOfSymlinks(maxlevelsofsymlinks)
 	if (erroronmissingdir != null)
 		setErrorOnMissingDir(erroronmissingdir)
-	if (dir != null)
-		setDir(project.resolveFile(dir))
 	if (src != null)
 		setSrc(project.resolveFile(src))
 	if (srcresource != null)
