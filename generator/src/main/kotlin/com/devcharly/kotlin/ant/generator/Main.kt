@@ -40,6 +40,7 @@ fun main(args: Array<String>) {
 	genType(FileSelector::class.java, folder = "selectors")
 
 	// SPI
+	genType(Provider::class.java, folder = "spi")//, order = "type provider")
 	genType(Service::class.java, folder = "spi", order = "type provider")
 
 	// Util

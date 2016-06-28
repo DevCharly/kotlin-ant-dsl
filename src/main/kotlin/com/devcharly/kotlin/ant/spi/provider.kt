@@ -17,44 +17,27 @@
 package com.devcharly.kotlin.ant
 
 import org.apache.tools.ant.types.spi.Provider
-import org.apache.tools.ant.types.spi.Service
 
 /******************************************************************************
 DO NOT EDIT - this file was generated
 ******************************************************************************/
 
-interface IServiceNested : INestedComponent {
-	fun service(
-		type: String? = null,
-		provider: String? = null,
-		nested: (KService.() -> Unit)? = null)
+interface IProviderNested : INestedComponent {
+	fun provider(
+		classname: String? = null)
 	{
-		_addService(Service().apply {
+		_addProvider(Provider().apply {
 			component.project.setProjectReference(this);
-			_init(type, provider, nested)
-		})
-	}
-
-	fun _addService(value: Service)
-}
-
-fun Service._init(
-	type: String?,
-	provider: String?,
-	nested: (KService.() -> Unit)?)
-{
-	if (type != null)
-		setType(type)
-	if (provider != null)
-		setProvider(provider)
-	if (nested != null)
-		nested(KService(this))
-}
-
-class KService(val component: Service) {
-	fun provider(classname: String? = null) {
-		component.addConfiguredProvider(Provider().apply {
 			_init(classname)
 		})
 	}
+
+	fun _addProvider(value: Provider)
+}
+
+fun Provider._init(
+	classname: String?)
+{
+	if (classname != null)
+		setClassName(classname)
 }

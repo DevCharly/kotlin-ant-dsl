@@ -107,8 +107,10 @@ fun demoJar() {
 				attribute("Class-Path", "common.jar")
 			}
 
-			service("javax.script.ScriptEngineFactory", "org.acme.PinkyLanguage")
-			service("javax.script.ScriptEngineFactory", "org.acme.BrainLanguage")
+			service("javax.script.ScriptEngineFactory") {
+				provider("org.acme.PinkyLanguage")
+				provider("org.acme.BrainLanguage")
+			}
 		}
 	}
 }

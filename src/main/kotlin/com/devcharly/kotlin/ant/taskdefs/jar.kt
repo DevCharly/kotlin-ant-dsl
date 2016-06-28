@@ -156,9 +156,9 @@ class KJar(override val component: Jar) : IFileSelectorNested, IResourceCollecti
 			_init(nested)
 		})
 	}
-	fun service(provider: String? = null, type: String? = null) {
+	fun service(provider: String? = null, type: String? = null, nested: (KService.() -> Unit)? = null) {
 		component.addConfiguredService(Service().apply {
-			_init(provider, type)
+			_init(provider, type, nested)
 		})
 	}
 	override fun _addFileSelector(value: FileSelector) = component.add(value)
