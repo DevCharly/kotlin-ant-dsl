@@ -43,24 +43,26 @@ Ant {
 
 ### Tasks
 
-  * [bunzip2](http://ant.apache.org/manual/Tasks/unpack.html) (partial)
-  * [bzip2](http://ant.apache.org/manual/Tasks/pack.html) (partial)
-  * [copy](http://ant.apache.org/manual/Tasks/copy.html) (partial)
-  * [delete](http://ant.apache.org/manual/Tasks/delete.html) (partial)
+  * [bunzip2](http://ant.apache.org/manual/Tasks/unpack.html)
+  * [bzip2](http://ant.apache.org/manual/Tasks/pack.html)
+  * [copy](http://ant.apache.org/manual/Tasks/copy.html)
+  * [delete](http://ant.apache.org/manual/Tasks/delete.html)
   * [echo](http://ant.apache.org/manual/Tasks/echo.html)
-  * [gunzip](http://ant.apache.org/manual/Tasks/unpack.html) (partial)
-  * [gzip](http://ant.apache.org/manual/Tasks/pack.html) (partial)
-  * [jar](http://ant.apache.org/manual/Tasks/jar.html) (partial)
+  * [gunzip](http://ant.apache.org/manual/Tasks/unpack.html)
+  * [gzip](http://ant.apache.org/manual/Tasks/pack.html)
+  * [jar](http://ant.apache.org/manual/Tasks/jar.html)
   * [mkdir](http://ant.apache.org/manual/Tasks/mkdir.html)
-  * [property](http://ant.apache.org/manual/Tasks/property.html) (partial)
+  * [property](http://ant.apache.org/manual/Tasks/property.html)
   * [tar](http://ant.apache.org/manual/Tasks/tar.html)
-  * [touch](http://ant.apache.org/manual/Tasks/touch.html) (partial)
-  * [zip](http://ant.apache.org/manual/Tasks/zip.html) (partial)
+  * [touch](http://ant.apache.org/manual/Tasks/touch.html)
+  * [zip](http://ant.apache.org/manual/Tasks/zip.html)
 
 ### Types
 
   * [DirSet](http://ant.apache.org/manual/Types/dirset.html)
   * [FileSet](http://ant.apache.org/manual/Types/fileset.html)
+  * [PatternSet](http://ant.apache.org/manual/Types/patternset.html)
+  * [TarFileSet](http://ant.apache.org/manual/Types/tarfileset.html)
   * [ZipFileSet](http://ant.apache.org/manual/Types/zipfileset.html)
 
 
