@@ -230,7 +230,7 @@ private fun genInit(task: Task, varName: String, indent: String, imports: HashSe
 	task.params.forEach {
 		val varNameDot = if (varName == "") "" else "$varName."
 		init += "${indent}if (${it.name} != null)\n"
-		init += "${indent}\t$varNameDot${it.method}(${init(it.type, it.name, it.constructWithProject, imports)})\n"
+		init += "${indent}\t$varNameDot${it.method.name}(${init(it.type, it.name, it.constructWithProject, imports)})\n"
 	}
 
 	if (task.hasNested) {

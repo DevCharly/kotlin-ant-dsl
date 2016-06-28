@@ -32,17 +32,17 @@ interface IFileSetNested : INestedComponent {
 		includesfile: String? = null,
 		excludesfile: String? = null,
 		defaultexcludes: Boolean? = null,
-		caseSensitive: Boolean? = null,
-		followSymlinks: Boolean? = null,
-		maxLevelsOfSymlinks: Int? = null,
-		errorOnMissingDir: Boolean? = null,
+		casesensitive: Boolean? = null,
+		followsymlinks: Boolean? = null,
+		maxlevelsofsymlinks: Int? = null,
+		erroronmissingdir: Boolean? = null,
 		nested: (KFileSet.() -> Unit)? = null)
 	{
 		_addFileSet(FileSet().apply {
 			component.project.setProjectReference(this);
 			_init(dir, file, includes, excludes,
-				includesfile, excludesfile, defaultexcludes, caseSensitive,
-				followSymlinks, maxLevelsOfSymlinks, errorOnMissingDir, nested)
+				includesfile, excludesfile, defaultexcludes, casesensitive,
+				followsymlinks, maxlevelsofsymlinks, erroronmissingdir, nested)
 		})
 	}
 
@@ -57,17 +57,17 @@ fun IResourceCollectionNested.fileset(
 	includesfile: String? = null,
 	excludesfile: String? = null,
 	defaultexcludes: Boolean? = null,
-	caseSensitive: Boolean? = null,
-	followSymlinks: Boolean? = null,
-	maxLevelsOfSymlinks: Int? = null,
-	errorOnMissingDir: Boolean? = null,
+	casesensitive: Boolean? = null,
+	followsymlinks: Boolean? = null,
+	maxlevelsofsymlinks: Int? = null,
+	erroronmissingdir: Boolean? = null,
 	nested: (KFileSet.() -> Unit)? = null)
 {
 	_addResourceCollection(FileSet().apply {
 		component.project.setProjectReference(this);
 		_init(dir, file, includes, excludes,
-			includesfile, excludesfile, defaultexcludes, caseSensitive,
-			followSymlinks, maxLevelsOfSymlinks, errorOnMissingDir, nested)
+			includesfile, excludesfile, defaultexcludes, casesensitive,
+			followsymlinks, maxlevelsofsymlinks, erroronmissingdir, nested)
 	})
 }
 
@@ -79,10 +79,10 @@ fun FileSet._init(
 	includesfile: String?,
 	excludesfile: String?,
 	defaultexcludes: Boolean?,
-	caseSensitive: Boolean?,
-	followSymlinks: Boolean?,
-	maxLevelsOfSymlinks: Int?,
-	errorOnMissingDir: Boolean?,
+	casesensitive: Boolean?,
+	followsymlinks: Boolean?,
+	maxlevelsofsymlinks: Int?,
+	erroronmissingdir: Boolean?,
 	nested: (KFileSet.() -> Unit)?)
 {
 	if (dir != null)
@@ -99,14 +99,14 @@ fun FileSet._init(
 		setExcludesfile(project.resolveFile(excludesfile))
 	if (defaultexcludes != null)
 		setDefaultexcludes(defaultexcludes)
-	if (caseSensitive != null)
-		setCaseSensitive(caseSensitive)
-	if (followSymlinks != null)
-		setFollowSymlinks(followSymlinks)
-	if (maxLevelsOfSymlinks != null)
-		setMaxLevelsOfSymlinks(maxLevelsOfSymlinks)
-	if (errorOnMissingDir != null)
-		setErrorOnMissingDir(errorOnMissingDir)
+	if (casesensitive != null)
+		setCaseSensitive(casesensitive)
+	if (followsymlinks != null)
+		setFollowSymlinks(followsymlinks)
+	if (maxlevelsofsymlinks != null)
+		setMaxLevelsOfSymlinks(maxlevelsofsymlinks)
+	if (erroronmissingdir != null)
+		setErrorOnMissingDir(erroronmissingdir)
 	if (nested != null)
 		nested(KFileSet(this))
 }

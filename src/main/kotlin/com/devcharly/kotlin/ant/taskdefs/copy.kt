@@ -28,18 +28,18 @@ fun Ant.copy(
 	file: String? = null,
 	tofile: String? = null,
 	todir: String? = null,
-	preserveLastModified: Boolean? = null,
+	preservelastmodified: Boolean? = null,
 	filtering: Boolean? = null,
 	overwrite: Boolean? = null,
 	force: Boolean? = null,
 	flatten: Boolean? = null,
 	verbose: Boolean? = null,
-	includeEmptyDirs: Boolean? = null,
+	includeemptydirs: Boolean? = null,
 	quiet: Boolean? = null,
-	enableMultipleMappings: Boolean? = null,
-	failOnError: Boolean? = null,
+	enablemultiplemappings: Boolean? = null,
+	failonerror: Boolean? = null,
 	encoding: String? = null,
-	outputEncoding: String? = null,
+	outputencoding: String? = null,
 	granularity: Long? = null,
 	nested: (KCopy.() -> Unit)? = null)
 {
@@ -50,8 +50,8 @@ fun Ant.copy(
 			task.setTofile(project.resolveFile(tofile))
 		if (todir != null)
 			task.setTodir(project.resolveFile(todir))
-		if (preserveLastModified != null)
-			task.setPreserveLastModified(preserveLastModified)
+		if (preservelastmodified != null)
+			task.setPreserveLastModified(preservelastmodified)
 		if (filtering != null)
 			task.setFiltering(filtering)
 		if (overwrite != null)
@@ -62,18 +62,18 @@ fun Ant.copy(
 			task.setFlatten(flatten)
 		if (verbose != null)
 			task.setVerbose(verbose)
-		if (includeEmptyDirs != null)
-			task.setIncludeEmptyDirs(includeEmptyDirs)
+		if (includeemptydirs != null)
+			task.setIncludeEmptyDirs(includeemptydirs)
 		if (quiet != null)
 			task.setQuiet(quiet)
-		if (enableMultipleMappings != null)
-			task.setEnableMultipleMappings(enableMultipleMappings)
-		if (failOnError != null)
-			task.setFailOnError(failOnError)
+		if (enablemultiplemappings != null)
+			task.setEnableMultipleMappings(enablemultiplemappings)
+		if (failonerror != null)
+			task.setFailOnError(failonerror)
 		if (encoding != null)
 			task.setEncoding(encoding)
-		if (outputEncoding != null)
-			task.setOutputEncoding(outputEncoding)
+		if (outputencoding != null)
+			task.setOutputEncoding(outputencoding)
 		if (granularity != null)
 			task.setGranularity(granularity)
 		if (nested != null)

@@ -25,7 +25,7 @@ DO NOT EDIT - this file was generated
 ******************************************************************************/
 
 fun Ant.tar(
-	destFile: String? = null,
+	destfile: String? = null,
 	basedir: String? = null,
 	longfile: TarLongFileMode? = null,
 	compression: TarCompressionMethod? = null,
@@ -35,13 +35,13 @@ fun Ant.tar(
 	defaultexcludes: Boolean? = null,
 	includesfile: String? = null,
 	excludesfile: String? = null,
-	caseSensitive: Boolean? = null,
-	followSymlinks: Boolean? = null,
+	casesensitive: Boolean? = null,
+	followsymlinks: Boolean? = null,
 	nested: (KTar.() -> Unit)? = null)
 {
 	Tar().execute("tar") { task ->
-		if (destFile != null)
-			task.setDestFile(project.resolveFile(destFile))
+		if (destfile != null)
+			task.setDestFile(project.resolveFile(destfile))
 		if (basedir != null)
 			task.setBasedir(project.resolveFile(basedir))
 		if (longfile != null)
@@ -60,10 +60,10 @@ fun Ant.tar(
 			task.setIncludesfile(project.resolveFile(includesfile))
 		if (excludesfile != null)
 			task.setExcludesfile(project.resolveFile(excludesfile))
-		if (caseSensitive != null)
-			task.setCaseSensitive(caseSensitive)
-		if (followSymlinks != null)
-			task.setFollowSymlinks(followSymlinks)
+		if (casesensitive != null)
+			task.setCaseSensitive(casesensitive)
+		if (followsymlinks != null)
+			task.setFollowSymlinks(followsymlinks)
 		if (nested != null)
 			nested(KTar(task))
 	}

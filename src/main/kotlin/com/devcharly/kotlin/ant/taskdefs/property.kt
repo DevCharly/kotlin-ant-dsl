@@ -34,11 +34,11 @@ fun Ant.property(
 	url: String? = null,
 	environment: String? = null,
 	classpath: String? = null,
+	classpathref: String? = null,
 	prefix: String? = null,
-	prefixValues: Boolean? = null,
+	prefixvalues: Boolean? = null,
 	relative: Boolean? = null,
 	basedir: String? = null,
-	classpathRef: String? = null,
 	nested: (KProperty.() -> Unit)? = null)
 {
 	Property().execute("property") { task ->
@@ -58,16 +58,16 @@ fun Ant.property(
 			task.setEnvironment(environment)
 		if (classpath != null)
 			task.setClasspath(Path(project, classpath))
+		if (classpathref != null)
+			task.setClasspathRef(Reference(project, classpathref))
 		if (prefix != null)
 			task.setPrefix(prefix)
-		if (prefixValues != null)
-			task.setPrefixValues(prefixValues)
+		if (prefixvalues != null)
+			task.setPrefixValues(prefixvalues)
 		if (relative != null)
 			task.setRelative(relative)
 		if (basedir != null)
 			task.setBasedir(project.resolveFile(basedir))
-		if (classpathRef != null)
-			task.setClasspathRef(Reference(project, classpathRef))
 		if (nested != null)
 			nested(KProperty(task))
 	}

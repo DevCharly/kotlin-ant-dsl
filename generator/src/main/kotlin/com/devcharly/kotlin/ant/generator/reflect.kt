@@ -18,13 +18,15 @@ package com.devcharly.kotlin.ant.generator
 
 import org.apache.tools.ant.IntrospectionHelper
 import org.apache.tools.ant.Project
+import org.apache.tools.ant.ProjectComponent
 import org.apache.tools.ant.types.EnumeratedAttribute
 import java.lang.reflect.Method
 import java.util.*
 
 fun reflectTask(taskType: Class<*>, order: String? = null, exclude: String? = null): Task {
-	val aClass = aClass(taskType, org.apache.tools.ant.Task::class.java)
+	val aClass = aClass(taskType)
 
+	// determine whether have to pass project to constructor
 	var projectAtConstructor = false
 	try {
 		taskType.getConstructor()
@@ -37,48 +39,75 @@ fun reflectTask(taskType: Class<*>, order: String? = null, exclude: String? = nu
 		}
 	}
 
+	// use Ant IntrospectionHelper
+	val ih = IntrospectionHelper.getHelper(taskType)
+
+	// parameters (Ant attributes)
 	val params = ArrayList<TaskParam>()
-
 	val reserved = arrayOf("if", "when")
-	for (method in aClass.methods) {
-		if (method.name.startsWith("set") && method.parameterTypes.size == 1) {
-			var paramName = method.name.substring(3).decapitalize()
-			val paramType = method.parameterTypes[0]
-			var constructWithProject = false
+	for (it in ih.attributeMap) {
+		var paramName = it.key
+		var paramType = it.value
+		var constructWithProject = false
+		var paramMethod = ih.getAttributeMethod(paramName)
 
-			// avoid reserved names in parameters
-			if (paramName in reserved)
-				paramName = paramName.capitalize()
+		// avoid reserved names in parameters
+		if (paramName in reserved)
+			paramName = paramName.capitalize()
 
-			if (paramType.name.contains('.') &&
-				paramType != java.lang.String::class.java &&
-				paramType != java.io.File::class.java)
-			{
+		// some Ant attributes have two setters: one take String and another that take Object
+		if (paramType == java.lang.Object::class.java) {
+			try {
+				// change Object to String
+				paramMethod = taskType.getMethod(paramMethod.name, java.lang.String::class.java)
+				paramType = java.lang.String::class.java
+			} catch (ex: NoSuchMethodException) {
+				// ignore
+			}
+		}
+
+		// ignore unsupported types
+		if (paramType.name.contains('.') &&
+			paramType != java.lang.String::class.java &&
+			paramType != java.io.File::class.java)
+		{
+			try {
+				paramType.getConstructor(Project::class.java, java.lang.String::class.java)
+				constructWithProject = true
+			} catch (ex: NoSuchMethodException) {
 				try {
-					paramType.getConstructor(Project::class.java, java.lang.String::class.java)
-					constructWithProject = true
+					paramType.getConstructor(java.lang.String::class.java)
 				} catch (ex: NoSuchMethodException) {
-					try {
-						paramType.getConstructor(java.lang.String::class.java)
-					} catch (ex: NoSuchMethodException) {
-						if (!EnumeratedAttribute::class.java.isAssignableFrom(paramType))
-							continue // not supported parameter type
+					if (!EnumeratedAttribute::class.java.isAssignableFrom(paramType)) {
+						println("Unsupported type in $paramName\n\t<${paramType.name}>\n\t(${taskType.name})")
+						continue // not supported parameter type
 					}
 				}
 			}
-
-			params.add(TaskParam(paramName, method.name, paramType, constructWithProject))
 		}
+
+		params.add(TaskParam(paramName, paramType, paramMethod, constructWithProject))
 	}
 
-	// always exclude refid
+	// remove deprecated attributes
+	params.removeIf { aClass.deprecatedMethods.contains(it.method) }
+
+	// always exclude some attributes
 	params.removeIf { it.name == "refid" }
+	if (ProjectComponent::class.java.isAssignableFrom(taskType))
+		params.removeIf { it.name == "description" }
+	if (org.apache.tools.ant.Task::class.java.isAssignableFrom(taskType))
+		params.removeIf { it.name == "taskname" }
 
 	if (exclude != null) {
 		val excludeList = exclude.split(' ')
 		params.removeIf { excludeList.contains(it.name) }
 	}
 
+	// same order as in source code
+	params.sortBy { aClass.orderedMethods.indexOf(it.method) }
+
+	// order attributes
 	if (order != null) {
 		val orderList = order.split(' ')
 		params.sortBy {
@@ -90,11 +119,11 @@ fun reflectTask(taskType: Class<*>, order: String? = null, exclude: String? = nu
 		}
 	}
 
-	// use Ant IntrospectionHelper
-	val ih = IntrospectionHelper.getHelper(taskType)
+	// add type/text methods
 	val addTypeMethods = ih.extensionPoints.sortedBy { it.parameterTypes[0].simpleName }.toTypedArray()
 	val addTextMethod = if (ih.supportsCharacters()) ih.addTextMethod else null
 
+	// nested
 	val supported = arrayOf("patternset", "include", "exclude", "manifest", "attribute", "service") //TODO
 	val nested = ArrayList<TaskNested>()
 	ih.nestedElementMap.forEach {
@@ -105,7 +134,7 @@ fun reflectTask(taskType: Class<*>, order: String? = null, exclude: String? = nu
 	}
 
 	// same order as in source code
-	nested.sortBy { aClass.methods.indexOf(it.method) }
+	nested.sortBy { aClass.orderedMethods.indexOf(it.method) }
 
 	return Task(taskType, projectAtConstructor, params.toTypedArray(), nested.toTypedArray(), addTypeMethods, addTextMethod)
 }
@@ -125,8 +154,7 @@ class Task(val type: Class<*>,
 
 //---- class TaskParam --------------------------------------------------------
 
-class TaskParam(val name: String, val method: String, val type: Class<*>, val constructWithProject: Boolean)
-
+class TaskParam(val name: String, val type: Class<*>, val method: Method, val constructWithProject: Boolean)
 
 //---- class TaskNested -------------------------------------------------------
 

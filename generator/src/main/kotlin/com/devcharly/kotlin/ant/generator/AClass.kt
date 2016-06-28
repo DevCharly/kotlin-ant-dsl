@@ -31,18 +31,23 @@ import java.util.*
  * Uses ASM to preserve the method order, which is mostly identical
  * to the order used in Ant task parameters documentation.
  */
-fun aClass(cls: Class<*>, stopClass: Class<*>? = null): AClass {
+fun aClass(cls: Class<*>): AClass {
 	// use reflection to get methods (including methods from superclasses)
 	val methods = ArrayList<Method>()
+	val deprecatedMethods = ArrayList<Method>()
 	for (method in cls.methods) {
 		if (method.isBridge ||
 			method.isSynthetic ||
 			method.isVarArgs ||
 			method.isDefault ||
 			Modifier.isStatic(method.modifiers) ||
-			method.getAnnotation(java.lang.Deprecated::class.java) != null ||
-			isStopClass(method.declaringClass, stopClass))
+			method.declaringClass == java.lang.Object::class.java)
 		  continue
+
+		if (method.getAnnotation(java.lang.Deprecated::class.java) != null) {
+			deprecatedMethods.add(method)
+			continue
+		}
 
 		methods.add(method)
 	}
@@ -57,39 +62,23 @@ fun aClass(cls: Class<*>, stopClass: Class<*>? = null): AClass {
 		}
 
 		cls2 = cls2.superclass
-		if (stopClass != null && cls2 == stopClass)
-			break
 	}
 	if (visitor.methods.size > 0)
 		throw IllegalStateException()
 
 	val aClass = AClass(cls)
-	aClass.methods.addAll(visitor.orderedMethods)
+	aClass.orderedMethods.addAll(visitor.orderedMethods)
+	aClass.deprecatedMethods.addAll(visitor.deprecatedMethods)
+	aClass.deprecatedMethods.addAll(deprecatedMethods)
 	return aClass
-}
-
-private fun isStopClass(cls: Class<*>, stopClass: Class<*>?): Boolean {
-	if (stopClass == null)
-		return false
-
-	var stopCls = stopClass
-	while (stopCls != null) {
-		if (stopCls == cls)
-			return true
-		stopCls = stopCls.superclass
-	}
-	return false
 }
 
 //---- class AClass -----------------------------------------------------------
 
 class AClass(var cls: Class<*>)
 {
-	val methods = ArrayList<Method>()
-
-	fun getMethod(name: String, vararg parameterTypes: Class<*>): Method? {
-		return methods.find { it.name == name && Arrays.equals(it.parameterTypes, parameterTypes) }
-	}
+	val orderedMethods = ArrayList<Method>()
+	val deprecatedMethods = ArrayList<Method>()
 }
 
 //---- class AClassVisitor ----------------------------------------------------
@@ -98,6 +87,7 @@ private class AClassVisitor(val methods: ArrayList<Method>)
 	: ClassVisitor(ASM5)
 {
 	val orderedMethods = ArrayList<Method>()
+	val deprecatedMethods = ArrayList<Method>()
 
 	override fun visitMethod(access: Int, name: String, desc: String?,
 	                         signature: String?, exceptions: Array<out String>?): MethodVisitor?
@@ -107,6 +97,8 @@ private class AClassVisitor(val methods: ArrayList<Method>)
 			if (method.name == name && Type.getType(method).descriptor == desc) {
 				if (access and ACC_DEPRECATED == 0)
 					orderedMethods.add(method)
+				else
+					deprecatedMethods.add(method)
 				methods.removeAt(i)
 				break
 			}

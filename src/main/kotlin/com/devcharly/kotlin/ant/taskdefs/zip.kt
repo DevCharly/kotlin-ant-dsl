@@ -25,7 +25,7 @@ DO NOT EDIT - this file was generated
 ******************************************************************************/
 
 fun Ant.zip(
-	destFile: String? = null,
+	destfile: String? = null,
 	basedir: String? = null,
 	compress: Boolean? = null,
 	filesonly: Boolean? = null,
@@ -33,27 +33,27 @@ fun Ant.zip(
 	duplicate: Duplicate? = null,
 	whenempty: WhenEmpty? = null,
 	encoding: String? = null,
-	keepCompression: Boolean? = null,
+	keepcompression: Boolean? = null,
 	comment: String? = null,
 	level: Int? = null,
-	roundUp: Boolean? = null,
-	preserve0Permissions: Boolean? = null,
-	useLanguageEncodingFlag: Boolean? = null,
-	createUnicodeExtraFields: UnicodeExtraField? = null,
-	fallBackToUTF8: Boolean? = null,
-	zip64Mode: Zip64ModeAttribute? = null,
+	roundup: Boolean? = null,
+	preserve0permissions: Boolean? = null,
+	uselanguageencodingflag: Boolean? = null,
+	createunicodeextrafields: UnicodeExtraField? = null,
+	fallbacktoutf8: Boolean? = null,
+	zip64mode: Zip64ModeAttribute? = null,
 	includes: String? = null,
 	excludes: String? = null,
 	defaultexcludes: Boolean? = null,
 	includesfile: String? = null,
 	excludesfile: String? = null,
-	caseSensitive: Boolean? = null,
-	followSymlinks: Boolean? = null,
+	casesensitive: Boolean? = null,
+	followsymlinks: Boolean? = null,
 	nested: (KZip.() -> Unit)? = null)
 {
 	Zip().execute("zip") { task ->
-		if (destFile != null)
-			task.setDestFile(project.resolveFile(destFile))
+		if (destfile != null)
+			task.setDestFile(project.resolveFile(destfile))
 		if (basedir != null)
 			task.setBasedir(project.resolveFile(basedir))
 		if (compress != null)
@@ -68,24 +68,24 @@ fun Ant.zip(
 			task.setWhenempty(Zip.WhenEmpty().apply { value = whenempty.value })
 		if (encoding != null)
 			task.setEncoding(encoding)
-		if (keepCompression != null)
-			task.setKeepCompression(keepCompression)
+		if (keepcompression != null)
+			task.setKeepCompression(keepcompression)
 		if (comment != null)
 			task.setComment(comment)
 		if (level != null)
 			task.setLevel(level)
-		if (roundUp != null)
-			task.setRoundUp(roundUp)
-		if (preserve0Permissions != null)
-			task.setPreserve0Permissions(preserve0Permissions)
-		if (useLanguageEncodingFlag != null)
-			task.setUseLanguageEncodingFlag(useLanguageEncodingFlag)
-		if (createUnicodeExtraFields != null)
-			task.setCreateUnicodeExtraFields(Zip.UnicodeExtraField().apply { value = createUnicodeExtraFields.value })
-		if (fallBackToUTF8 != null)
-			task.setFallBackToUTF8(fallBackToUTF8)
-		if (zip64Mode != null)
-			task.setZip64Mode(Zip.Zip64ModeAttribute().apply { value = zip64Mode.value })
+		if (roundup != null)
+			task.setRoundUp(roundup)
+		if (preserve0permissions != null)
+			task.setPreserve0Permissions(preserve0permissions)
+		if (uselanguageencodingflag != null)
+			task.setUseLanguageEncodingFlag(uselanguageencodingflag)
+		if (createunicodeextrafields != null)
+			task.setCreateUnicodeExtraFields(Zip.UnicodeExtraField().apply { value = createunicodeextrafields.value })
+		if (fallbacktoutf8 != null)
+			task.setFallBackToUTF8(fallbacktoutf8)
+		if (zip64mode != null)
+			task.setZip64Mode(Zip.Zip64ModeAttribute().apply { value = zip64mode.value })
 		if (includes != null)
 			task.setIncludes(includes)
 		if (excludes != null)
@@ -96,10 +96,10 @@ fun Ant.zip(
 			task.setIncludesfile(project.resolveFile(includesfile))
 		if (excludesfile != null)
 			task.setExcludesfile(project.resolveFile(excludesfile))
-		if (caseSensitive != null)
-			task.setCaseSensitive(caseSensitive)
-		if (followSymlinks != null)
-			task.setFollowSymlinks(followSymlinks)
+		if (casesensitive != null)
+			task.setCaseSensitive(casesensitive)
+		if (followsymlinks != null)
+			task.setFollowSymlinks(followsymlinks)
 		if (nested != null)
 			nested(KZip(task))
 	}

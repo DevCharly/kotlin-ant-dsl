@@ -29,18 +29,18 @@ fun Ant.delete(
 	dir: String? = null,
 	verbose: Boolean? = null,
 	quiet: Boolean? = null,
-	failOnError: Boolean? = null,
-	deleteOnExit: Boolean? = null,
-	includeEmptyDirs: Boolean? = null,
-	performGcOnFailedDelete: Boolean? = null,
+	failonerror: Boolean? = null,
+	deleteonexit: Boolean? = null,
+	includeemptydirs: Boolean? = null,
+	performgconfaileddelete: Boolean? = null,
 	includes: String? = null,
 	excludes: String? = null,
 	defaultexcludes: Boolean? = null,
 	includesfile: String? = null,
 	excludesfile: String? = null,
-	caseSensitive: Boolean? = null,
-	followSymlinks: Boolean? = null,
-	removeNotFollowedSymlinks: Boolean? = null,
+	casesensitive: Boolean? = null,
+	followsymlinks: Boolean? = null,
+	removenotfollowedsymlinks: Boolean? = null,
 	nested: (KDelete.() -> Unit)? = null)
 {
 	Delete().execute("delete") { task ->
@@ -52,14 +52,14 @@ fun Ant.delete(
 			task.setVerbose(verbose)
 		if (quiet != null)
 			task.setQuiet(quiet)
-		if (failOnError != null)
-			task.setFailOnError(failOnError)
-		if (deleteOnExit != null)
-			task.setDeleteOnExit(deleteOnExit)
-		if (includeEmptyDirs != null)
-			task.setIncludeEmptyDirs(includeEmptyDirs)
-		if (performGcOnFailedDelete != null)
-			task.setPerformGcOnFailedDelete(performGcOnFailedDelete)
+		if (failonerror != null)
+			task.setFailOnError(failonerror)
+		if (deleteonexit != null)
+			task.setDeleteOnExit(deleteonexit)
+		if (includeemptydirs != null)
+			task.setIncludeEmptyDirs(includeemptydirs)
+		if (performgconfaileddelete != null)
+			task.setPerformGcOnFailedDelete(performgconfaileddelete)
 		if (includes != null)
 			task.setIncludes(includes)
 		if (excludes != null)
@@ -70,12 +70,12 @@ fun Ant.delete(
 			task.setIncludesfile(project.resolveFile(includesfile))
 		if (excludesfile != null)
 			task.setExcludesfile(project.resolveFile(excludesfile))
-		if (caseSensitive != null)
-			task.setCaseSensitive(caseSensitive)
-		if (followSymlinks != null)
-			task.setFollowSymlinks(followSymlinks)
-		if (removeNotFollowedSymlinks != null)
-			task.setRemoveNotFollowedSymlinks(removeNotFollowedSymlinks)
+		if (casesensitive != null)
+			task.setCaseSensitive(casesensitive)
+		if (followsymlinks != null)
+			task.setFollowSymlinks(followsymlinks)
+		if (removenotfollowedsymlinks != null)
+			task.setRemoveNotFollowedSymlinks(removenotfollowedsymlinks)
 		if (nested != null)
 			nested(KDelete(task))
 	}
