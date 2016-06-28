@@ -19,6 +19,7 @@ package com.devcharly.kotlin.ant.generator
 import org.apache.tools.ant.taskdefs.*
 import org.apache.tools.ant.types.*
 import org.apache.tools.ant.types.selectors.*
+import org.apache.tools.ant.types.spi.Provider
 import org.apache.tools.ant.types.spi.Service
 import org.apache.tools.ant.util.FileNameMapper
 import java.io.FileWriter
@@ -49,13 +50,16 @@ fun main(args: Array<String>) {
 	// Tasks
 	genTask(BUnzip2::class.java, order = "src dest", exclude = "srcresource")
 	genTask(BZip2::class.java, order = "src destfile", exclude = "zipfile srcresource")
+	genTask(Checksum::class.java)
 	genTask(Copy::class.java)
 	genTask(Delete::class.java)
 	genTask(Echo::class.java)
+	genTask(FixCRLF::class.java)
 	genTask(GUnzip::class.java, order = "src dest", exclude = "srcresource")
 	genTask(GZip::class.java, order = "src destfile", exclude = "zipfile srcresource")
 	genTask(Jar::class.java)
 	genTask(Mkdir::class.java)
+	genTask(Move::class.java)
 	genTask(Property::class.java, order = "name value location resource file url environment classpath classpathref prefix prefixvalues relative basedir")
 	genTask(Tar::class.java)
 	genTask(Touch::class.java)
