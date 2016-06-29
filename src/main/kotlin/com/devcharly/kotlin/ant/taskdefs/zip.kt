@@ -17,6 +17,7 @@
 package com.devcharly.kotlin.ant
 
 import org.apache.tools.ant.taskdefs.Zip
+import org.apache.tools.ant.types.FileSet
 import org.apache.tools.ant.types.ResourceCollection
 import org.apache.tools.ant.types.selectors.AndSelector
 import org.apache.tools.ant.types.selectors.ContainsRegexpSelector
@@ -137,13 +138,29 @@ class KZip(override val component: Zip) :
 	IDifferentSelectorNested,
 	ITypeSelectorNested
 {
+	fun zipgroupfileset(dir: String? = null, file: String? = null, includes: String? = null, excludes: String? = null, includesfile: String? = null, excludesfile: String? = null, defaultexcludes: Boolean? = null, casesensitive: Boolean? = null, followsymlinks: Boolean? = null, maxlevelsofsymlinks: Int? = null, erroronmissingdir: Boolean? = null, nested: (KFileSet.() -> Unit)? = null) {
+		component.addZipGroupFileset(FileSet().apply {
+			component.project.setProjectReference(this)
+			_init(dir, file, includes, excludes, includesfile, excludesfile, defaultexcludes, casesensitive, followsymlinks, maxlevelsofsymlinks, erroronmissingdir, nested)
+		})
+	}
 	fun include(name: String? = null, If: String? = null, unless: String? = null) {
 		component.createInclude().apply {
 			_init(name, If, unless)
 		}
 	}
+	fun includesfile(name: String? = null, If: String? = null, unless: String? = null) {
+		component.createIncludesFile().apply {
+			_init(name, If, unless)
+		}
+	}
 	fun exclude(name: String? = null, If: String? = null, unless: String? = null) {
 		component.createExclude().apply {
+			_init(name, If, unless)
+		}
+	}
+	fun excludesfile(name: String? = null, If: String? = null, unless: String? = null) {
+		component.createExcludesFile().apply {
 			_init(name, If, unless)
 		}
 	}

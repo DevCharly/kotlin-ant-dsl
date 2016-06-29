@@ -101,17 +101,12 @@ val unsupportedNested = arrayOf(
 	"fileset",
 	"mapper",
 	"zipfileset",
-	"zipgroupfileset",
 	"tarfileset",
 	"metainf",
 	"indexjars",
 
 	"classpath",
 
-	"includesfile",
-	"excludesfile",
-	"invert",
-	"section",
 	"",
 	""
 )

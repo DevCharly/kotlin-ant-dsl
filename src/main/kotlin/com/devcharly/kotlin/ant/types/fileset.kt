@@ -157,8 +157,18 @@ class KFileSet(override val component: FileSet) :
 			_init(name, If, unless)
 		}
 	}
+	fun includesfile(name: String? = null, If: String? = null, unless: String? = null) {
+		component.createIncludesFile().apply {
+			_init(name, If, unless)
+		}
+	}
 	fun exclude(name: String? = null, If: String? = null, unless: String? = null) {
 		component.createExclude().apply {
+			_init(name, If, unless)
+		}
+	}
+	fun excludesfile(name: String? = null, If: String? = null, unless: String? = null) {
+		component.createExcludesFile().apply {
 			_init(name, If, unless)
 		}
 	}

@@ -18,6 +18,7 @@ package com.devcharly.kotlin.ant
 
 import org.apache.tools.ant.taskdefs.Manifest
 import org.apache.tools.ant.taskdefs.Manifest.Attribute
+import org.apache.tools.ant.taskdefs.Manifest.Section
 
 /******************************************************************************
 DO NOT EDIT - this file was generated
@@ -43,7 +44,9 @@ fun Manifest._init(
 }
 
 class KManifest(val component: Manifest) :
+	ISectionNested,
 	IAttributeNested
 {
+	override fun _addSection(value: Section) = component.addConfiguredSection(value)
 	override fun _addAttribute(value: Attribute) = component.addConfiguredAttribute(value)
 }

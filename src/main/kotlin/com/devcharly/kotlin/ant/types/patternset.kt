@@ -66,10 +66,26 @@ class KPatternSet(override val component: PatternSet) :
 			_init(name, If, unless)
 		}
 	}
+	fun includesfile(name: String? = null, If: String? = null, unless: String? = null) {
+		component.createIncludesFile().apply {
+			_init(name, If, unless)
+		}
+	}
 	fun exclude(name: String? = null, If: String? = null, unless: String? = null) {
 		component.createExclude().apply {
 			_init(name, If, unless)
 		}
+	}
+	fun excludesfile(name: String? = null, If: String? = null, unless: String? = null) {
+		component.createExcludesFile().apply {
+			_init(name, If, unless)
+		}
+	}
+	fun invert(includes: String? = null, excludes: String? = null, includesfile: String? = null, excludesfile: String? = null, nested: (KPatternSet.() -> Unit)? = null) {
+		component.addConfiguredInvert(PatternSet().apply {
+			component.project.setProjectReference(this)
+			_init(includes, excludes, includesfile, excludesfile, nested)
+		})
 	}
 	override fun _addPatternSet(value: PatternSet) = component.addConfiguredPatternset(value)
 }
