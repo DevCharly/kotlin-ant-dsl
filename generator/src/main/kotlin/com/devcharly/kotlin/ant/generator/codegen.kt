@@ -16,7 +16,10 @@
 
 package com.devcharly.kotlin.ant.generator
 
+import org.apache.tools.ant.ProjectComponent
 import org.apache.tools.ant.types.EnumeratedAttribute
+import org.apache.tools.ant.types.ResourceCollection
+import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import java.util.*
 
@@ -97,6 +100,8 @@ fun genTypeFile(task: Task, baseInterface: Class<*>? = null): String {
 		code += nestedClassCode
 	}
 
+	code += genEnum(task)
+
 	return code
 }
 
@@ -163,7 +168,9 @@ fun genTypeInitFun(task: Task, imports: HashSet<String>): String? {
 fun genTypeNestedInterface(task: Task, body: String?, imports: HashSet<String>): String {
 	imports.add(task.type.name)
 
-	return "interface I${task.type.simpleName}Nested : INestedComponent {\n" +
+	return "interface I${task.type.simpleName}Nested " +
+		(if (hasProject(task.type)) ": INestedComponent " else "") +
+		"{\n" +
 		(if (body != null) "$body\n" else "") +
 		"\tfun _add${task.type.simpleName}(value: ${task.type.simpleName})\n" +
 		"}\n"
@@ -177,9 +184,10 @@ fun genTypeNestedFun(task: Task, forType: String?, indent: String, imports: Hash
 
 	val addType = if (forType != null) forType else task.type.simpleName
 	val constrParam = if (task.projectAtConstructor) "component.project" else ""
-	var addCode = "${indent}\t_add${addType}(${task.type.simpleName}($constrParam).apply {\n" +
-		"${indent}\t\tcomponent.project.setProjectReference(this);\n" +
-		"${indent}\t\t_init("
+	var addCode = "${indent}\t_add${addType}(${task.type.simpleName}($constrParam).apply {\n"
+	if (hasProject(task.type))
+		addCode += "${indent}\t\tcomponent.project.setProjectReference(this);\n"
+	addCode += "${indent}\t\t_init("
 	task.params.forEachIndexed { i, param ->
 		addCode += param.name
 		if (i < task.params.size - 1)
@@ -194,7 +202,7 @@ fun genTypeNestedFun(task: Task, forType: String?, indent: String, imports: Hash
 		"${indent}\t})\n"
 
 	val forTypeInterface = if (forType != null) "I${forType}Nested." else ""
-	return "${indent}fun $forTypeInterface${task.taskName}(\n" +
+	return "${indent}fun $forTypeInterface${task.funName}(\n" +
 		params + ")\n" +
 		"${indent}{\n" +
 		addCode +
@@ -246,15 +254,25 @@ fun genNestedClass(task: Task, imports: HashSet<String>): String? {
 	if (!task.hasNested)
 		return null
 
-	val consOvr = if (task.addTypeMethods.isEmpty()) "" else "override "
-	var code = "class K${task.nestedClassName}(${consOvr}val component: ${task.type.simpleName})"
-	task.addTypeMethods.forEachIndexed { i, addTypeMethod ->
-		code += if (i == 0) " : " else ", "
-		code += "I${addTypeMethod.parameterTypes[0].simpleName}Nested"
+	val interfaces = ArrayList<Class<*>>()
+	task.addTypeMethods.forEach {
+		interfaces.add(it.parameterTypes[0])
 	}
-	code += " {\n"
 
+	val addTypeMethods = ArrayList<Method>()
+	addTypeMethods.addAll(task.addTypeMethods)
+
+	var code = ""
 	task.nested.forEach {
+		if (it.name == funNameForType(it.type) &&
+			it.method.parameterCount == 1 &&
+			it.method.parameterTypes[0] == it.type)
+		{
+			interfaces.add(it.type)
+			addTypeMethods.add(it.method)
+			return@forEach
+		}
+
 		val n = reflectTask(it.type)
 		var nestedInitCode = "apply {\n" +
 			"\t\t\t_init(${n.params.joinToString { it.name }}"
@@ -277,7 +295,7 @@ fun genNestedClass(task: Task, imports: HashSet<String>): String? {
 		code += "\t}\n"
 	}
 
-	task.addTypeMethods.forEach { addTypeMethod ->
+	addTypeMethods.forEach { addTypeMethod ->
 		val type = addTypeMethod.parameterTypes[0]
 		imports.add(type.name)
 		code += "\toverride fun _add${type.simpleName}(value: ${type.simpleName}) = component.${addTypeMethod.name}(value)\n"
@@ -287,7 +305,16 @@ fun genNestedClass(task: Task, imports: HashSet<String>): String? {
 		code += "\toperator fun String.unaryPlus() = component.${task.addTextMethod.name}(this)\n"
 	code += "}\n"
 
-	return code
+	val consOvr = if (interfaces.any { hasProject(it) }) "override " else ""
+	var code0 = "class K${task.nestedClassName}(${consOvr}val component: ${task.type.simpleName})"
+	interfaces.forEachIndexed { i, it ->
+		code0 += if (i == 0) " :\n\t" else ",\n\t"
+		code0 += "I${it.simpleName}Nested"
+	}
+	code0 += if (interfaces.isEmpty()) " " else "\n"
+	code0 += "{\n"
+
+	return code0 + code
 }
 
 fun genEnum(task: Task): String {
@@ -378,4 +405,9 @@ private fun init(type: Class<*>, name: String, constructWithProject: Boolean, im
 			}
 		}
 	}
+}
+
+private fun hasProject(cls: Class<*>): Boolean {
+	return ProjectComponent::class.java.isAssignableFrom(cls) ||
+		cls == ResourceCollection::class.java
 }

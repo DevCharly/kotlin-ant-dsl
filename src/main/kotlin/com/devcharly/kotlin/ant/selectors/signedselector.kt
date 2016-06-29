@@ -16,30 +16,28 @@
 
 package com.devcharly.kotlin.ant
 
-import org.apache.tools.ant.taskdefs.BZip2
-import org.apache.tools.ant.types.ResourceCollection
+import org.apache.tools.ant.types.selectors.SignedSelector
 
 /******************************************************************************
 DO NOT EDIT - this file was generated
 ******************************************************************************/
 
-fun Ant.bzip2(
-	src: String? = null,
-	destfile: String? = null,
-	nested: (KBZip2.() -> Unit)? = null)
-{
-	BZip2().execute("bzip2") { task ->
-		if (src != null)
-			task.setSrc(project.resolveFile(src))
-		if (destfile != null)
-			task.setDestfile(project.resolveFile(destfile))
-		if (nested != null)
-			nested(KBZip2(task))
+interface ISignedSelectorNested : INestedComponent {
+	fun signed(
+		name: String? = null)
+	{
+		_addSignedSelector(SignedSelector().apply {
+			component.project.setProjectReference(this);
+			_init(name)
+		})
 	}
+
+	fun _addSignedSelector(value: SignedSelector)
 }
 
-class KBZip2(override val component: BZip2) :
-	IResourceCollectionNested
+fun SignedSelector._init(
+	name: String?)
 {
-	override fun _addResourceCollection(value: ResourceCollection) = component.addConfigured(value)
+	if (name != null)
+		setName(name)
 }

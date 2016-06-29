@@ -38,6 +38,8 @@ fun Ant.bunzip2(
 	}
 }
 
-class KBUnzip2(override val component: BUnzip2) : IResourceCollectionNested {
+class KBUnzip2(override val component: BUnzip2) :
+	IResourceCollectionNested
+{
 	override fun _addResourceCollection(value: ResourceCollection) = component.addConfigured(value)
 }

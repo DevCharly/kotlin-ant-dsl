@@ -40,7 +40,24 @@ fun main(args: Array<String>) {
 	genType(ZipFileSet::class.java, baseInterface = ResourceCollection::class.java, exclude = "srcresource")
 
 	// Selectors
+	genType(AndSelector::class.java, folder = "selectors")
+	genType(ContainsRegexpSelector::class.java, folder = "selectors")
+	genType(ContainsSelector::class.java, folder = "selectors")
+	genType(DependSelector::class.java, folder = "selectors")
+	genType(DepthSelector::class.java, folder = "selectors")
+	genType(DifferentSelector::class.java, folder = "selectors")
+	genType(FilenameSelector::class.java, folder = "selectors")
 	genType(FileSelector::class.java, folder = "selectors")
+	genType(MajoritySelector::class.java, folder = "selectors")
+	genType(NoneSelector::class.java, folder = "selectors")
+	genType(NotSelector::class.java, folder = "selectors")
+	genType(OrSelector::class.java, folder = "selectors")
+	genType(PresentSelector::class.java, folder = "selectors")
+	genType(ReadableSelector::class.java, folder = "selectors")
+	genType(SelectSelector::class.java, folder = "selectors")
+	genType(SignedSelector::class.java, folder = "selectors")
+	genType(TypeSelector::class.java, folder = "selectors")
+	genType(WritableSelector::class.java, folder = "selectors")
 
 	// SPI
 	genType(Provider::class.java, folder = "spi")//, order = "type provider")
@@ -73,26 +90,10 @@ fun main(args: Array<String>) {
 }
 
 val unsupportedNested = arrayOf(
-	"selector",
-	"and",
-	"or",
-	"not",
-	"none",
-	"majority",
 	"date",
 	"size",
 	"custom",
-	"present",
-	"depend",
-	"different",
 	"modified",
-	"filename",
-	"contains",
-	"depth",
-	"containsregexp",
-	"type",
-	"readable",
-	"writable",
 
 	"filterchain",
 	"filterset",

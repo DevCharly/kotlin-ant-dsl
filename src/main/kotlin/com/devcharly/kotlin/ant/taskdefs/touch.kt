@@ -51,7 +51,10 @@ fun Ant.touch(
 	}
 }
 
-class KTouch(override val component: Touch) : IFileNameMapperNested, IResourceCollectionNested {
+class KTouch(override val component: Touch) :
+	IFileNameMapperNested,
+	IResourceCollectionNested
+{
 	override fun _addFileNameMapper(value: FileNameMapper) = component.add(value)
 	override fun _addResourceCollection(value: ResourceCollection) = component.add(value)
 }

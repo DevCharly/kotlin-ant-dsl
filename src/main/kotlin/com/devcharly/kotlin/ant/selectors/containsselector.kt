@@ -16,43 +16,45 @@
 
 package com.devcharly.kotlin.ant
 
-import org.apache.tools.ant.types.spi.Provider
-import org.apache.tools.ant.types.spi.Service
+import org.apache.tools.ant.types.selectors.ContainsSelector
 
 /******************************************************************************
 DO NOT EDIT - this file was generated
 ******************************************************************************/
 
-interface IServiceNested : INestedComponent {
-	fun service(
-		type: String? = null,
-		provider: String? = null,
-		nested: (KService.() -> Unit)? = null)
+interface IContainsSelectorNested : INestedComponent {
+	fun contains(
+		text: String? = null,
+		encoding: String? = null,
+		casesensitive: Boolean? = null,
+		ignorewhitespace: Boolean? = null,
+		error: String? = null)
 	{
-		_addService(Service().apply {
+		_addContainsSelector(ContainsSelector().apply {
 			component.project.setProjectReference(this);
-			_init(type, provider, nested)
+			_init(text, encoding, casesensitive, ignorewhitespace,
+				error)
 		})
 	}
 
-	fun _addService(value: Service)
+	fun _addContainsSelector(value: ContainsSelector)
 }
 
-fun Service._init(
-	type: String?,
-	provider: String?,
-	nested: (KService.() -> Unit)?)
+fun ContainsSelector._init(
+	text: String?,
+	encoding: String?,
+	casesensitive: Boolean?,
+	ignorewhitespace: Boolean?,
+	error: String?)
 {
-	if (type != null)
-		setType(type)
-	if (provider != null)
-		setProvider(provider)
-	if (nested != null)
-		nested(KService(this))
-}
-
-class KService(override val component: Service) :
-	IProviderNested
-{
-	override fun _addProvider(value: Provider) = component.addConfiguredProvider(value)
+	if (text != null)
+		setText(text)
+	if (encoding != null)
+		setEncoding(encoding)
+	if (casesensitive != null)
+		setCasesensitive(casesensitive)
+	if (ignorewhitespace != null)
+		setIgnorewhitespace(ignorewhitespace)
+	if (error != null)
+		setError(error)
 }

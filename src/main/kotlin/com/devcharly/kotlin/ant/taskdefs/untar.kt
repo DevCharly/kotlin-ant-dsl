@@ -58,14 +58,14 @@ fun Ant.untar(
 	}
 }
 
-class KUntar(override val component: Untar) : IFileNameMapperNested, IResourceCollectionNested {
-	fun patternset(includes: String? = null, excludes: String? = null, includesfile: String? = null, excludesfile: String? = null, nested: (KPatternSet.() -> Unit)? = null) {
-		component.addPatternset(PatternSet().apply {
-			_init(includes, excludes, includesfile, excludesfile, nested)
-		})
-	}
+class KUntar(override val component: Untar) :
+	IFileNameMapperNested,
+	IResourceCollectionNested,
+	IPatternSetNested
+{
 	override fun _addFileNameMapper(value: FileNameMapper) = component.add(value)
 	override fun _addResourceCollection(value: ResourceCollection) = component.add(value)
+	override fun _addPatternSet(value: PatternSet) = component.addPatternset(value)
 }
 
 enum class UntarCompressionMethod(val value: String) { NONE("none"), GZIP("gzip"), BZIP2("bzip2") }

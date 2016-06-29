@@ -16,43 +16,45 @@
 
 package com.devcharly.kotlin.ant
 
-import org.apache.tools.ant.types.spi.Provider
-import org.apache.tools.ant.types.spi.Service
+import org.apache.tools.ant.types.selectors.ContainsRegexpSelector
 
 /******************************************************************************
 DO NOT EDIT - this file was generated
 ******************************************************************************/
 
-interface IServiceNested : INestedComponent {
-	fun service(
-		type: String? = null,
-		provider: String? = null,
-		nested: (KService.() -> Unit)? = null)
+interface IContainsRegexpSelectorNested : INestedComponent {
+	fun containsregexp(
+		expression: String? = null,
+		casesensitive: Boolean? = null,
+		multiline: Boolean? = null,
+		singleline: Boolean? = null,
+		error: String? = null)
 	{
-		_addService(Service().apply {
+		_addContainsRegexpSelector(ContainsRegexpSelector().apply {
 			component.project.setProjectReference(this);
-			_init(type, provider, nested)
+			_init(expression, casesensitive, multiline, singleline,
+				error)
 		})
 	}
 
-	fun _addService(value: Service)
+	fun _addContainsRegexpSelector(value: ContainsRegexpSelector)
 }
 
-fun Service._init(
-	type: String?,
-	provider: String?,
-	nested: (KService.() -> Unit)?)
+fun ContainsRegexpSelector._init(
+	expression: String?,
+	casesensitive: Boolean?,
+	multiline: Boolean?,
+	singleline: Boolean?,
+	error: String?)
 {
-	if (type != null)
-		setType(type)
-	if (provider != null)
-		setProvider(provider)
-	if (nested != null)
-		nested(KService(this))
-}
-
-class KService(override val component: Service) :
-	IProviderNested
-{
-	override fun _addProvider(value: Provider) = component.addConfiguredProvider(value)
+	if (expression != null)
+		setExpression(expression)
+	if (casesensitive != null)
+		setCaseSensitive(casesensitive)
+	if (multiline != null)
+		setMultiLine(multiline)
+	if (singleline != null)
+		setSingleLine(singleline)
+	if (error != null)
+		setError(error)
 }

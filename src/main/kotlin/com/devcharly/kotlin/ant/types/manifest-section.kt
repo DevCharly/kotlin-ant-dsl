@@ -23,13 +23,12 @@ import org.apache.tools.ant.taskdefs.Manifest.Section
 DO NOT EDIT - this file was generated
 ******************************************************************************/
 
-interface ISectionNested : INestedComponent {
+interface ISectionNested {
 	fun section(
 		name: String? = null,
 		nested: (KSection.() -> Unit)? = null)
 	{
 		_addSection(Section().apply {
-			component.project.setProjectReference(this);
 			_init(name, nested)
 		})
 	}
@@ -47,10 +46,8 @@ fun Section._init(
 		nested(KSection(this))
 }
 
-class KSection(val component: Section) {
-	fun attribute(name: String? = null, value: String? = null) {
-		component.addConfiguredAttribute(Attribute().apply {
-			_init(name, value)
-		})
-	}
+class KSection(val component: Section) :
+	IAttributeNested
+{
+	override fun _addAttribute(value: Attribute) = component.addConfiguredAttribute(value)
 }

@@ -38,6 +38,8 @@ fun Ant.gzip(
 	}
 }
 
-class KGZip(override val component: GZip) : IResourceCollectionNested {
+class KGZip(override val component: GZip) :
+	IResourceCollectionNested
+{
 	override fun _addResourceCollection(value: ResourceCollection) = component.addConfigured(value)
 }

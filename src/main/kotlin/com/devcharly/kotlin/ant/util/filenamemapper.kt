@@ -22,6 +22,6 @@ import org.apache.tools.ant.util.FileNameMapper
 DO NOT EDIT - this file was generated
 ******************************************************************************/
 
-interface IFileNameMapperNested : INestedComponent {
+interface IFileNameMapperNested {
 	fun _addFileNameMapper(value: FileNameMapper)
 }

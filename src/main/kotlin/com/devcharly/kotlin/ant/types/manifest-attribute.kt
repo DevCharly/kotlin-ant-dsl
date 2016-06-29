@@ -22,13 +22,12 @@ import org.apache.tools.ant.taskdefs.Manifest.Attribute
 DO NOT EDIT - this file was generated
 ******************************************************************************/
 
-interface IAttributeNested : INestedComponent {
+interface IAttributeNested {
 	fun attribute(
 		name: String? = null,
 		value: String? = null)
 	{
 		_addAttribute(Attribute().apply {
-			component.project.setProjectReference(this);
 			_init(name, value)
 		})
 	}

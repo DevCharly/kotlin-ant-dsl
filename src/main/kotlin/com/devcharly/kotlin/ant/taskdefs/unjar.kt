@@ -55,12 +55,12 @@ fun Ant.unjar(
 	}
 }
 
-class KUnjar(override val component: Expand) : IFileNameMapperNested, IResourceCollectionNested {
-	fun patternset(includes: String? = null, excludes: String? = null, includesfile: String? = null, excludesfile: String? = null, nested: (KPatternSet.() -> Unit)? = null) {
-		component.addPatternset(PatternSet().apply {
-			_init(includes, excludes, includesfile, excludesfile, nested)
-		})
-	}
+class KUnjar(override val component: Expand) :
+	IFileNameMapperNested,
+	IResourceCollectionNested,
+	IPatternSetNested
+{
 	override fun _addFileNameMapper(value: FileNameMapper) = component.add(value)
 	override fun _addResourceCollection(value: ResourceCollection) = component.add(value)
+	override fun _addPatternSet(value: PatternSet) = component.addPatternset(value)
 }

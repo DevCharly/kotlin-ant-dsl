@@ -16,30 +16,25 @@
 
 package com.devcharly.kotlin.ant
 
-import org.apache.tools.ant.taskdefs.BZip2
-import org.apache.tools.ant.types.ResourceCollection
+import org.apache.tools.ant.types.selectors.WritableSelector
 
 /******************************************************************************
 DO NOT EDIT - this file was generated
 ******************************************************************************/
 
-fun Ant.bzip2(
-	src: String? = null,
-	destfile: String? = null,
-	nested: (KBZip2.() -> Unit)? = null)
-{
-	BZip2().execute("bzip2") { task ->
-		if (src != null)
-			task.setSrc(project.resolveFile(src))
-		if (destfile != null)
-			task.setDestfile(project.resolveFile(destfile))
-		if (nested != null)
-			nested(KBZip2(task))
+interface IWritableSelectorNested {
+	fun writable(
+)
+	{
+		_addWritableSelector(WritableSelector().apply {
+			_init()
+		})
 	}
+
+	fun _addWritableSelector(value: WritableSelector)
 }
 
-class KBZip2(override val component: BZip2) :
-	IResourceCollectionNested
+fun WritableSelector._init(
+)
 {
-	override fun _addResourceCollection(value: ResourceCollection) = component.addConfigured(value)
 }

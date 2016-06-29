@@ -16,30 +16,34 @@
 
 package com.devcharly.kotlin.ant
 
-import org.apache.tools.ant.taskdefs.BZip2
-import org.apache.tools.ant.types.ResourceCollection
+import org.apache.tools.ant.types.selectors.TypeSelector
 
 /******************************************************************************
 DO NOT EDIT - this file was generated
 ******************************************************************************/
 
-fun Ant.bzip2(
-	src: String? = null,
-	destfile: String? = null,
-	nested: (KBZip2.() -> Unit)? = null)
-{
-	BZip2().execute("bzip2") { task ->
-		if (src != null)
-			task.setSrc(project.resolveFile(src))
-		if (destfile != null)
-			task.setDestfile(project.resolveFile(destfile))
-		if (nested != null)
-			nested(KBZip2(task))
+interface ITypeSelectorNested : INestedComponent {
+	fun type(
+		type: FileType? = null,
+		error: String? = null)
+	{
+		_addTypeSelector(TypeSelector().apply {
+			component.project.setProjectReference(this);
+			_init(type, error)
+		})
 	}
+
+	fun _addTypeSelector(value: TypeSelector)
 }
 
-class KBZip2(override val component: BZip2) :
-	IResourceCollectionNested
+fun TypeSelector._init(
+	type: FileType?,
+	error: String?)
 {
-	override fun _addResourceCollection(value: ResourceCollection) = component.addConfigured(value)
+	if (type != null)
+		setType(TypeSelector.FileType().apply { value = type.value })
+	if (error != null)
+		setError(error)
 }
+
+enum class FileType(val value: String) { FILE("file"), DIR("dir") }

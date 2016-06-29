@@ -38,6 +38,8 @@ fun Ant.gunzip(
 	}
 }
 
-class KGUnzip(override val component: GUnzip) : IResourceCollectionNested {
+class KGUnzip(override val component: GUnzip) :
+	IResourceCollectionNested
+{
 	override fun _addResourceCollection(value: ResourceCollection) = component.addConfigured(value)
 }

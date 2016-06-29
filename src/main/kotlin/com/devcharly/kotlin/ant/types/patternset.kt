@@ -58,12 +58,9 @@ fun PatternSet._init(
 		nested(KPatternSet(this))
 }
 
-class KPatternSet(val component: PatternSet) {
-	fun patternset(includes: String? = null, excludes: String? = null, includesfile: String? = null, excludesfile: String? = null, nested: (KPatternSet.() -> Unit)? = null) {
-		component.addConfiguredPatternset(PatternSet().apply {
-			_init(includes, excludes, includesfile, excludesfile, nested)
-		})
-	}
+class KPatternSet(override val component: PatternSet) :
+	IPatternSetNested
+{
 	fun include(name: String? = null, If: String? = null, unless: String? = null) {
 		component.createInclude().apply {
 			_init(name, If, unless)
@@ -74,4 +71,5 @@ class KPatternSet(val component: PatternSet) {
 			_init(name, If, unless)
 		}
 	}
+	override fun _addPatternSet(value: PatternSet) = component.addConfiguredPatternset(value)
 }

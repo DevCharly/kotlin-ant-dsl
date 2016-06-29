@@ -22,6 +22,6 @@ import org.apache.tools.ant.types.selectors.FileSelector
 DO NOT EDIT - this file was generated
 ******************************************************************************/
 
-interface IFileSelectorNested : INestedComponent {
+interface IFileSelectorNested {
 	fun _addFileSelector(value: FileSelector)
 }

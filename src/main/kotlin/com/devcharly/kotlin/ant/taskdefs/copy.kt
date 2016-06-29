@@ -81,7 +81,10 @@ fun Ant.copy(
 	}
 }
 
-class KCopy(override val component: Copy) : IFileNameMapperNested, IResourceCollectionNested {
+class KCopy(override val component: Copy) :
+	IFileNameMapperNested,
+	IResourceCollectionNested
+{
 	override fun _addFileNameMapper(value: FileNameMapper) = component.add(value)
 	override fun _addResourceCollection(value: ResourceCollection) = component.add(value)
 }

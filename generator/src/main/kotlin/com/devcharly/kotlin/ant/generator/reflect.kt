@@ -20,6 +20,8 @@ import org.apache.tools.ant.IntrospectionHelper
 import org.apache.tools.ant.Project
 import org.apache.tools.ant.ProjectComponent
 import org.apache.tools.ant.types.EnumeratedAttribute
+import org.apache.tools.ant.types.selectors.FileSelector
+import org.apache.tools.ant.types.selectors.SelectSelector
 import java.lang.reflect.Method
 import java.util.*
 
@@ -138,14 +140,26 @@ fun reflectTask(taskType: Class<*>, taskName: String? = null, order: String? = n
 
 	return Task(taskType,
 		taskName ?: taskType.simpleName.toLowerCase(),
+		taskName ?: funNameForType(taskType),
 		taskName?.capitalize() ?: taskType.simpleName,
 		projectAtConstructor, params.toTypedArray(), nested.toTypedArray(), addTypeMethods, addTextMethod)
+}
+
+fun funNameForType(cls: Class<*>): String {
+	if (FileSelector::class.java.isAssignableFrom(cls) && cls.name.endsWith("Selector")) {
+		return when (cls) {
+			SelectSelector::class.java -> "selector"
+			else -> cls.simpleName.removeSuffix("Selector").toLowerCase()
+		}
+	}
+	return cls.simpleName.toLowerCase()
 }
 
 //---- class Task -------------------------------------------------------------
 
 class Task(val type: Class<*>,
 		   val taskName: String,
+		   val funName: String,
 		   val nestedClassName: String,
 		   val projectAtConstructor: Boolean,
            val params: Array<TaskParam>,

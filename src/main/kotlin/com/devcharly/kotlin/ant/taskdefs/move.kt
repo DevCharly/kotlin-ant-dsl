@@ -84,7 +84,10 @@ fun Ant.move(
 	}
 }
 
-class KMove(override val component: Move) : IFileNameMapperNested, IResourceCollectionNested {
+class KMove(override val component: Move) :
+	IFileNameMapperNested,
+	IResourceCollectionNested
+{
 	override fun _addFileNameMapper(value: FileNameMapper) = component.add(value)
 	override fun _addResourceCollection(value: ResourceCollection) = component.add(value)
 }

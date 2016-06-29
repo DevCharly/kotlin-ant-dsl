@@ -22,12 +22,11 @@ import org.apache.tools.ant.types.FileList.FileName
 DO NOT EDIT - this file was generated
 ******************************************************************************/
 
-interface IFileNameNested : INestedComponent {
+interface IFileNameNested {
 	fun filename(
 		name: String? = null)
 	{
 		_addFileName(FileName().apply {
-			component.project.setProjectReference(this);
 			_init(name)
 		})
 	}

@@ -23,12 +23,11 @@ import org.apache.tools.ant.taskdefs.Manifest.Attribute
 DO NOT EDIT - this file was generated
 ******************************************************************************/
 
-interface IManifestNested : INestedComponent {
+interface IManifestNested {
 	fun manifest(
 		nested: (KManifest.() -> Unit)? = null)
 	{
 		_addManifest(Manifest().apply {
-			component.project.setProjectReference(this);
 			_init(nested)
 		})
 	}
@@ -43,10 +42,8 @@ fun Manifest._init(
 		nested(KManifest(this))
 }
 
-class KManifest(val component: Manifest) {
-	fun attribute(name: String? = null, value: String? = null) {
-		component.addConfiguredAttribute(Attribute().apply {
-			_init(name, value)
-		})
-	}
+class KManifest(val component: Manifest) :
+	IAttributeNested
+{
+	override fun _addAttribute(value: Attribute) = component.addConfiguredAttribute(value)
 }
