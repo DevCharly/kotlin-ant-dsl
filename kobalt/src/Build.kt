@@ -4,9 +4,9 @@ import com.beust.kobalt.plugin.publish.bintray
 
 val dsl = project {
 	name = "kotlin-ant-dsl"
-	group = "com.devcharly.kotlin.ant"
+	group = "com.devcharly"
 	artifactId = name
-	version = "0.1"
+	version = "0.2"
 
 	dependencies {
 		compile("org.apache.ant:ant:1.9.7")
