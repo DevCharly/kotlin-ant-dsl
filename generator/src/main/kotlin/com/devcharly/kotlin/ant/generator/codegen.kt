@@ -328,6 +328,14 @@ private fun paramType(type: Class<*>): String {
 		"char" -> "Char"
 		"float" -> "Float"
 		"double" -> "Double"
+		"java.lang.Boolean" -> "Boolean"
+		"java.lang.Byte" -> "Byte"
+		"java.lang.Short" -> "Short"
+		"java.lang.Integer" -> "Int"
+		"java.lang.Long" -> "Long"
+		"java.lang.Character" -> "Char"
+		"java.lang.Float" -> "Float"
+		"java.lang.Double" -> "Double"
 		"java.io.File" -> "String"
 		else ->
 			if (EnumeratedAttribute::class.java.isAssignableFrom(type))
@@ -348,6 +356,14 @@ private fun init(type: Class<*>, name: String, constructWithProject: Boolean, im
 		"char" -> name
 		"float" -> name
 		"double" -> name
+		"java.lang.Boolean" -> name
+		"java.lang.Byte" -> name
+		"java.lang.Short" -> name
+		"java.lang.Integer" -> name
+		"java.lang.Long" -> name
+		"java.lang.Character" -> name
+		"java.lang.Float" -> name
+		"java.lang.Double" -> name
 		"java.io.File" -> "project.resolveFile($name)"
 		else -> {
 			if (EnumeratedAttribute::class.java.isAssignableFrom(type)) {
