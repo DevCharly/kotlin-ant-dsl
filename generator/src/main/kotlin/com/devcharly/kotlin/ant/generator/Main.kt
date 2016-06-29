@@ -33,6 +33,8 @@ fun main(args: Array<String>) {
 	genType(Manifest::class.java)
 	genType(Manifest.Attribute::class.java)
 	genType(Manifest.Section::class.java)
+	genType(Path::class.java, baseInterface = ResourceCollection::class.java)
+	genType(Path.PathElement::class.java)
 	genType(PatternSet::class.java)
 	genTypeInit(PatternSet.NameEntry::class.java)
 	genType(ResourceCollection::class.java)
@@ -105,7 +107,7 @@ val unsupportedNested = arrayOf(
 	"metainf",
 	"indexjars",
 
-	"classpath",
+	"path",
 
 	"",
 	""

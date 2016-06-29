@@ -29,12 +29,15 @@ fun reflectTask(taskType: Class<*>, taskName: String? = null, order: String? = n
 	val aClass = aClass(taskType)
 
 	// determine whether have to pass project to constructor
+	var hasConstructor = false
 	var projectAtConstructor = false
 	try {
 		taskType.getConstructor()
+		hasConstructor = true
 	} catch (ex: NoSuchMethodException) {
 		try {
 			taskType.getConstructor(Project::class.java)
+			hasConstructor = true
 			projectAtConstructor = true
 		} catch (ex: NoSuchMethodException) {
 			// ignore
@@ -142,7 +145,8 @@ fun reflectTask(taskType: Class<*>, taskName: String? = null, order: String? = n
 		taskName ?: taskType.simpleName.toLowerCase(),
 		taskName ?: funNameForType(taskType),
 		taskName?.capitalize() ?: taskType.simpleName,
-		projectAtConstructor, params.toTypedArray(), nested.toTypedArray(), addTypeMethods, addTextMethod)
+		hasConstructor, projectAtConstructor,
+		params.toTypedArray(), nested.toTypedArray(), addTypeMethods, addTextMethod)
 }
 
 fun funNameForType(cls: Class<*>): String {
@@ -161,6 +165,7 @@ class Task(val type: Class<*>,
 		   val taskName: String,
 		   val funName: String,
 		   val nestedClassName: String,
+		   val hasConstructor: Boolean,
 		   val projectAtConstructor: Boolean,
            val params: Array<TaskParam>,
 		   val nested: Array<TaskNested>,

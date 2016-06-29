@@ -74,5 +74,11 @@ fun Ant.property(
 }
 
 class KProperty(val component: Property) {
+	fun classpath(location: String? = null, path: String? = null, cache: Boolean? = null, nested: (KPath.() -> Unit)? = null) {
+		component.createClasspath().apply {
+			component.project.setProjectReference(this)
+			_init(location, path, cache, nested)
+		}
+	}
 	operator fun String.unaryPlus() = component.addText(this)
 }

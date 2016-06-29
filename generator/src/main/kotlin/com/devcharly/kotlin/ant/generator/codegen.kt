@@ -16,8 +16,10 @@
 
 package com.devcharly.kotlin.ant.generator
 
+import org.apache.tools.ant.Project
 import org.apache.tools.ant.ProjectComponent
 import org.apache.tools.ant.types.EnumeratedAttribute
+import org.apache.tools.ant.types.Path
 import org.apache.tools.ant.types.ResourceCollection
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
@@ -156,8 +158,15 @@ fun genTypeInitFun(task: Task, imports: HashSet<String>): String? {
 	val params = genParams(task, false, "\t", imports)
 	val init = genInit(task, "", "\t", imports)
 
+	val projectParam = if (needsProject(task.type)) {
+		imports.add(Project::class.java.name)
+		"\tproject: Project,\n"
+	} else
+		""
+
 	// build function
 	val funCode = "fun ${task.type.simpleName}._init(\n" +
+			projectParam +
 			params + ")\n" +
 			"{\n" +
 			init +
@@ -166,6 +175,9 @@ fun genTypeInitFun(task: Task, imports: HashSet<String>): String? {
 }
 
 fun genTypeNestedInterface(task: Task, body: String?, imports: HashSet<String>): String {
+	if (!task.hasConstructor && !task.type.isInterface)
+		return ""
+
 	imports.add(task.type.name)
 
 	return "interface I${task.type.simpleName}Nested " +
@@ -188,6 +200,8 @@ fun genTypeNestedFun(task: Task, forType: String?, indent: String, imports: Hash
 	if (hasProject(task.type))
 		addCode += "${indent}\t\tcomponent.project.setProjectReference(this);\n"
 	addCode += "${indent}\t\t_init("
+	if (needsProject(task.type))
+		addCode += "component.project, "
 	task.params.forEachIndexed { i, param ->
 		addCode += param.name
 		if (i < task.params.size - 1)
@@ -277,7 +291,10 @@ fun genNestedClass(task: Task, imports: HashSet<String>): String? {
 		var nestedInitCode = "apply {\n"
 		if (hasProject(it.type))
 			nestedInitCode += "\t\t\tcomponent.project.setProjectReference(this)\n"
-		nestedInitCode += "\t\t\t_init(${n.params.joinToString { it.name }}"
+		nestedInitCode += "\t\t\t_init("
+		if (needsProject(n.type))
+			nestedInitCode += "component.project, "
+		nestedInitCode += "${n.params.joinToString { it.name }}"
 		if (n.hasNested) {
 			if (!n.params.isEmpty())
 				nestedInitCode += ", "
@@ -412,4 +429,8 @@ private fun init(type: Class<*>, name: String, constructWithProject: Boolean, im
 private fun hasProject(cls: Class<*>): Boolean {
 	return ProjectComponent::class.java.isAssignableFrom(cls) ||
 		cls == ResourceCollection::class.java
+}
+
+private fun needsProject(cls: Class<*>): Boolean {
+	return cls == Path.PathElement::class.java
 }
