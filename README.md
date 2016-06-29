@@ -3,8 +3,6 @@
 [![Build Status](https://travis-ci.org/DevCharly/kotlin-ant-dsl.svg?branch=master)](https://travis-ci.org/DevCharly/kotlin-ant-dsl)
 [![Download](https://api.bintray.com/packages/devcharly/maven/kotlin-ant-dsl/images/download.svg) ](https://bintray.com/devcharly/maven/kotlin-ant-dsl/_latestVersion)
 
-**This is project is work-in-progress.**
-
 Kotlin Ant DSL allows using [Ant] tasks from Kotlin.
 
 ```kotlin
