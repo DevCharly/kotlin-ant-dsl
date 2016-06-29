@@ -1,6 +1,7 @@
 # Kotlin Ant DSL
 
 [![Build Status](https://travis-ci.org/DevCharly/kotlin-ant-dsl.svg?branch=master)](https://travis-ci.org/DevCharly/kotlin-ant-dsl)
+[![Download](https://api.bintray.com/packages/devcharly/maven/kotlin-ant-dsl/images/download.svg) ](https://bintray.com/devcharly/maven/kotlin-ant-dsl/_latestVersion)
 
 **This is project is work-in-progress.**
 
@@ -17,6 +18,8 @@ Ant {
     }
 }
 ```
+
+[Examples](examples/src/demo.kt)
 
 
 Define a function to use a custom Ant task:
@@ -77,6 +80,18 @@ Ant {
 ## Who uses Kotlin Ant DSL?
 
   * [Kobalt build system Ant plug-in](https://github.com/DevCharly/kobalt-ant)
+
+
+## Download
+
+[![Download](https://api.bintray.com/packages/devcharly/maven/kotlin-ant-dsl/images/download.svg) ](https://bintray.com/devcharly/maven/kotlin-ant-dsl/_latestVersion)
+
+For Maven, Gradle or Kobalt use:
+
+    Repository: https://dl.bintray.com/devcharly/maven/ 
+    Group:      com.devcharly
+    Artifact:   kotlin-ant-dsl
+    Version:    (latest)
 
 
 [Ant]: http://ant.apache.org/
