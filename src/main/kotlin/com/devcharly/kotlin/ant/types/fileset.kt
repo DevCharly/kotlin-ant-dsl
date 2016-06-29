@@ -148,6 +148,7 @@ class KFileSet(override val component: FileSet) :
 {
 	fun patternset(includes: String? = null, excludes: String? = null, includesfile: String? = null, excludesfile: String? = null, nested: (KPatternSet.() -> Unit)? = null) {
 		component.createPatternSet().apply {
+			component.project.setProjectReference(this)
 			_init(includes, excludes, includesfile, excludesfile, nested)
 		}
 	}

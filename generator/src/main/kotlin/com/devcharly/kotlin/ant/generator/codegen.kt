@@ -274,8 +274,10 @@ fun genNestedClass(task: Task, imports: HashSet<String>): String? {
 		}
 
 		val n = reflectTask(it.type)
-		var nestedInitCode = "apply {\n" +
-			"\t\t\t_init(${n.params.joinToString { it.name }}"
+		var nestedInitCode = "apply {\n"
+		if (hasProject(it.type))
+			nestedInitCode += "\t\t\tcomponent.project.setProjectReference(this)\n"
+		nestedInitCode += "\t\t\t_init(${n.params.joinToString { it.name }}"
 		if (n.hasNested) {
 			if (!n.params.isEmpty())
 				nestedInitCode += ", "
