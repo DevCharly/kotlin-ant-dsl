@@ -27,6 +27,8 @@ import java.io.FileWriter
 fun main(args: Array<String>) {
 	// Types
 	genType(DirSet::class.java, baseInterface = ResourceCollection::class.java)
+	genType(FileList::class.java, baseInterface = ResourceCollection::class.java)
+	genType(FileList.FileName::class.java)
 	genType(FileSet::class.java, baseInterface = ResourceCollection::class.java)
 	genType(Manifest::class.java)
 	genType(Manifest.Attribute::class.java)
