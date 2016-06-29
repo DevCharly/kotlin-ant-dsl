@@ -1,5 +1,6 @@
 import com.beust.kobalt.*
 import com.beust.kobalt.plugin.packaging.*
+import com.beust.kobalt.plugin.publish.bintray
 
 val dsl = project {
 	name = "kotlin-ant-dsl"
@@ -18,12 +19,9 @@ val dsl = project {
 		}
 	}
 
-
-/*
 	bintray {
 		publish = true
 	}
-*/
 }
 
 val generator = project {
