@@ -124,10 +124,9 @@ fun reflectTask(taskType: Class<*>, taskName: String? = null, order: String? = n
 	val addTextMethod = if (ih.supportsCharacters()) ih.addTextMethod else null
 
 	// nested
-	val supported = arrayOf("patternset", "include", "exclude", "manifest", "attribute", "service", "provider", "file") //TODO
 	val nested = ArrayList<TaskNested>()
 	ih.nestedElementMap.forEach {
-		if (it.key !in supported)
+		if (it.key in unsupportedNested)
 			return@forEach
 
 		val em = ih.getElementMethod(it.key)

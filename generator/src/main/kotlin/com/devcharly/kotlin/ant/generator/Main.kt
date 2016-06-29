@@ -72,6 +72,49 @@ fun main(args: Array<String>) {
 	genTask(Zip::class.java)
 }
 
+val unsupportedNested = arrayOf(
+	"selector",
+	"and",
+	"or",
+	"not",
+	"none",
+	"majority",
+	"date",
+	"size",
+	"custom",
+	"present",
+	"depend",
+	"different",
+	"modified",
+	"filename",
+	"contains",
+	"depth",
+	"containsregexp",
+	"type",
+	"readable",
+	"writable",
+
+	"filterchain",
+	"filterset",
+	"filelist",
+	"fileset",
+	"mapper",
+	"zipfileset",
+	"zipgroupfileset",
+	"tarfileset",
+	"metainf",
+	"indexjars",
+
+	"classpath",
+
+	"includesfile",
+	"excludesfile",
+	"invert",
+	"section",
+	"",
+	""
+)
+
 fun genTask(taskType: Class<*>, taskName: String? = null, order: String? = null, exclude: String? = null) {
 	val task = reflectTask(taskType, taskName, order, exclude)
 	val code = genTaskFile(task)
