@@ -66,7 +66,18 @@ fun main(args: Array<String>) {
 	genType(Service::class.java, folder = "spi", order = "type provider")
 
 	// Util
+	genType(ChainedMapper::class.java, baseInterface = FileNameMapper::class.java, folder = "util")
+	genType(CompositeMapper::class.java, baseInterface = FileNameMapper::class.java, folder = "util")
+	genType(CutDirsMapper::class.java, baseInterface = FileNameMapper::class.java, folder = "util")
+	genType(FlatFileNameMapper::class.java, funName = "flattenmapper", baseInterface = FileNameMapper::class.java, folder = "util")
 	genType(FileNameMapper::class.java, folder = "util")
+	genType(FirstMatchMapper::class.java, baseInterface = FileNameMapper::class.java, folder = "util")
+	genType(GlobPatternMapper::class.java, funName = "globmapper", baseInterface = FileNameMapper::class.java, folder = "util")
+	genType(IdentityMapper::class.java, baseInterface = FileNameMapper::class.java, folder = "util")
+	genType(MergingMapper::class.java, funName = "mergemapper", baseInterface = FileNameMapper::class.java, folder = "util")
+	genType(PackageNameMapper::class.java, funName = "packagemapper", baseInterface = FileNameMapper::class.java, folder = "util")
+	genType(RegexpPatternMapper::class.java, funName = "regexpmapper", baseInterface = FileNameMapper::class.java, folder = "util")
+	genType(UnPackageNameMapper::class.java, funName = "unpackagemapper", baseInterface = FileNameMapper::class.java, folder = "util")
 
 	// Tasks
 	genTask(BUnzip2::class.java, order = "src dest", exclude = "srcresource")
@@ -120,8 +131,8 @@ fun genTask(taskType: Class<*>, taskName: String? = null, order: String? = null,
 	writeCode(taskType, "taskdefs", code, taskName)
 }
 
-fun genType(typeType: Class<*>, baseInterface: Class<*>? = null, order: String? = null, exclude: String? = null, folder: String = "types") {
-	val task = reflectTask(typeType, null, order, exclude)
+fun genType(typeType: Class<*>, funName: String? = null, baseInterface: Class<*>? = null, order: String? = null, exclude: String? = null, folder: String = "types") {
+	val task = reflectTask(typeType, funName, order, exclude)
 	val code = genTypeFile(task, baseInterface)
 
 	writeCode(typeType, folder, code)
