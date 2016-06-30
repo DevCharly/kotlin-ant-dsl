@@ -18,6 +18,7 @@ package com.devcharly.kotlin.ant.generator
 
 import org.apache.tools.ant.taskdefs.*
 import org.apache.tools.ant.taskdefs.compilers.CompilerAdapter
+import org.apache.tools.ant.taskdefs.optional.ReplaceRegExp
 import org.apache.tools.ant.taskdefs.optional.unix.Chgrp
 import org.apache.tools.ant.taskdefs.optional.unix.Chown
 import org.apache.tools.ant.types.*
@@ -144,6 +145,9 @@ fun initGen() {
 	genTask(Mkdir::class.java)
 	genTask(Move::class.java)
 	genTask(Property::class.java, order = "name value location resource file url environment classpath classpathref prefix prefixvalues relative basedir")
+	genTask(Replace::class.java, order = "file dir encoding token value")
+	genType(Replace.NestedString::class.java, folder = "taskdefs")
+	genType(Replace.Replacefilter::class.java, folder = "taskdefs")
 	genTask(ReplaceRegExp::class.java)
 	genTask(Tar::class.java)
 	genTypeInit(Tar.TarFileSet::class.java, folder = "taskdefs")
