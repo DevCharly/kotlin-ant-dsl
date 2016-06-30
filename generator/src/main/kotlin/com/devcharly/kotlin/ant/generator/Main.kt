@@ -121,6 +121,7 @@ fun initGen() {
 	genTask(Copy::class.java)
 	genTask(Delete::class.java)
 	genTask(Echo::class.java)
+	genTask(ExecTask::class.java, taskName = "exec", order = "command executable dir os osfamily")
 	genTask(FixCRLF::class.java)
 	genTask(GUnzip::class.java, order = "src dest")
 	genTask(GZip::class.java, order = "src destfile", exclude = "zipfile")

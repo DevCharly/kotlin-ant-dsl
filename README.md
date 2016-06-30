@@ -50,6 +50,7 @@ Ant {
   * [copy](http://ant.apache.org/manual/Tasks/copy.html)
   * [delete](http://ant.apache.org/manual/Tasks/delete.html)
   * [echo](http://ant.apache.org/manual/Tasks/echo.html)
+  * [exec](http://ant.apache.org/manual/Tasks/exec.html)
   * [fixcrlf](http://ant.apache.org/manual/Tasks/fixcrlf.html)
   * [gunzip](http://ant.apache.org/manual/Tasks/unpack.html)
   * [gzip](http://ant.apache.org/manual/Tasks/pack.html)
