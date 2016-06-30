@@ -18,6 +18,8 @@ package com.devcharly.kotlin.ant.generator
 
 import org.apache.tools.ant.taskdefs.*
 import org.apache.tools.ant.taskdefs.compilers.CompilerAdapter
+import org.apache.tools.ant.taskdefs.optional.unix.Chgrp
+import org.apache.tools.ant.taskdefs.optional.unix.Chown
 import org.apache.tools.ant.types.*
 import org.apache.tools.ant.types.mappers.CutDirsMapper
 import org.apache.tools.ant.types.optional.ScriptSelector
@@ -47,6 +49,7 @@ fun initGen() {
 	genType(Assertions.DisabledAssertion::class.java, funName = "disable")
 	genType(Assertions.EnabledAssertion::class.java, funName = "enable")
 	genTypeInit(Commandline.Argument::class.java)
+	genTypeInit(Commandline.Marker::class.java)
 	genTypeInit(Environment.Variable::class.java)
 	genType(DirSet::class.java, baseInterface = ResourceCollection::class.java)
 	genType(FileList::class.java, baseInterface = ResourceCollection::class.java)
@@ -118,10 +121,17 @@ fun initGen() {
 	genTask(BUnzip2::class.java, order = "src dest")
 	genTask(BZip2::class.java, order = "src destfile", exclude = "zipfile")
 	genTask(Checksum::class.java)
+	val executeonExclude = "spawn timeout executable command output input inputstring logerror error outputproperty errorproperty" +
+		" failonerror newenvironment resolveexecutable searchpath resultproperty failifexecutionfails append vmlauncher relative" +
+		" skipemptyfilesets dest forwardslash addsourcefile ignoremissing force"
+	genTask(Chgrp::class.java, order = "file group parallel type maxparallel verbose os osfamily", exclude = "dir $executeonExclude")
+	genTask(Chmod::class.java, order = "file dir perm includes excludes defaultexcludes parallel type maxparallel verbose os osfamily", exclude = executeonExclude)
+	genTask(Chown::class.java, order = "file owner parallel type maxparallel verbose os osfamily", exclude = "dir $executeonExclude")
 	genTask(Copy::class.java)
 	genTask(Delete::class.java)
 	genTask(Echo::class.java)
 	genTask(ExecTask::class.java, taskName = "exec", order = "command executable dir os osfamily")
+	genEnum(ExecuteOn.FileDirBoth::class.java, folder = "taskdefs")
 	genTask(FixCRLF::class.java)
 	genTask(GUnzip::class.java, order = "src dest")
 	genTask(GZip::class.java, order = "src destfile", exclude = "zipfile")
