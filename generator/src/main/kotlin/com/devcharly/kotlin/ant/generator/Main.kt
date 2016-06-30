@@ -42,9 +42,9 @@ fun main(args: Array<String>) {
 	genType(PatternSet::class.java)
 	genTypeInit(PatternSet.NameEntry::class.java)
 	genType(ResourceCollection::class.java)
-	genType(TarFileSet::class.java, baseInterface = ResourceCollection::class.java, exclude = "srcresource")
+	genType(TarFileSet::class.java, baseInterface = ResourceCollection::class.java)
 	genEnum(TimeComparison::class.java)
-	genType(ZipFileSet::class.java, baseInterface = ResourceCollection::class.java, exclude = "srcresource")
+	genType(ZipFileSet::class.java, baseInterface = ResourceCollection::class.java)
 
 	// Selectors
 	genType(AndSelector::class.java, folder = "selectors")
@@ -90,15 +90,15 @@ fun main(args: Array<String>) {
 	genType(UnPackageNameMapper::class.java, funName = "unpackagemapper", baseInterface = FileNameMapper::class.java, folder = "util")
 
 	// Tasks
-	genTask(BUnzip2::class.java, order = "src dest", exclude = "srcresource")
-	genTask(BZip2::class.java, order = "src destfile", exclude = "zipfile srcresource")
+	genTask(BUnzip2::class.java, order = "src dest")
+	genTask(BZip2::class.java, order = "src destfile", exclude = "zipfile")
 	genTask(Checksum::class.java)
 	genTask(Copy::class.java)
 	genTask(Delete::class.java)
 	genTask(Echo::class.java)
 	genTask(FixCRLF::class.java)
-	genTask(GUnzip::class.java, order = "src dest", exclude = "srcresource")
-	genTask(GZip::class.java, order = "src destfile", exclude = "zipfile srcresource")
+	genTask(GUnzip::class.java, order = "src dest")
+	genTask(GZip::class.java, order = "src destfile", exclude = "zipfile")
 	genTask(Jar::class.java)
 	genTask(Mkdir::class.java)
 	genTask(Move::class.java)
@@ -120,8 +120,6 @@ val unsupportedNested = arrayOf(
 	"mapper",
 	"zipfileset",
 	"tarfileset",
-	"metainf",
-	"indexjars",
 
 	"path",
 

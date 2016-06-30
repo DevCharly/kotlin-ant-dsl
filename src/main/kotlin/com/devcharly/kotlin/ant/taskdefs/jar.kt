@@ -20,7 +20,9 @@ import org.apache.tools.ant.taskdefs.Jar
 import org.apache.tools.ant.taskdefs.Manifest
 import org.apache.tools.ant.taskdefs.Zip
 import org.apache.tools.ant.types.FileSet
+import org.apache.tools.ant.types.Path
 import org.apache.tools.ant.types.ResourceCollection
+import org.apache.tools.ant.types.ZipFileSet
 import org.apache.tools.ant.types.selectors.AndSelector
 import org.apache.tools.ant.types.selectors.ContainsRegexpSelector
 import org.apache.tools.ant.types.selectors.ContainsSelector
@@ -209,6 +211,18 @@ class KJar(override val component: Jar) :
 			component.project.setProjectReference(this)
 			_init(includes, excludes, includesfile, excludesfile, nested)
 		}
+	}
+	fun metainf(dir: String? = null, file: String? = null, includes: String? = null, excludes: String? = null, includesfile: String? = null, excludesfile: String? = null, defaultexcludes: Boolean? = null, casesensitive: Boolean? = null, followsymlinks: Boolean? = null, maxlevelsofsymlinks: Int? = null, erroronmissingdir: Boolean? = null, src: String? = null, erroronmissingarchive: Boolean? = null, prefix: String? = null, fullpath: String? = null, encoding: String? = null, filemode: String? = null, dirmode: String? = null, nested: (KZipFileSet.() -> Unit)? = null) {
+		component.addMetainf(ZipFileSet().apply {
+			component.project.setProjectReference(this)
+			_init(dir, file, includes, excludes, includesfile, excludesfile, defaultexcludes, casesensitive, followsymlinks, maxlevelsofsymlinks, erroronmissingdir, src, erroronmissingarchive, prefix, fullpath, encoding, filemode, dirmode, nested)
+		})
+	}
+	fun indexjars(location: String? = null, path: String? = null, cache: Boolean? = null, nested: (KPath.() -> Unit)? = null) {
+		component.addConfiguredIndexJars(Path(component.project).apply {
+			component.project.setProjectReference(this)
+			_init(location, path, cache, nested)
+		})
 	}
 	override fun _addFileSelector(value: FileSelector) = component.add(value)
 	override fun _addResourceCollection(value: ResourceCollection) = component.add(value)

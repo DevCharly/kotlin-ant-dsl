@@ -99,7 +99,7 @@ fun reflectTask(taskType: Class<*>, taskName: String? = null, order: String? = n
 	params.removeIf { aClass.deprecatedMethods.contains(it.method) }
 
 	// always exclude some attributes
-	params.removeIf { it.name == "refid" }
+	params.removeIf { it.name == "refid" || it.name == "srcresource" }
 	if (ProjectComponent::class.java.isAssignableFrom(taskType))
 		params.removeIf { it.name == "description" }
 	if (org.apache.tools.ant.Task::class.java.isAssignableFrom(taskType))
