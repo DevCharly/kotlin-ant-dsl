@@ -16,28 +16,35 @@
 
 package com.devcharly.kotlin.ant
 
-import org.apache.tools.ant.types.selectors.SignedSelector
+import org.apache.tools.ant.types.Parameter
 
 /******************************************************************************
 DO NOT EDIT - this file was generated
 ******************************************************************************/
 
-interface ISignedSelectorNested : INestedComponent {
-	fun signedselector(
-		name: String? = null)
+interface IParameterNested {
+	fun parameter(
+		name: String? = null,
+		type: String? = null,
+		value: String? = null)
 	{
-		_addSignedSelector(SignedSelector().apply {
-			component.project.setProjectReference(this);
-			_init(name)
+		_addParameter(Parameter().apply {
+			_init(name, type, value)
 		})
 	}
 
-	fun _addSignedSelector(value: SignedSelector)
+	fun _addParameter(value: Parameter)
 }
 
-fun SignedSelector._init(
-	name: String?)
+fun Parameter._init(
+	name: String?,
+	type: String?,
+	value: String?)
 {
 	if (name != null)
 		setName(name)
+	if (type != null)
+		setType(type)
+	if (value != null)
+		setValue(value)
 }

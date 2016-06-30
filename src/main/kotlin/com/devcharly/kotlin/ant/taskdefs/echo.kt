@@ -43,7 +43,7 @@ fun Ant.echo(
 		if (append != null)
 			task.setAppend(append)
 		if (level != null)
-			task.setLevel(Echo.EchoLevel().apply { value = level.value })
+			task.setLevel(Echo.EchoLevel().apply { this.value = level.value })
 		if (encoding != null)
 			task.setEncoding(encoding)
 		if (force != null)

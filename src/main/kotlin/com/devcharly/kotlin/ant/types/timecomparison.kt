@@ -16,28 +16,9 @@
 
 package com.devcharly.kotlin.ant
 
-import org.apache.tools.ant.types.selectors.SignedSelector
 
 /******************************************************************************
 DO NOT EDIT - this file was generated
 ******************************************************************************/
 
-interface ISignedSelectorNested : INestedComponent {
-	fun signedselector(
-		name: String? = null)
-	{
-		_addSignedSelector(SignedSelector().apply {
-			component.project.setProjectReference(this);
-			_init(name)
-		})
-	}
-
-	fun _addSignedSelector(value: SignedSelector)
-}
-
-fun SignedSelector._init(
-	name: String?)
-{
-	if (name != null)
-		setName(name)
-}
+enum class TimeComparison(val value: String) { BEFORE("before"), AFTER("after"), EQUAL("equal") }

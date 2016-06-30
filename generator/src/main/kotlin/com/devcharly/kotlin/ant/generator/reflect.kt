@@ -20,6 +20,7 @@ import org.apache.tools.ant.IntrospectionHelper
 import org.apache.tools.ant.Project
 import org.apache.tools.ant.ProjectComponent
 import org.apache.tools.ant.types.EnumeratedAttribute
+import org.apache.tools.ant.types.selectors.ExtendSelector
 import org.apache.tools.ant.types.selectors.FileSelector
 import org.apache.tools.ant.types.selectors.SelectSelector
 import java.lang.reflect.Method
@@ -153,6 +154,7 @@ fun funNameForType(cls: Class<*>): String {
 	if (FileSelector::class.java.isAssignableFrom(cls) && cls.name.endsWith("Selector")) {
 		return when (cls) {
 			SelectSelector::class.java -> "selector"
+			ExtendSelector::class.java -> "custom"
 			else -> cls.simpleName.removeSuffix("Selector").toLowerCase()
 		}
 	}

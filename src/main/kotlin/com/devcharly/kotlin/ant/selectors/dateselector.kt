@@ -16,34 +16,53 @@
 
 package com.devcharly.kotlin.ant
 
-import org.apache.tools.ant.types.selectors.TypeSelector
+import org.apache.tools.ant.types.selectors.DateSelector
 
 /******************************************************************************
 DO NOT EDIT - this file was generated
 ******************************************************************************/
 
-interface ITypeSelectorNested : INestedComponent {
-	fun type(
-		type: FileType? = null,
+interface IDateSelectorNested : INestedComponent {
+	fun date(
+		millis: Long? = null,
+		datetime: String? = null,
+		checkdirs: Boolean? = null,
+		granularity: Int? = null,
+		When: TimeComparison? = null,
+		pattern: String? = null,
 		error: String? = null)
 	{
-		_addTypeSelector(TypeSelector().apply {
+		_addDateSelector(DateSelector().apply {
 			component.project.setProjectReference(this);
-			_init(type, error)
+			_init(millis, datetime, checkdirs, granularity,
+				When, pattern, error)
 		})
 	}
 
-	fun _addTypeSelector(value: TypeSelector)
+	fun _addDateSelector(value: DateSelector)
 }
 
-fun TypeSelector._init(
-	type: FileType?,
+fun DateSelector._init(
+	millis: Long?,
+	datetime: String?,
+	checkdirs: Boolean?,
+	granularity: Int?,
+	When: TimeComparison?,
+	pattern: String?,
 	error: String?)
 {
-	if (type != null)
-		setType(TypeSelector.FileType().apply { this.value = type.value })
+	if (millis != null)
+		setMillis(millis)
+	if (datetime != null)
+		setDatetime(datetime)
+	if (checkdirs != null)
+		setCheckdirs(checkdirs)
+	if (granularity != null)
+		setGranularity(granularity)
+	if (When != null)
+		setWhen(org.apache.tools.ant.types.TimeComparison().apply { this.value = When.value })
+	if (pattern != null)
+		setPattern(pattern)
 	if (error != null)
 		setError(error)
 }
-
-enum class FileType(val value: String) { FILE("file"), DIR("dir") }

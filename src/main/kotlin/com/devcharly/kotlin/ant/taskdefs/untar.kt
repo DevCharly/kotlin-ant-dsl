@@ -44,7 +44,7 @@ fun Ant.untar(
 		if (overwrite != null)
 			task.setOverwrite(overwrite)
 		if (compression != null)
-			task.setCompression(Untar.UntarCompressionMethod().apply { value = compression.value })
+			task.setCompression(Untar.UntarCompressionMethod().apply { this.value = compression.value })
 		if (encoding != null)
 			task.setEncoding(encoding)
 		if (failonemptyarchive != null)

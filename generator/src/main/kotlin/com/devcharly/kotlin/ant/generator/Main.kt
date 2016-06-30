@@ -18,10 +18,13 @@ package com.devcharly.kotlin.ant.generator
 
 import org.apache.tools.ant.taskdefs.*
 import org.apache.tools.ant.types.*
+import org.apache.tools.ant.types.mappers.CutDirsMapper
+import org.apache.tools.ant.types.optional.ScriptSelector
 import org.apache.tools.ant.types.selectors.*
+import org.apache.tools.ant.types.selectors.modifiedselector.ModifiedSelector
 import org.apache.tools.ant.types.spi.Provider
 import org.apache.tools.ant.types.spi.Service
-import org.apache.tools.ant.util.FileNameMapper
+import org.apache.tools.ant.util.*
 import java.io.FileWriter
 
 fun main(args: Array<String>) {
@@ -33,31 +36,38 @@ fun main(args: Array<String>) {
 	genType(Manifest::class.java)
 	genType(Manifest.Attribute::class.java)
 	genType(Manifest.Section::class.java)
+	genType(Parameter::class.java)
 	genType(Path::class.java, baseInterface = ResourceCollection::class.java)
 	genType(Path.PathElement::class.java)
 	genType(PatternSet::class.java)
 	genTypeInit(PatternSet.NameEntry::class.java)
 	genType(ResourceCollection::class.java)
 	genType(TarFileSet::class.java, baseInterface = ResourceCollection::class.java, exclude = "srcresource")
+	genEnum(TimeComparison::class.java)
 	genType(ZipFileSet::class.java, baseInterface = ResourceCollection::class.java, exclude = "srcresource")
 
 	// Selectors
 	genType(AndSelector::class.java, folder = "selectors")
 	genType(ContainsRegexpSelector::class.java, folder = "selectors")
 	genType(ContainsSelector::class.java, folder = "selectors")
+	genType(DateSelector::class.java, folder = "selectors")
 	genType(DependSelector::class.java, folder = "selectors")
 	genType(DepthSelector::class.java, folder = "selectors")
 	genType(DifferentSelector::class.java, folder = "selectors")
+	genType(ExtendSelector::class.java, folder = "selectors")
 	genType(FilenameSelector::class.java, folder = "selectors")
 	genType(FileSelector::class.java, folder = "selectors")
 	genType(MajoritySelector::class.java, folder = "selectors")
+	genType(ModifiedSelector::class.java, folder = "selectors")
 	genType(NoneSelector::class.java, folder = "selectors")
 	genType(NotSelector::class.java, folder = "selectors")
 	genType(OrSelector::class.java, folder = "selectors")
 	genType(PresentSelector::class.java, folder = "selectors")
 	genType(ReadableSelector::class.java, folder = "selectors")
+	genType(ScriptSelector::class.java, funName = "scriptselector", folder = "selectors")
 	genType(SelectSelector::class.java, folder = "selectors")
-	genType(SignedSelector::class.java, folder = "selectors")
+	genType(SignedSelector::class.java, funName = "signedselector", folder = "selectors")
+	genType(SizeSelector::class.java, folder = "selectors")
 	genType(TypeSelector::class.java, folder = "selectors")
 	genType(WritableSelector::class.java, folder = "selectors")
 
@@ -103,11 +113,6 @@ fun main(args: Array<String>) {
 }
 
 val unsupportedNested = arrayOf(
-	"date",
-	"size",
-	"custom",
-	"modified",
-
 	"filterchain",
 	"filterset",
 	"filelist",
@@ -143,6 +148,13 @@ fun genTypeInit(typeType: Class<*>, order: String? = null, exclude: String? = nu
 	val code = genTypeInitFile(task)
 
 	writeCode(typeType, folder, code)
+}
+
+fun genEnum(enumType: Class<*>, order: String? = null, exclude: String? = null, folder: String = "types") {
+	val task = reflectTask(enumType, null, order, exclude)
+	val code = genEnumFile(task)
+
+	writeCode(enumType, folder, code)
 }
 
 fun writeCode(cls: Class<*>, folder: String, code: String, taskName: String? = null) {

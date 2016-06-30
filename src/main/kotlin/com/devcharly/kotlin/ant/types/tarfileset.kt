@@ -21,9 +21,11 @@ import org.apache.tools.ant.types.TarFileSet
 import org.apache.tools.ant.types.selectors.AndSelector
 import org.apache.tools.ant.types.selectors.ContainsRegexpSelector
 import org.apache.tools.ant.types.selectors.ContainsSelector
+import org.apache.tools.ant.types.selectors.DateSelector
 import org.apache.tools.ant.types.selectors.DependSelector
 import org.apache.tools.ant.types.selectors.DepthSelector
 import org.apache.tools.ant.types.selectors.DifferentSelector
+import org.apache.tools.ant.types.selectors.ExtendSelector
 import org.apache.tools.ant.types.selectors.FileSelector
 import org.apache.tools.ant.types.selectors.FilenameSelector
 import org.apache.tools.ant.types.selectors.MajoritySelector
@@ -33,8 +35,10 @@ import org.apache.tools.ant.types.selectors.OrSelector
 import org.apache.tools.ant.types.selectors.PresentSelector
 import org.apache.tools.ant.types.selectors.ReadableSelector
 import org.apache.tools.ant.types.selectors.SelectSelector
+import org.apache.tools.ant.types.selectors.SizeSelector
 import org.apache.tools.ant.types.selectors.TypeSelector
 import org.apache.tools.ant.types.selectors.WritableSelector
+import org.apache.tools.ant.types.selectors.modifiedselector.ModifiedSelector
 
 /******************************************************************************
 DO NOT EDIT - this file was generated
@@ -234,14 +238,18 @@ class KTarFileSet(override val component: TarFileSet) :
 	INotSelectorNested,
 	INoneSelectorNested,
 	IMajoritySelectorNested,
+	IDateSelectorNested,
+	ISizeSelectorNested,
 	IDifferentSelectorNested,
 	IFilenameSelectorNested,
 	ITypeSelectorNested,
+	IExtendSelectorNested,
 	IContainsSelectorNested,
 	IPresentSelectorNested,
 	IDepthSelectorNested,
 	IDependSelectorNested,
 	IContainsRegexpSelectorNested,
+	IModifiedSelectorNested,
 	IReadableSelectorNested,
 	IWritableSelectorNested
 {
@@ -279,14 +287,18 @@ class KTarFileSet(override val component: TarFileSet) :
 	override fun _addNotSelector(value: NotSelector) = component.addNot(value)
 	override fun _addNoneSelector(value: NoneSelector) = component.addNone(value)
 	override fun _addMajoritySelector(value: MajoritySelector) = component.addMajority(value)
+	override fun _addDateSelector(value: DateSelector) = component.addDate(value)
+	override fun _addSizeSelector(value: SizeSelector) = component.addSize(value)
 	override fun _addDifferentSelector(value: DifferentSelector) = component.addDifferent(value)
 	override fun _addFilenameSelector(value: FilenameSelector) = component.addFilename(value)
 	override fun _addTypeSelector(value: TypeSelector) = component.addType(value)
+	override fun _addExtendSelector(value: ExtendSelector) = component.addCustom(value)
 	override fun _addContainsSelector(value: ContainsSelector) = component.addContains(value)
 	override fun _addPresentSelector(value: PresentSelector) = component.addPresent(value)
 	override fun _addDepthSelector(value: DepthSelector) = component.addDepth(value)
 	override fun _addDependSelector(value: DependSelector) = component.addDepend(value)
 	override fun _addContainsRegexpSelector(value: ContainsRegexpSelector) = component.addContainsRegexp(value)
+	override fun _addModifiedSelector(value: ModifiedSelector) = component.addModified(value)
 	override fun _addReadableSelector(value: ReadableSelector) = component.addReadable(value)
 	override fun _addWritableSelector(value: WritableSelector) = component.addWritable(value)
 }

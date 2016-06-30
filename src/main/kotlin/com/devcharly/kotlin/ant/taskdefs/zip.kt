@@ -22,9 +22,11 @@ import org.apache.tools.ant.types.ResourceCollection
 import org.apache.tools.ant.types.selectors.AndSelector
 import org.apache.tools.ant.types.selectors.ContainsRegexpSelector
 import org.apache.tools.ant.types.selectors.ContainsSelector
+import org.apache.tools.ant.types.selectors.DateSelector
 import org.apache.tools.ant.types.selectors.DependSelector
 import org.apache.tools.ant.types.selectors.DepthSelector
 import org.apache.tools.ant.types.selectors.DifferentSelector
+import org.apache.tools.ant.types.selectors.ExtendSelector
 import org.apache.tools.ant.types.selectors.FileSelector
 import org.apache.tools.ant.types.selectors.FilenameSelector
 import org.apache.tools.ant.types.selectors.MajoritySelector
@@ -33,7 +35,9 @@ import org.apache.tools.ant.types.selectors.NotSelector
 import org.apache.tools.ant.types.selectors.OrSelector
 import org.apache.tools.ant.types.selectors.PresentSelector
 import org.apache.tools.ant.types.selectors.SelectSelector
+import org.apache.tools.ant.types.selectors.SizeSelector
 import org.apache.tools.ant.types.selectors.TypeSelector
+import org.apache.tools.ant.types.selectors.modifiedselector.ModifiedSelector
 
 /******************************************************************************
 DO NOT EDIT - this file was generated
@@ -78,9 +82,9 @@ fun Ant.zip(
 		if (update != null)
 			task.setUpdate(update)
 		if (duplicate != null)
-			task.setDuplicate(Zip.Duplicate().apply { value = duplicate.value })
+			task.setDuplicate(Zip.Duplicate().apply { this.value = duplicate.value })
 		if (whenempty != null)
-			task.setWhenempty(Zip.WhenEmpty().apply { value = whenempty.value })
+			task.setWhenempty(Zip.WhenEmpty().apply { this.value = whenempty.value })
 		if (encoding != null)
 			task.setEncoding(encoding)
 		if (keepcompression != null)
@@ -96,11 +100,11 @@ fun Ant.zip(
 		if (uselanguageencodingflag != null)
 			task.setUseLanguageEncodingFlag(uselanguageencodingflag)
 		if (createunicodeextrafields != null)
-			task.setCreateUnicodeExtraFields(Zip.UnicodeExtraField().apply { value = createunicodeextrafields.value })
+			task.setCreateUnicodeExtraFields(Zip.UnicodeExtraField().apply { this.value = createunicodeextrafields.value })
 		if (fallbacktoutf8 != null)
 			task.setFallBackToUTF8(fallbacktoutf8)
 		if (zip64mode != null)
-			task.setZip64Mode(Zip.Zip64ModeAttribute().apply { value = zip64mode.value })
+			task.setZip64Mode(Zip.Zip64ModeAttribute().apply { this.value = zip64mode.value })
 		if (includes != null)
 			task.setIncludes(includes)
 		if (excludes != null)
@@ -129,14 +133,18 @@ class KZip(override val component: Zip) :
 	INotSelectorNested,
 	INoneSelectorNested,
 	IMajoritySelectorNested,
+	IDateSelectorNested,
+	ISizeSelectorNested,
 	IFilenameSelectorNested,
+	IExtendSelectorNested,
 	IContainsSelectorNested,
 	IPresentSelectorNested,
 	IDepthSelectorNested,
 	IDependSelectorNested,
 	IContainsRegexpSelectorNested,
 	IDifferentSelectorNested,
-	ITypeSelectorNested
+	ITypeSelectorNested,
+	IModifiedSelectorNested
 {
 	fun zipgroupfileset(dir: String? = null, file: String? = null, includes: String? = null, excludes: String? = null, includesfile: String? = null, excludesfile: String? = null, defaultexcludes: Boolean? = null, casesensitive: Boolean? = null, followsymlinks: Boolean? = null, maxlevelsofsymlinks: Int? = null, erroronmissingdir: Boolean? = null, nested: (KFileSet.() -> Unit)? = null) {
 		component.addZipGroupFileset(FileSet().apply {
@@ -178,7 +186,10 @@ class KZip(override val component: Zip) :
 	override fun _addNotSelector(value: NotSelector) = component.addNot(value)
 	override fun _addNoneSelector(value: NoneSelector) = component.addNone(value)
 	override fun _addMajoritySelector(value: MajoritySelector) = component.addMajority(value)
+	override fun _addDateSelector(value: DateSelector) = component.addDate(value)
+	override fun _addSizeSelector(value: SizeSelector) = component.addSize(value)
 	override fun _addFilenameSelector(value: FilenameSelector) = component.addFilename(value)
+	override fun _addExtendSelector(value: ExtendSelector) = component.addCustom(value)
 	override fun _addContainsSelector(value: ContainsSelector) = component.addContains(value)
 	override fun _addPresentSelector(value: PresentSelector) = component.addPresent(value)
 	override fun _addDepthSelector(value: DepthSelector) = component.addDepth(value)
@@ -186,6 +197,7 @@ class KZip(override val component: Zip) :
 	override fun _addContainsRegexpSelector(value: ContainsRegexpSelector) = component.addContainsRegexp(value)
 	override fun _addDifferentSelector(value: DifferentSelector) = component.addDifferent(value)
 	override fun _addTypeSelector(value: TypeSelector) = component.addType(value)
+	override fun _addModifiedSelector(value: ModifiedSelector) = component.addModified(value)
 }
 
 enum class Duplicate(val value: String) { ADD("add"), PRESERVE("preserve"), FAIL("fail") }

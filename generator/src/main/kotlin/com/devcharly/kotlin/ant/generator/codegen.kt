@@ -63,7 +63,7 @@ fun genTaskFile(task: Task): String {
 		code += nestedClassCode
 	}
 
-	code += genEnum(task)
+	code += genEnums(task)
 
 	return code
 }
@@ -102,7 +102,7 @@ fun genTypeFile(task: Task, baseInterface: Class<*>? = null): String {
 		code += nestedClassCode
 	}
 
-	code += genEnum(task)
+	code += genEnums(task)
 
 	return code
 }
@@ -113,6 +113,15 @@ fun genTypeInitFile(task: Task): String {
 
 	var code = genFileHeader(imports)
 	code += initFunCode
+
+	return code
+}
+
+fun genEnumFile(task: Task): String {
+	val imports = HashSet<String>()
+
+	var code = genFileHeader(imports)
+	code += genEnum(task.type)
 
 	return code
 }
@@ -336,7 +345,7 @@ fun genNestedClass(task: Task, imports: HashSet<String>): String? {
 	return code0 + code
 }
 
-fun genEnum(task: Task): String {
+private fun genEnums(task: Task): String {
 	var code = ""
 	var enums = HashSet<Class<*>>()
 
@@ -354,12 +363,28 @@ fun genEnum(task: Task): String {
 		if (code.isEmpty())
 			code += "\n"
 
-		code += "enum class ${param.type.simpleName}(val value: String) { "
-		val e = param.type.newInstance() as EnumeratedAttribute
-		code += e.values.joinToString { "${it.toUpperCase().replace('-', '_')}(\"$it\")" }
-		code += " }\n"
+		code += genEnum(param.type)
 	}
 
+	return code
+}
+
+private fun genEnum(type: Class<*>): String {
+	var code = "enum class ${type.simpleName}(val value: String) { "
+	val e = type.newInstance() as EnumeratedAttribute
+	val values = e.values
+
+	// remove duplicate values
+	val values2 = values.filterIndexed { i, s ->
+		for (j in (i-1) downTo 0) {
+			if (s.equals(values[j], ignoreCase = true))
+				return@filterIndexed false
+		}
+		true
+	}
+
+	code += values2.joinToString { "${it.toUpperCase().replace('-', '_')}(\"$it\")" }
+	code += " }\n"
 	return code
 }
 
@@ -415,8 +440,11 @@ private fun init(type: Class<*>, name: String, constructWithProject: Boolean, im
 			if (EnumeratedAttribute::class.java.isAssignableFrom(type)) {
 				if (type.enclosingClass != null)
 					imports.add(type.enclosingClass.name)
-				val simpleType = type.name.substringAfterLast('.').replace('$', '.')
-				"$simpleType().apply { value = $name.value }"
+				val simpleType = if (type.name.contains('$'))
+					type.name.substringAfterLast('.').replace('$', '.')
+				else
+					type.name // not a nested enum --> use full qualified name
+				"$simpleType().apply { this.value = $name.value }"
 			} else {
 				imports.add(type.name)
 				val simpleType = type.name.substringAfterLast('.')

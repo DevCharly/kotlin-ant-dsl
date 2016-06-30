@@ -48,7 +48,7 @@ fun PresentSelector._init(
 	if (targetdir != null)
 		setTargetdir(project.resolveFile(targetdir))
 	if (present != null)
-		setPresent(PresentSelector.FilePresence().apply { value = present.value })
+		setPresent(PresentSelector.FilePresence().apply { this.value = present.value })
 	if (error != null)
 		setError(error)
 	if (nested != null)
