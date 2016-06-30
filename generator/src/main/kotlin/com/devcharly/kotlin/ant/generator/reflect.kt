@@ -20,13 +20,18 @@ import org.apache.tools.ant.IntrospectionHelper
 import org.apache.tools.ant.Project
 import org.apache.tools.ant.ProjectComponent
 import org.apache.tools.ant.types.EnumeratedAttribute
-import org.apache.tools.ant.types.selectors.ExtendSelector
-import org.apache.tools.ant.types.selectors.FileSelector
-import org.apache.tools.ant.types.selectors.SelectSelector
 import java.lang.reflect.Method
 import java.util.*
 
-fun reflectTask(taskType: Class<*>, taskName: String? = null, order: String? = null, exclude: String? = null): Task {
+val tasks = HashMap<Class<*>, Task>()
+
+fun getTask(taskType: Class<*>): Task {
+	return tasks[taskType] ?: reflectTask(taskType)
+}
+
+fun reflectTask(taskType: Class<*>, taskName: String? = null, funName: String? = null,
+				order: String? = null, exclude: String? = null): Task
+{
 	val aClass = aClass(taskType)
 
 	// determine whether have to pass project to constructor
@@ -142,23 +147,15 @@ fun reflectTask(taskType: Class<*>, taskName: String? = null, order: String? = n
 	// same order as in source code
 	nested.sortBy { aClass.orderedMethods[it.method] }
 
-	return Task(taskType,
+	val task = Task(taskType,
 		taskName ?: taskType.simpleName.toLowerCase(),
-		taskName ?: funNameForType(taskType),
+		funName ?: taskType.simpleName.toLowerCase(),
 		taskName?.capitalize() ?: taskType.simpleName,
 		hasConstructor, projectAtConstructor,
 		params.toTypedArray(), nested.toTypedArray(), addTypeMethods, addTextMethod)
-}
 
-fun funNameForType(cls: Class<*>): String {
-	if (FileSelector::class.java.isAssignableFrom(cls) && cls.name.endsWith("Selector")) {
-		return when (cls) {
-			SelectSelector::class.java -> "selector"
-			ExtendSelector::class.java -> "custom"
-			else -> cls.simpleName.removeSuffix("Selector").toLowerCase()
-		}
-	}
-	return cls.simpleName.toLowerCase()
+	tasks[taskType] = task
+	return task
 }
 
 //---- class Task -------------------------------------------------------------
@@ -174,6 +171,7 @@ class Task(val type: Class<*>,
 		   val addTypeMethods: Array<Method>,
            val addTextMethod: Method?)
 {
+	var baseInterface: Class<*>? = null
 	val hasNested = !nested.isEmpty() || !addTypeMethods.isEmpty() || addTextMethod != null
 }
 

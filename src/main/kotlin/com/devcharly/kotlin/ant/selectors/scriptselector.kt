@@ -34,7 +34,7 @@ interface IScriptSelectorNested : INestedComponent {
 		setbeans: Boolean? = null,
 		selected: Boolean? = null,
 		error: String? = null,
-		nested: (KScriptselector.() -> Unit)? = null)
+		nested: (KScriptSelector.() -> Unit)? = null)
 	{
 		_addScriptSelector(ScriptSelector().apply {
 			component.project.setProjectReference(this);
@@ -55,7 +55,7 @@ fun ScriptSelector._init(
 	setbeans: Boolean?,
 	selected: Boolean?,
 	error: String?,
-	nested: (KScriptselector.() -> Unit)?)
+	nested: (KScriptSelector.() -> Unit)?)
 {
 	if (manager != null)
 		setManager(manager)
@@ -74,10 +74,10 @@ fun ScriptSelector._init(
 	if (error != null)
 		setError(error)
 	if (nested != null)
-		nested(KScriptselector(this))
+		nested(KScriptSelector(this))
 }
 
-class KScriptselector(val component: ScriptSelector) {
+class KScriptSelector(val component: ScriptSelector) {
 	fun classpath(location: String? = null, path: String? = null, cache: Boolean? = null, nested: (KPath.() -> Unit)? = null) {
 		component.createClasspath().apply {
 			component.project.setProjectReference(this)

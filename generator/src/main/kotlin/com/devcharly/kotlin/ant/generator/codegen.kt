@@ -68,7 +68,7 @@ fun genTaskFile(task: Task): String {
 	return code
 }
 
-fun genTypeFile(task: Task, baseInterface: Class<*>? = null): String {
+fun genTypeFile(task: Task): String {
 	val imports = HashSet<String>()
 	val nestedFunCode = genTypeNestedFun(task, null, "\t", imports)
 	val nestedInterface = genTypeNestedInterface(task, nestedFunCode, imports)
@@ -78,6 +78,7 @@ fun genTypeFile(task: Task, baseInterface: Class<*>? = null): String {
 	var code = genFileHeader(imports)
 	code += nestedInterface
 
+	val baseInterface = task.baseInterface
 	if (baseInterface != null && task.type != baseInterface && baseInterface.isAssignableFrom(task.type)) {
 		var cls: Class<*>? = task.type.superclass
 		while (cls != null && baseInterface.isAssignableFrom(cls)) {
@@ -287,10 +288,12 @@ fun genNestedClass(task: Task, imports: HashSet<String>): String? {
 
 	var code = ""
 	task.nested.forEach {
-		if (it.name == funNameForType(it.type)) {
-			if (ResourceCollection::class.java.isAssignableFrom(it.type) &&
-				it.type != Path.PathElement::class.java &&
-				interfaces.contains(ResourceCollection::class.java))
+		val n = getTask(it.type)
+		if (it.name == n.funName) {
+			val baseInterface = n.baseInterface
+			if (baseInterface != null &&
+				baseInterface.isAssignableFrom(it.type) &&
+				interfaces.contains(baseInterface))
 			  return@forEach
 
 			if (it.method.parameterCount == 1 &&
@@ -302,7 +305,6 @@ fun genNestedClass(task: Task, imports: HashSet<String>): String? {
 			}
 		}
 
-		val n = reflectTask(it.type)
 		var nestedInitCode = "apply {\n"
 		if (hasProject(it.type))
 			nestedInitCode += "\t\t\tcomponent.project.setProjectReference(this)\n"

@@ -27,8 +27,17 @@ import org.apache.tools.ant.types.spi.Provider
 import org.apache.tools.ant.types.spi.Service
 import org.apache.tools.ant.util.*
 import java.io.FileWriter
+import java.util.*
 
 fun main(args: Array<String>) {
+	// 1st pass: collect information
+	initGen()
+
+	// 2nd pass: generate code
+	processGenQueue()
+}
+
+fun initGen() {
 	// Types
 	genType(DirSet::class.java, baseInterface = ResourceCollection::class.java)
 	genType(FileList::class.java, baseInterface = ResourceCollection::class.java)
@@ -52,32 +61,32 @@ fun main(args: Array<String>) {
 	genType(MultiRootFileSet::class.java, baseInterface = ResourceCollection::class.java, folder = "resources", exclude = "dir", order = "basedirs")
 
 	// Selectors
-	genType(AndSelector::class.java, folder = "selectors")
-	genType(ContainsRegexpSelector::class.java, folder = "selectors")
-	genType(ContainsSelector::class.java, folder = "selectors")
-	genType(DateSelector::class.java, folder = "selectors")
-	genType(DependSelector::class.java, folder = "selectors")
-	genType(DepthSelector::class.java, folder = "selectors")
-	genType(DifferentSelector::class.java, folder = "selectors")
-	genType(ExtendSelector::class.java, folder = "selectors")
-	genType(FilenameSelector::class.java, folder = "selectors")
-	genType(FileSelector::class.java, folder = "selectors")
-	genType(MajoritySelector::class.java, folder = "selectors")
-	genType(ModifiedSelector::class.java, folder = "selectors")
-	genType(NoneSelector::class.java, folder = "selectors")
-	genType(NotSelector::class.java, folder = "selectors")
-	genType(OrSelector::class.java, folder = "selectors")
-	genType(PresentSelector::class.java, folder = "selectors")
-	genType(ReadableSelector::class.java, folder = "selectors")
-	genType(ScriptSelector::class.java, funName = "scriptselector", folder = "selectors")
-	genType(SelectSelector::class.java, folder = "selectors")
-	genType(SignedSelector::class.java, funName = "signedselector", folder = "selectors")
-	genType(SizeSelector::class.java, folder = "selectors")
-	genType(TypeSelector::class.java, folder = "selectors")
-	genType(WritableSelector::class.java, folder = "selectors")
+	genType(AndSelector::class.java, funName = "and", folder = "selectors")
+	genType(ContainsRegexpSelector::class.java, funName = "containsregexp", folder = "selectors")
+	genType(ContainsSelector::class.java, funName = "contains", folder = "selectors")
+	genType(DateSelector::class.java, folder = "selectors", funName="date")
+	genType(DependSelector::class.java, folder = "selectors", funName="depend")
+	genType(DepthSelector::class.java, folder = "selectors", funName="depth")
+	genType(DifferentSelector::class.java, folder = "selectors", funName="different")
+	genType(ExtendSelector::class.java, folder = "selectors", funName="custom")
+	genType(FilenameSelector::class.java, folder = "selectors", funName="filename")
+	genType(FileSelector::class.java, folder = "selectors", funName="file")
+	genType(MajoritySelector::class.java, folder = "selectors", funName="majority")
+	genType(ModifiedSelector::class.java, folder = "selectors", funName="modified")
+	genType(NoneSelector::class.java, folder = "selectors", funName="none")
+	genType(NotSelector::class.java, folder = "selectors", funName="not")
+	genType(OrSelector::class.java, folder = "selectors", funName="or")
+	genType(PresentSelector::class.java, folder = "selectors", funName="present")
+	genType(ReadableSelector::class.java, folder = "selectors", funName="readable")
+	genType(ScriptSelector::class.java, folder = "selectors")
+	genType(SelectSelector::class.java, folder = "selectors", funName="selector")
+	genType(SignedSelector::class.java, folder = "selectors")
+	genType(SizeSelector::class.java, folder = "selectors", funName="size")
+	genType(TypeSelector::class.java, folder = "selectors", funName="type")
+	genType(WritableSelector::class.java, folder = "selectors", funName="writable")
 
 	// SPI
-	genType(Provider::class.java, folder = "spi")//, order = "type provider")
+	genType(Provider::class.java, folder = "spi")
 	genType(Service::class.java, folder = "spi", order = "type provider")
 
 	// Util
@@ -109,6 +118,7 @@ fun main(args: Array<String>) {
 	genTask(Move::class.java)
 	genTask(Property::class.java, order = "name value location resource file url environment classpath classpathref prefix prefixvalues relative basedir")
 	genTask(Tar::class.java)
+	genTypeInit(Tar.TarFileSet::class.java, folder = "taskdefs")
 	genTask(Touch::class.java)
 	genTask(Expand::class.java, taskName = "unjar", order = "src dest overwrite encoding")
 	genTask(Untar::class.java, order = "src dest overwrite compression encoding")
@@ -127,35 +137,46 @@ val unsupportedNested = arrayOf(
 )
 
 fun genTask(taskType: Class<*>, taskName: String? = null, order: String? = null, exclude: String? = null) {
-	val task = reflectTask(taskType, taskName, order, exclude)
-	val code = genTaskFile(task)
-
-	writeCode(taskType, "taskdefs", code, taskName)
+	val task = reflectTask(taskType, taskName, taskName, order, exclude)
+	queueGen(task, ::genTaskFile, "taskdefs", taskName)
 }
 
 fun genType(typeType: Class<*>, funName: String? = null, baseInterface: Class<*>? = null, order: String? = null, exclude: String? = null, folder: String = "types") {
-	val task = reflectTask(typeType, funName, order, exclude)
-	val code = genTypeFile(task, baseInterface)
-
-	writeCode(typeType, folder, code)
+	val task = reflectTask(typeType, null, funName, order, exclude)
+	task.baseInterface = baseInterface
+	queueGen(task, ::genTypeFile, folder)
 }
 
 fun genTypeInit(typeType: Class<*>, order: String? = null, exclude: String? = null, folder: String = "types") {
-	val task = reflectTask(typeType, null, order, exclude)
-	val code = genTypeInitFile(task)
-
-	writeCode(typeType, folder, code)
+	val task = reflectTask(typeType, null, null, order, exclude)
+	queueGen(task, ::genTypeInitFile, folder)
 }
 
 fun genEnum(enumType: Class<*>, order: String? = null, exclude: String? = null, folder: String = "types") {
-	val task = reflectTask(enumType, null, order, exclude)
-	val code = genEnumFile(task)
-
-	writeCode(enumType, folder, code)
+	val task = reflectTask(enumType, null, null, order, exclude)
+	queueGen(task, ::genEnumFile, folder)
 }
 
-fun writeCode(cls: Class<*>, folder: String, code: String, taskName: String? = null) {
-	val name = taskName ?: cls.name.substringAfterLast('.').replace('$', '-').toLowerCase()
+fun queueGen(task: Task, genCode: (Task) -> String, folder: String, name: String? = null) {
+	genQueue.add(QueueGenItem(task, genCode, folder, name))
+}
+
+class QueueGenItem(val task: Task,
+				   val genCode: (Task) -> String,
+				   val folder: String,
+				   val name: String?)
+
+var genQueue = ArrayList<QueueGenItem>()
+
+fun processGenQueue() {
+	genQueue.forEach {
+		val code = it.genCode(it.task)
+		writeCode(it.task.type, it.folder, it.name, code)
+	}
+}
+
+fun writeCode(cls: Class<*>, folder: String, name: String?, code: String) {
+	val name = name ?: cls.name.substringAfterLast('.').replace('$', '-').toLowerCase()
 	val filename = "src/main/kotlin/com/devcharly/kotlin/ant/$folder/$name.kt"
 
 	println("Generate $filename")

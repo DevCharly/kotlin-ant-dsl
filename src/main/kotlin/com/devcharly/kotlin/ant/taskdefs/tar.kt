@@ -109,6 +109,12 @@ class KTar(override val component: Tar) :
 	ITypeSelectorNested,
 	IModifiedSelectorNested
 {
+	fun tarfileset(dir: String? = null, file: String? = null, includes: String? = null, excludes: String? = null, includesfile: String? = null, excludesfile: String? = null, defaultexcludes: Boolean? = null, casesensitive: Boolean? = null, followsymlinks: Boolean? = null, maxlevelsofsymlinks: Int? = null, erroronmissingdir: Boolean? = null, src: String? = null, erroronmissingarchive: Boolean? = null, prefix: String? = null, fullpath: String? = null, encoding: String? = null, filemode: String? = null, dirmode: String? = null, username: String? = null, uid: Int? = null, group: String? = null, gid: Int? = null, mode: String? = null, preserveleadingslashes: Boolean? = null, nested: (KTarFileSet.() -> Unit)? = null) {
+		component.createTarFileSet().apply {
+			component.project.setProjectReference(this)
+			_init(dir, file, includes, excludes, includesfile, excludesfile, defaultexcludes, casesensitive, followsymlinks, maxlevelsofsymlinks, erroronmissingdir, src, erroronmissingarchive, prefix, fullpath, encoding, filemode, dirmode, username, uid, group, gid, mode, preserveleadingslashes, nested)
+		}
+	}
 	fun include(name: String? = null, If: String? = null, unless: String? = null) {
 		component.createInclude().apply {
 			_init(name, If, unless)
