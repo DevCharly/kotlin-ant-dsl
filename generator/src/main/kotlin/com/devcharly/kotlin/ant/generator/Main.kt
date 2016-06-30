@@ -17,6 +17,7 @@
 package com.devcharly.kotlin.ant.generator
 
 import org.apache.tools.ant.taskdefs.*
+import org.apache.tools.ant.taskdefs.compilers.CompilerAdapter
 import org.apache.tools.ant.types.*
 import org.apache.tools.ant.types.mappers.CutDirsMapper
 import org.apache.tools.ant.types.optional.ScriptSelector
@@ -38,6 +39,9 @@ fun main(args: Array<String>) {
 }
 
 fun initGen() {
+	// Compilers
+	genType(CompilerAdapter::class.java, folder = "compilers")
+
 	// Types
 	genType(Assertions::class.java)
 	genType(Assertions.DisabledAssertion::class.java, funName = "disable")
@@ -122,6 +126,8 @@ fun initGen() {
 	genTask(GZip::class.java, order = "src destfile", exclude = "zipfile")
 	genTask(Jar::class.java)
 	genTask(Java::class.java, order = "classname jar args classpath classpathref fork spawn jvm jvmargs maxmemory module")
+	genTask(Javac::class.java, order = "srcdir destdir includes includesfile excludes excludesfile classpath sourcepath bootclasspath classpathref sourcepathref bootclasspathref extdirs")
+	genTypeInit(Javac.ImplementationSpecificArgument::class.java, folder = "taskdefs")
 	genTask(Mkdir::class.java)
 	genTask(Move::class.java)
 	genTask(Property::class.java, order = "name value location resource file url environment classpath classpathref prefix prefixvalues relative basedir")
