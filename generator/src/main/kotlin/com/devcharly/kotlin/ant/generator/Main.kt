@@ -39,6 +39,11 @@ fun main(args: Array<String>) {
 
 fun initGen() {
 	// Types
+	genType(Assertions::class.java)
+	genType(Assertions.DisabledAssertion::class.java, funName = "disable")
+	genType(Assertions.EnabledAssertion::class.java, funName = "enable")
+	genTypeInit(Commandline.Argument::class.java)
+	genTypeInit(Environment.Variable::class.java)
 	genType(DirSet::class.java, baseInterface = ResourceCollection::class.java)
 	genType(FileList::class.java, baseInterface = ResourceCollection::class.java)
 	genType(FileList.FileName::class.java)
@@ -51,6 +56,8 @@ fun initGen() {
 	genType(Path.PathElement::class.java)
 	genType(PatternSet::class.java)
 	genTypeInit(PatternSet.NameEntry::class.java)
+	genType(Permissions::class.java)
+	genTypeInit(Permissions.Permission::class.java)
 	genType(ResourceCollection::class.java)
 	genType(TarFileSet::class.java, baseInterface = ResourceCollection::class.java)
 	genEnum(TimeComparison::class.java)
@@ -114,6 +121,7 @@ fun initGen() {
 	genTask(GUnzip::class.java, order = "src dest")
 	genTask(GZip::class.java, order = "src destfile", exclude = "zipfile")
 	genTask(Jar::class.java)
+	genTask(Java::class.java, order = "classname jar args classpath classpathref fork spawn jvm jvmargs maxmemory module")
 	genTask(Mkdir::class.java)
 	genTask(Move::class.java)
 	genTask(Property::class.java, order = "name value location resource file url environment classpath classpathref prefix prefixvalues relative basedir")
@@ -131,6 +139,10 @@ val unsupportedNested = arrayOf(
 	"filterchain",
 	"filterset",
 	"mapper",
+
+	// java task
+	"syspropertyset",
+	"redirector",
 
 	"",
 	""

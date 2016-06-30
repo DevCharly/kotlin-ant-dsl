@@ -55,7 +55,7 @@ fun reflectTask(taskType: Class<*>, taskName: String? = null, funName: String? =
 
 	// parameters (Ant attributes)
 	val params = ArrayList<TaskParam>()
-	val reserved = arrayOf("if", "when")
+	val reserved = arrayOf("class", "if", "package", "when")
 	for (it in ih.attributeMap) {
 		var paramName = it.key
 		var paramType = it.value

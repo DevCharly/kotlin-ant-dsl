@@ -19,6 +19,7 @@ package com.devcharly.kotlin.ant.generator
 import org.apache.tools.ant.Project
 import org.apache.tools.ant.ProjectComponent
 import org.apache.tools.ant.types.EnumeratedAttribute
+import org.apache.tools.ant.types.Environment
 import org.apache.tools.ant.types.Path
 import org.apache.tools.ant.types.ResourceCollection
 import java.lang.reflect.Method
@@ -483,5 +484,6 @@ private fun hasProject(cls: Class<*>): Boolean {
 }
 
 private fun needsProject(cls: Class<*>): Boolean {
-	return cls == Path.PathElement::class.java
+	return cls == Path.PathElement::class.java ||
+		cls == Environment.Variable::class.java
 }

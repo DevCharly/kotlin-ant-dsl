@@ -14,6 +14,7 @@ fun main(args: Array<String>) {
 	demoZip()
 	demoTar()
 	demoJar()
+	demoJava()
 }
 
 fun demoEcho() {
@@ -110,6 +111,18 @@ fun demoJar() {
 			service("javax.script.ScriptEngineFactory") {
 				provider("org.acme.PinkyLanguage")
 				provider("org.acme.BrainLanguage")
+			}
+		}
+	}
+}
+
+fun demoJava() {
+	Ant {
+		java(classname="test.Main") {
+			arg("-h")
+			classpath {
+				pathelement(location = "dist/test.jar")
+				pathelement(path = p("java.class.path"))
 			}
 		}
 	}
