@@ -356,7 +356,7 @@ private fun genEnums(task: Task): String {
 	var enums = HashSet<Class<*>>()
 
 	for (param in task.params) {
-		if (!EnumeratedAttribute::class.java.isAssignableFrom(param.type))
+		if (!EnumeratedAttribute::class.java.isAssignableFrom(param.type) && !param.type.isEnum)
 			continue
 
 		if (!enums.add(param.type))
@@ -376,21 +376,34 @@ private fun genEnums(task: Task): String {
 }
 
 private fun genEnum(type: Class<*>): String {
-	var code = "enum class ${type.simpleName}(val value: String) { "
-	val e = type.newInstance() as EnumeratedAttribute
-	val values = e.values
+	var code = ""
+	if (EnumeratedAttribute::class.java.isAssignableFrom(type)) {
+		code += "enum class ${type.simpleName}(val value: String) { "
+		val e = type.newInstance() as EnumeratedAttribute
+		val values = e.values
 
-	// remove duplicate values
-	val values2 = values.filterIndexed { i, s ->
-		for (j in (i-1) downTo 0) {
-			if (s.equals(values[j], ignoreCase = true))
-				return@filterIndexed false
+		// remove duplicate values
+		val values2 = values.filterIndexed { i, s ->
+			for (j in (i - 1) downTo 0) {
+				if (s.equals(values[j], ignoreCase = true))
+					return@filterIndexed false
+			}
+			true
 		}
-		true
-	}
 
-	code += values2.joinToString { "${it.toUpperCase().replace('-', '_')}(\"$it\")" }
-	code += " }\n"
+		code += values2.joinToString { "${it.toUpperCase().replace('-', '_')}(\"$it\")" }
+		code += " }\n"
+	} else if (type.isEnum) {
+		val origEnum = if (type.name.contains('$'))
+			type.name.substringAfterLast('.').replace('$', '.')
+		else
+			type.name // not a nested enum --> use full qualified name
+
+		val values = type.getMethod("values").invoke(null) as Array<java.lang.Enum<*>>
+		code += "enum class ${type.simpleName}(val value: $origEnum) {\n\t"
+		code += values.joinToString(",\n\t") { "${it.name().toUpperCase()}($origEnum.${it.name()})" }
+		code += "\n}\n"
+	}
 	return code
 }
 
@@ -415,7 +428,7 @@ private fun paramType(type: Class<*>): String {
 		"java.lang.Double" -> "Double"
 		"java.io.File" -> "String"
 		else ->
-			if (EnumeratedAttribute::class.java.isAssignableFrom(type))
+			if (EnumeratedAttribute::class.java.isAssignableFrom(type) || type.isEnum)
 				type.simpleName
 			else
 				"String"
@@ -451,6 +464,8 @@ private fun init(type: Class<*>, name: String, constructWithProject: Boolean, im
 				else
 					type.name // not a nested enum --> use full qualified name
 				"$simpleType().apply { this.value = $name.value }"
+			} else if (type.isEnum) {
+				"$name.value"
 			} else {
 				imports.add(type.name)
 				val simpleType = type.name.substringAfterLast('.')

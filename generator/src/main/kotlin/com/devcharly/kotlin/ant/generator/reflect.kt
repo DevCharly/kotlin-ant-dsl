@@ -84,7 +84,7 @@ fun reflectTask(taskType: Class<*>, taskName: String? = null, order: String? = n
 				try {
 					paramType.getConstructor(java.lang.String::class.java)
 				} catch (ex: NoSuchMethodException) {
-					if (!EnumeratedAttribute::class.java.isAssignableFrom(paramType)) {
+					if (!EnumeratedAttribute::class.java.isAssignableFrom(paramType) && !paramType.isEnum) {
 						println("Unsupported type in $paramName\n\t<${paramType.name}>\n\t(${taskType.name})")
 						continue // not supported parameter type
 					}

@@ -70,6 +70,7 @@ Ant {
   * [DirSet](http://ant.apache.org/manual/Types/dirset.html)
   * [FileList](http://ant.apache.org/manual/Types/filelist.html)
   * [FileSet](http://ant.apache.org/manual/Types/fileset.html)
+  * [MultiRootFileSet](http://ant.apache.org/manual/Types/multirootfileset.html)
   * [PatternSet](http://ant.apache.org/manual/Types/patternset.html)
   * [TarFileSet](http://ant.apache.org/manual/Types/tarfileset.html)
   * [ZipFileSet](http://ant.apache.org/manual/Types/zipfileset.html)

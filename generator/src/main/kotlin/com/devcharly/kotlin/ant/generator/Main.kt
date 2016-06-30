@@ -20,6 +20,7 @@ import org.apache.tools.ant.taskdefs.*
 import org.apache.tools.ant.types.*
 import org.apache.tools.ant.types.mappers.CutDirsMapper
 import org.apache.tools.ant.types.optional.ScriptSelector
+import org.apache.tools.ant.types.resources.*
 import org.apache.tools.ant.types.selectors.*
 import org.apache.tools.ant.types.selectors.modifiedselector.ModifiedSelector
 import org.apache.tools.ant.types.spi.Provider
@@ -45,6 +46,10 @@ fun main(args: Array<String>) {
 	genType(TarFileSet::class.java, baseInterface = ResourceCollection::class.java)
 	genEnum(TimeComparison::class.java)
 	genType(ZipFileSet::class.java, baseInterface = ResourceCollection::class.java)
+
+	// Resources
+	genType(FileResource::class.java, funName = "file", folder = "resources")
+	genType(MultiRootFileSet::class.java, baseInterface = ResourceCollection::class.java, folder = "resources", exclude = "dir", order = "basedirs")
 
 	// Selectors
 	genType(AndSelector::class.java, folder = "selectors")
