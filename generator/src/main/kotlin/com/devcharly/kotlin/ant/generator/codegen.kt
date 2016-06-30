@@ -287,13 +287,19 @@ fun genNestedClass(task: Task, imports: HashSet<String>): String? {
 
 	var code = ""
 	task.nested.forEach {
-		if (it.name == funNameForType(it.type) &&
-			it.method.parameterCount == 1 &&
-			it.method.parameterTypes[0] == it.type)
-		{
-			interfaces.add(it.type)
-			addTypeMethods.add(it.method)
-			return@forEach
+		if (it.name == funNameForType(it.type)) {
+			if (ResourceCollection::class.java.isAssignableFrom(it.type) &&
+				it.type != Path.PathElement::class.java &&
+				interfaces.contains(ResourceCollection::class.java))
+			  return@forEach
+
+			if (it.method.parameterCount == 1 &&
+				it.method.parameterTypes[0] == it.type)
+			{
+				interfaces.add(it.type)
+				addTypeMethods.add(it.method)
+				return@forEach
+			}
 		}
 
 		val n = reflectTask(it.type)

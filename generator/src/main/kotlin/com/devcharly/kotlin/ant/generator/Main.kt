@@ -115,13 +115,7 @@ fun main(args: Array<String>) {
 val unsupportedNested = arrayOf(
 	"filterchain",
 	"filterset",
-	"filelist",
-	"fileset",
 	"mapper",
-	"zipfileset",
-	"tarfileset",
-
-	"path",
 
 	"",
 	""

@@ -16,7 +16,6 @@
 
 package com.devcharly.kotlin.ant
 
-import org.apache.tools.ant.types.DirSet
 import org.apache.tools.ant.types.Path
 import org.apache.tools.ant.types.ResourceCollection
 
@@ -70,8 +69,7 @@ fun Path._init(
 
 class KPath(override val component: Path) :
 	IPathNested,
-	IResourceCollectionNested,
-	IDirSetNested
+	IResourceCollectionNested
 {
 	fun pathelement(location: String? = null, path: String? = null) {
 		component.createPathElement().apply {
@@ -92,5 +90,4 @@ class KPath(override val component: Path) :
 	}
 	override fun _addPath(value: Path) = component.add(value)
 	override fun _addResourceCollection(value: ResourceCollection) = component.add(value)
-	override fun _addDirSet(value: DirSet) = component.addDirset(value)
 }
