@@ -163,7 +163,7 @@ fun reflectTask(taskType: Class<*>, taskName: String? = null, funName: String? =
 class Task(val type: Class<*>,
 		   val taskName: String,
 		   val funName: String,
-		   val nestedClassName: String,
+		   var nestedClassName: String,
 		   val hasConstructor: Boolean,
 		   val projectAtConstructor: Boolean,
            val params: Array<TaskParam>,

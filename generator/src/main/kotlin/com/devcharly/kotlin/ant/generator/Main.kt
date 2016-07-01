@@ -142,6 +142,7 @@ fun initGen() {
 	genTask(Java::class.java, order = "classname jar args classpath classpathref fork spawn jvm jvmargs maxmemory module")
 	genTask(Javac::class.java, order = "srcdir destdir includes includesfile excludes excludesfile classpath sourcepath bootclasspath classpathref sourcepathref bootclasspathref extdirs")
 	genTypeInit(Javac.ImplementationSpecificArgument::class.java, folder = "taskdefs")
+	genTask(ManifestTask::class.java, taskName = "manifest", nestedClassName = "ManifestTask")
 	genTask(ManifestClassPath::class.java)
 	genTask(Mkdir::class.java)
 	genTask(Move::class.java)
@@ -173,9 +174,11 @@ val unsupportedNested = arrayOf(
 	""
 )
 
-fun genTask(taskType: Class<*>, taskName: String? = null, order: String? = null, exclude: String? = null) {
+fun genTask(taskType: Class<*>, taskName: String? = null, nestedClassName: String? = null, order: String? = null, exclude: String? = null) {
 	val task = reflectTask(taskType, taskName, taskName, order, exclude)
-	queueGen(task, ::genTaskFile, "taskdefs", taskName)
+	if (nestedClassName != null)
+		task.nestedClassName = nestedClassName
+	queueGen(task, ::genTaskFile, "taskdefs", nestedClassName?.toLowerCase() ?: taskName)
 }
 
 fun genType(typeType: Class<*>, funName: String? = null, baseInterface: Class<*>? = null, order: String? = null, exclude: String? = null, folder: String = "types") {
