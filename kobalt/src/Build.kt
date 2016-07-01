@@ -6,7 +6,7 @@ val dsl = project {
 	name = "kotlin-ant-dsl"
 	group = "com.devcharly"
 	artifactId = name
-	version = "0.2"
+	version = "0.3"
 
 	dependencies {
 		compile("org.apache.ant:ant:1.9.7")
