@@ -65,6 +65,7 @@ Ant {
   * [mkdir](http://ant.apache.org/manual/Tasks/mkdir.html)
   * [move](http://ant.apache.org/manual/Tasks/move.html)
   * [property](http://ant.apache.org/manual/Tasks/property.html)
+  * [record](http://ant.apache.org/manual/Tasks/recorder.html)
   * [replace](http://ant.apache.org/manual/Tasks/replace.html)
   * [replaceregexp](http://ant.apache.org/manual/Tasks/replaceregexp.html)
   * [tar](http://ant.apache.org/manual/Tasks/tar.html)

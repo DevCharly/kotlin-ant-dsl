@@ -147,6 +147,7 @@ fun initGen() {
 	genTask(Mkdir::class.java)
 	genTask(Move::class.java)
 	genTask(Property::class.java, order = "name value location resource file url environment classpath classpathref prefix prefixvalues relative basedir")
+	genTask(Recorder::class.java, taskName = "record")
 	genTask(Replace::class.java, order = "file dir encoding token value")
 	genType(Replace.NestedString::class.java, folder = "taskdefs")
 	genType(Replace.Replacefilter::class.java, folder = "taskdefs")
