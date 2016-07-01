@@ -142,6 +142,7 @@ fun initGen() {
 	genTask(Java::class.java, order = "classname jar args classpath classpathref fork spawn jvm jvmargs maxmemory module")
 	genTask(Javac::class.java, order = "srcdir destdir includes includesfile excludes excludesfile classpath sourcepath bootclasspath classpathref sourcepathref bootclasspathref extdirs")
 	genTypeInit(Javac.ImplementationSpecificArgument::class.java, folder = "taskdefs")
+	genTask(ManifestClassPath::class.java)
 	genTask(Mkdir::class.java)
 	genTask(Move::class.java)
 	genTask(Property::class.java, order = "name value location resource file url environment classpath classpathref prefix prefixvalues relative basedir")
@@ -212,8 +213,8 @@ fun processGenQueue() {
 }
 
 fun writeCode(cls: Class<*>, folder: String, name: String?, code: String) {
-	val name = name ?: cls.name.substringAfterLast('.').replace('$', '-').toLowerCase()
-	val filename = "src/main/kotlin/com/devcharly/kotlin/ant/$folder/$name.kt"
+	val name2 = name ?: cls.name.substringAfterLast('.').replace('$', '-').toLowerCase()
+	val filename = "src/main/kotlin/com/devcharly/kotlin/ant/$folder/$name2.kt"
 
 	println("Generate $filename")
 	FileWriter(filename).use {

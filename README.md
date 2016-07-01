@@ -60,6 +60,7 @@ Ant {
   * [jar](http://ant.apache.org/manual/Tasks/jar.html)
   * [java](http://ant.apache.org/manual/Tasks/java.html)
   * [javac](http://ant.apache.org/manual/Tasks/javac.html)
+  * [manifestclasspath](http://ant.apache.org/manual/Tasks/manifestclasspath.html)
   * [mkdir](http://ant.apache.org/manual/Tasks/mkdir.html)
   * [move](http://ant.apache.org/manual/Tasks/move.html)
   * [property](http://ant.apache.org/manual/Tasks/property.html)
