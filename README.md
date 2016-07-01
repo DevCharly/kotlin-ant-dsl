@@ -102,7 +102,7 @@ Ant {
 
 For Maven, Gradle or Kobalt use:
 
-    Repository: https://dl.bintray.com/devcharly/maven/ 
+    Repository: jcenter (or https://dl.bintray.com/devcharly/maven/) 
     Group:      com.devcharly
     Artifact:   kotlin-ant-dsl
     Version:    (latest)
