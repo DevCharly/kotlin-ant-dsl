@@ -205,7 +205,7 @@ fun genTypeNestedFun(task: Task, forType: String?, indent: String, imports: Hash
 
 	val params = genParams(task, true, "${indent}\t", imports)
 
-	val addType = if (forType != null) forType else task.type.simpleName
+	val addType = forType ?: task.type.simpleName
 	val constrParam = if (task.projectAtConstructor) "component.project" else ""
 	var addCode = "${indent}\t_add${addType}(${task.type.simpleName}($constrParam).apply {\n"
 	if (hasProject(task.type))
