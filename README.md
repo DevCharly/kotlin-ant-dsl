@@ -81,7 +81,11 @@ Ant {
   * [FileList](http://ant.apache.org/manual/Types/filelist.html)
   * [FileSet](http://ant.apache.org/manual/Types/fileset.html)
   * [MultiRootFileSet](http://ant.apache.org/manual/Types/multirootfileset.html)
+  * [Path-like Structures](http://ant.apache.org/manual/using.html#path)
+  * [Permissions](http://ant.apache.org/manual/Types/permissions.html)
   * [PatternSet](http://ant.apache.org/manual/Types/patternset.html)
+  * [Regexp](http://ant.apache.org/manual/Types/regexp.html)
+  * [Selectors](http://ant.apache.org/manual/Types/selectors.html)
   * [TarFileSet](http://ant.apache.org/manual/Types/tarfileset.html)
   * [ZipFileSet](http://ant.apache.org/manual/Types/zipfileset.html)
 
