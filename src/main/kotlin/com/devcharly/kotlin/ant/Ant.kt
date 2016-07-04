@@ -81,14 +81,6 @@ open class Ant(basedir: String = "", logLevel: LogLevel = LogLevel.INFO,
 	fun p(name: String): String {
 		return PropertyHelper.getPropertyHelper(project).parseProperties("\${$name}").toString()
 	}
-
-	fun resolveFile(pathname: String?): File? {
-		return if (pathname != null) project.resolveFile(pathname) else null
-	}
-}
-
-fun Task.resolveFile(pathname: String?): File? {
-	return if (pathname != null) project.resolveFile(pathname) else null
 }
 
 //---- interface INestedComponent ---------------------------------------------
