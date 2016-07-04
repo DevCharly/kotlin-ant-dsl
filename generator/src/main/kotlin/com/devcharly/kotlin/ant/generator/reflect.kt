@@ -55,7 +55,6 @@ fun reflectTask(taskType: Class<*>, taskName: String? = null, funName: String? =
 
 	// parameters (Ant attributes)
 	val params = ArrayList<TaskParam>()
-	val reserved = arrayOf("class", "if", "package", "when")
 	for (it in ih.attributeMap) {
 		var paramName = it.key
 		var paramType = it.value
@@ -63,8 +62,7 @@ fun reflectTask(taskType: Class<*>, taskName: String? = null, funName: String? =
 		var paramMethod = ih.getAttributeMethod(paramName)
 
 		// avoid reserved names in parameters
-		if (paramName in reserved)
-			paramName = paramName.capitalize()
+		paramName = unreserved(paramName)
 
 		// some Ant attributes have two setters: one take String and another that take Object
 		if (paramType == java.lang.Object::class.java) {
@@ -157,6 +155,8 @@ fun reflectTask(taskType: Class<*>, taskName: String? = null, funName: String? =
 	tasks[taskType] = task
 	return task
 }
+
+fun unreserved(s: String) = if (s in arrayOf("class", "if", "package", "when")) s.capitalize() else s
 
 //---- class Task -------------------------------------------------------------
 

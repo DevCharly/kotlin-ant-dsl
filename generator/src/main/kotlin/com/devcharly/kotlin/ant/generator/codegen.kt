@@ -18,6 +18,7 @@ package com.devcharly.kotlin.ant.generator
 
 import org.apache.tools.ant.Project
 import org.apache.tools.ant.ProjectComponent
+import org.apache.tools.ant.taskdefs.Javadoc
 import org.apache.tools.ant.types.EnumeratedAttribute
 import org.apache.tools.ant.types.Environment
 import org.apache.tools.ant.types.Path
@@ -321,7 +322,7 @@ fun genNestedClass(task: Task, imports: HashSet<String>): String? {
 		nestedInitCode += ")\n" +
 			"\t\t}"
 
-		code += "\tfun ${it.name}(${genParams(n, true, "", imports).replace('\n', ' ')}) {\n"
+		code += "\tfun ${unreserved(it.name)}(${genParams(n, true, "", imports).replace('\n', ' ')}) {\n"
 		if (it.method.parameterCount == 0)
 			code += "\t\tcomponent.${it.method.name}().$nestedInitCode\n"
 		else {
@@ -485,5 +486,7 @@ private fun hasProject(cls: Class<*>): Boolean {
 
 private fun needsProject(cls: Class<*>): Boolean {
 	return cls == Path.PathElement::class.java ||
-		cls == Environment.Variable::class.java
+		cls == Environment.Variable::class.java ||
+		cls == Javadoc.LinkArgument::class.java ||
+		cls == Javadoc.SourceFile::class.java
 }

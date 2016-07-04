@@ -142,6 +142,16 @@ fun initGen() {
 	genTask(Java::class.java, order = "classname jar args classpath classpathref fork spawn jvm jvmargs maxmemory module")
 	genTask(Javac::class.java, order = "srcdir destdir includes includesfile excludes excludesfile classpath sourcepath bootclasspath classpathref sourcepathref bootclasspathref extdirs")
 	genTypeInit(Javac.ImplementationSpecificArgument::class.java, folder = "taskdefs")
+	genTask(Javadoc::class.java)
+	genType(Javadoc.DocletInfo::class.java, folder = "taskdefs")
+	genTypeInit(Javadoc.DocletParam::class.java, folder = "taskdefs")
+	genType(Javadoc.ExtensionInfo::class.java, folder = "taskdefs")
+	genType(Javadoc.GroupArgument::class.java, folder = "taskdefs")
+	genType(Javadoc.Html::class.java, folder = "taskdefs")
+	genTypeInit(Javadoc.LinkArgument::class.java, folder = "taskdefs")
+	genTypeInit(Javadoc.PackageName::class.java, folder = "taskdefs")
+	genTypeInit(Javadoc.SourceFile::class.java, folder = "taskdefs")
+	genType(Javadoc.TagArgument::class.java, folder = "taskdefs")
 	genTask(ManifestTask::class.java, taskName = "manifest", nestedClassName = "ManifestTask")
 	genTask(ManifestClassPath::class.java)
 	genTask(Mkdir::class.java)
@@ -171,7 +181,9 @@ val unsupportedNested = arrayOf(
 	"syspropertyset",
 	"redirector",
 
-	"",
+	// javadoc task
+	"sourcefiles",
+
 	""
 )
 
