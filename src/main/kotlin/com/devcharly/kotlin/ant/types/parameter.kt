@@ -22,20 +22,6 @@ import org.apache.tools.ant.types.Parameter
 DO NOT EDIT - this file was generated
 ******************************************************************************/
 
-interface IParameterNested {
-	fun parameter(
-		name: String? = null,
-		type: String? = null,
-		value: String? = null)
-	{
-		_addParameter(Parameter().apply {
-			_init(name, type, value)
-		})
-	}
-
-	fun _addParameter(value: Parameter)
-}
-
 fun Parameter._init(
 	name: String?,
 	type: String?,

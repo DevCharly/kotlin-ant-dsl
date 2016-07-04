@@ -22,18 +22,6 @@ import org.apache.tools.ant.types.FileList.FileName
 DO NOT EDIT - this file was generated
 ******************************************************************************/
 
-interface IFileNameNested {
-	fun filename(
-		name: String? = null)
-	{
-		_addFileName(FileName().apply {
-			_init(name)
-		})
-	}
-
-	fun _addFileName(value: FileName)
-}
-
 fun FileName._init(
 	name: String?)
 {

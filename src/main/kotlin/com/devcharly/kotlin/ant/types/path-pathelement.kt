@@ -23,7 +23,6 @@ import org.apache.tools.ant.types.Path.PathElement
 DO NOT EDIT - this file was generated
 ******************************************************************************/
 
-
 fun PathElement._init(
 	project: Project,
 	location: String?,
