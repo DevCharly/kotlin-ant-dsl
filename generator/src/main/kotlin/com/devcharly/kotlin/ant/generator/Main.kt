@@ -30,8 +30,12 @@ import org.apache.tools.ant.types.selectors.modifiedselector.ModifiedSelector
 import org.apache.tools.ant.types.spi.Provider
 import org.apache.tools.ant.types.spi.Service
 import org.apache.tools.ant.util.*
+import java.io.File
 import java.io.FileWriter
 import java.util.*
+
+var OUT_FOLDER = "src/main/kotlin"
+var PACKAGE = "com.devcharly.kotlin.ant"
 
 fun main(args: Array<String>) {
 	// 1st pass: collect information
@@ -187,14 +191,18 @@ val unsupportedNested = arrayOf(
 	""
 )
 
-fun genTask(taskType: Class<*>, taskName: String? = null, nestedClassName: String? = null, order: String? = null, exclude: String? = null) {
+fun genTask(taskType: Class<*>, taskName: String? = null, nestedClassName: String? = null,
+			order: String? = null, exclude: String? = null, folder: String = "taskdefs")
+{
 	val task = reflectTask(taskType, taskName, taskName, order, exclude)
 	if (nestedClassName != null)
 		task.nestedClassName = nestedClassName
-	queueGen(task, ::genTaskFile, "taskdefs", nestedClassName?.toLowerCase() ?: taskName)
+	queueGen(task, ::genTaskFile, folder, nestedClassName?.toLowerCase() ?: taskName)
 }
 
-fun genType(typeType: Class<*>, funName: String? = null, baseInterface: Class<*>? = null, order: String? = null, exclude: String? = null, folder: String = "types") {
+fun genType(typeType: Class<*>, funName: String? = null, baseInterface: Class<*>? = null,
+			order: String? = null, exclude: String? = null, folder: String = "types")
+{
 	val task = reflectTask(typeType, null, funName, order, exclude)
 	task.baseInterface = baseInterface
 	queueGen(task, ::genTypeFile, folder)
@@ -210,30 +218,38 @@ fun genEnum(enumType: Class<*>, order: String? = null, exclude: String? = null, 
 	queueGen(task, ::genEnumFile, folder)
 }
 
-fun queueGen(task: Task, genCode: (Task) -> String, folder: String, name: String? = null) {
+fun queueGen(task: Task, genCode: (Task, String) -> String, folder: String, name: String? = null) {
 	genQueue.add(QueueGenItem(task, genCode, folder, name))
 }
 
 class QueueGenItem(val task: Task,
-				   val genCode: (Task) -> String,
+				   val genCode: (Task, String) -> String,
 				   val folder: String,
 				   val name: String?)
+{
+	val outFolder: String = OUT_FOLDER
+	val pkg: String = PACKAGE
+}
 
 var genQueue = ArrayList<QueueGenItem>()
 
 fun processGenQueue() {
 	genQueue.forEach {
-		val code = it.genCode(it.task)
-		writeCode(it.task.type, it.folder, it.name, code)
+		val code = it.genCode(it.task, it.pkg)
+		writeCode(it.task.type, it.outFolder, it.pkg, it.folder, it.name, code)
 	}
 }
 
-fun writeCode(cls: Class<*>, folder: String, name: String?, code: String) {
+fun writeCode(cls: Class<*>, outFolder: String, pkg: String, folder: String, name: String?, code: String) {
+	fun appendSlash(s: String) = s + if (s.isEmpty()) "" else "/"
+
 	val name2 = name ?: cls.name.substringAfterLast('.').replace('$', '-').toLowerCase()
-	val filename = "src/main/kotlin/com/devcharly/kotlin/ant/$folder/$name2.kt"
+	val filename = "${appendSlash(outFolder)}${pkg.replace('.', '/')}/${appendSlash(folder)}$name2.kt"
+	val file = File(filename)
+	file.parentFile.mkdirs()
 
 	println("Generate $filename")
-	FileWriter(filename).use {
+	FileWriter(file).use {
 		it.write(code.replace("\n", System.getProperty("line.separator")))
 	}
 }

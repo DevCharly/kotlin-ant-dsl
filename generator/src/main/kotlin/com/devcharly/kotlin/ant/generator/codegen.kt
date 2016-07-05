@@ -18,11 +18,9 @@ package com.devcharly.kotlin.ant.generator
 
 import org.apache.tools.ant.Project
 import org.apache.tools.ant.ProjectComponent
-import org.apache.tools.ant.taskdefs.Javadoc
 import org.apache.tools.ant.types.EnumeratedAttribute
-import org.apache.tools.ant.types.Environment
-import org.apache.tools.ant.types.Path
 import org.apache.tools.ant.types.ResourceCollection
+import java.io.File
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import java.util.*
@@ -43,8 +41,7 @@ const val HEADER = """/*
  * limitations under the License.
  */
 
-package com.devcharly.kotlin.ant
-"""
+package """
 
 const val DO_NOT_EDIT = """
 /******************************************************************************
@@ -52,12 +49,12 @@ DO NOT EDIT - this file was generated
 ******************************************************************************/
 """
 
-fun genTaskFile(task: Task): String {
+fun genTaskFile(task: Task, pkg: String): String {
 	val imports = HashSet<String>()
 	val funCode = genTaskFun(task, imports)
 	val nestedClassCode = genNestedClass(task, imports)
 
-	var code = genFileHeader(imports)
+	var code = genFileHeader(pkg, imports)
 	code += funCode
 
 	if (nestedClassCode != null) {
@@ -70,14 +67,14 @@ fun genTaskFile(task: Task): String {
 	return code
 }
 
-fun genTypeFile(task: Task): String {
+fun genTypeFile(task: Task, pkg: String): String {
 	val imports = HashSet<String>()
 	val nestedFunCode = genTypeNestedFun(task, null, "\t", imports)
 	val nestedInterface = genTypeNestedInterface(task, nestedFunCode, imports)
 	val initFunCode = genTypeInitFun(task, imports)
 	val nestedClassCode = genNestedClass(task, imports)
 
-	var code = genFileHeader(imports)
+	var code = genFileHeader(pkg, imports)
 	code += nestedInterface
 
 	val baseInterface = task.baseInterface
@@ -110,30 +107,34 @@ fun genTypeFile(task: Task): String {
 	return code
 }
 
-fun genTypeInitFile(task: Task): String {
+fun genTypeInitFile(task: Task, pkg: String): String {
 	val imports = HashSet<String>()
 	val initFunCode = genTypeInitFun(task, imports)
 
-	var code = genFileHeader(imports)
+	var code = genFileHeader(pkg, imports)
 	code += initFunCode
 
 	return code
 }
 
-fun genEnumFile(task: Task): String {
+fun genEnumFile(task: Task, pkg: String): String {
 	val imports = HashSet<String>()
 
-	var code = genFileHeader(imports)
+	var code = genFileHeader(pkg, imports)
 	code += genEnum(task.type)
 
 	return code
 }
 
-fun genFileHeader(imports: Set<String>): String {
-	var code = HEADER
+fun genFileHeader(pkg: String, imports: Set<String>): String {
+	var code = HEADER + pkg
 
-	code += '\n'
-	imports.sorted().forEach {
+	val imports2 = HashSet<String>(imports)
+	if (pkg != "com.devcharly.kotlin.ant")
+		imports2.add("com.devcharly.kotlin.ant.*")
+
+	code += "\n\n"
+	imports2.sorted().forEach {
 		code += "import ${it.replace('$', '.')}\n"
 	}
 	code += DO_NOT_EDIT
@@ -170,7 +171,7 @@ fun genTypeInitFun(task: Task, imports: HashSet<String>): String? {
 	val params = genParams(task, false, "\t", imports)
 	val init = genInit(task, "", "\t", imports)
 
-	val projectParam = if (needsProject(task.type)) {
+	val projectParam = if (needsProject(task)) {
 		imports.add(Project::class.java.name)
 		"\tproject: Project,\n"
 	} else
@@ -212,7 +213,7 @@ fun genTypeNestedFun(task: Task, forType: String?, indent: String, imports: Hash
 	if (hasProject(task.type))
 		addCode += "${indent}\t\tcomponent.project.setProjectReference(this);\n"
 	addCode += "${indent}\t\t_init("
-	if (needsProject(task.type))
+	if (needsProject(task))
 		addCode += "component.project, "
 	task.params.forEachIndexed { i, param ->
 		addCode += param.name
@@ -261,16 +262,18 @@ private fun genInit(task: Task, varName: String, indent: String, imports: HashSe
 	var init = ""
 
 	// build parameters and initialization
+	val useThisDotProject = task.params.any { it.name == "project" }
 	task.params.forEach {
 		val varNameDot = if (varName == "") "" else "$varName."
 		init += "${indent}if (${it.name} != null)\n"
-		init += "${indent}\t$varNameDot${it.method.name}(${init(it.type, it.name, it.constructWithProject, imports)})\n"
+		init += "${indent}\t$varNameDot${it.method.name}(${init(it.type, it.name, it.constructWithProject, useThisDotProject, imports)})\n"
 	}
 
 	if (task.hasNested) {
 		val varName2 = if (varName == "") "this" else varName
+		val projectParam = if (needsProject(task)) ", project" else ""
 		init += "${indent}if (nested != null)\n"
-		init += "${indent}\tnested(K${task.nestedClassName}($varName2))\n"
+		init += "${indent}\tnested(K${task.nestedClassName}($varName2$projectParam))\n"
 	}
 
 	return init
@@ -301,6 +304,9 @@ fun genNestedClass(task: Task, imports: HashSet<String>): String? {
 			if (it.method.parameterCount == 1 &&
 				it.method.parameterTypes[0] == it.type)
 			{
+				if (interfaces.contains(it.type))
+					return@forEach
+
 				interfaces.add(it.type)
 				addTypeMethods.add(it.method)
 				return@forEach
@@ -311,8 +317,8 @@ fun genNestedClass(task: Task, imports: HashSet<String>): String? {
 		if (hasProject(it.type))
 			nestedInitCode += "\t\t\tcomponent.project.setProjectReference(this)\n"
 		nestedInitCode += "\t\t\t_init("
-		if (needsProject(n.type))
-			nestedInitCode += "component.project, "
+		if (needsProject(n))
+			nestedInitCode += if (needsProject(task)) "project, " else "component.project, "
 		nestedInitCode += "${n.params.joinToString { it.name }}"
 		if (n.hasNested) {
 			if (!n.params.isEmpty())
@@ -344,7 +350,10 @@ fun genNestedClass(task: Task, imports: HashSet<String>): String? {
 	code += "}\n"
 
 	val consOvr = if (interfaces.any { hasProject(it) }) "override " else ""
-	var code0 = "class K${task.nestedClassName}(${consOvr}val component: ${task.type.simpleName})"
+	var code0 = "class K${task.nestedClassName}(${consOvr}val component: ${task.type.simpleName}"
+	if (needsProject(task))
+		code0 += ", val project: Project"
+	code0 += ")"
 	interfaces.forEachIndexed { i, it ->
 		code0 += if (i == 0) " :\n\t" else ",\n\t"
 		code0 += "I${it.simpleName}Nested"
@@ -439,7 +448,9 @@ private fun paramType(type: Class<*>): String {
 	}
 }
 
-private fun init(type: Class<*>, name: String, constructWithProject: Boolean, imports: HashSet<String>): String {
+private fun init(type: Class<*>, name: String, constructWithProject: Boolean,
+				 useThisDotProject: Boolean, imports: HashSet<String>): String
+{
 	return when (type.name) {
 		"java.lang.String" -> name
 		"boolean" -> name
@@ -458,7 +469,7 @@ private fun init(type: Class<*>, name: String, constructWithProject: Boolean, im
 		"java.lang.Character" -> name
 		"java.lang.Float" -> name
 		"java.lang.Double" -> name
-		"java.io.File" -> "project.resolveFile($name)"
+		"java.io.File" -> "${if (useThisDotProject) "this." else ""}project.resolveFile($name)"
 		else -> {
 			if (EnumeratedAttribute::class.java.isAssignableFrom(type)) {
 				if (type.enclosingClass != null)
@@ -484,9 +495,9 @@ private fun hasProject(cls: Class<*>): Boolean {
 		cls == ResourceCollection::class.java
 }
 
-private fun needsProject(cls: Class<*>): Boolean {
-	return cls == Path.PathElement::class.java ||
-		cls == Environment.Variable::class.java ||
-		cls == Javadoc.LinkArgument::class.java ||
-		cls == Javadoc.SourceFile::class.java
+private fun needsProject(task: Task): Boolean {
+	return if (hasProject(task.type))
+		false
+	else
+		task.params.any { it.type == File::class.java }
 }
