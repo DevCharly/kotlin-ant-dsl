@@ -191,6 +191,9 @@ val unsupportedNested = arrayOf(
 	""
 )
 
+/**
+ * Generate code for an Ant task.
+ */
 fun genTask(taskType: Class<*>, taskName: String? = null, nestedClassName: String? = null,
 			order: String? = null, exclude: String? = null, folder: String = "taskdefs")
 {
@@ -200,6 +203,9 @@ fun genTask(taskType: Class<*>, taskName: String? = null, nestedClassName: Strin
 	queueGen(task, ::genTaskFile, folder, nestedClassName?.toLowerCase() ?: taskName)
 }
 
+/**
+ * Generate code for a type used by another Ant task as nested element.
+ */
 fun genType(typeType: Class<*>, funName: String? = null, baseInterface: Class<*>? = null,
 			order: String? = null, exclude: String? = null, folder: String = "types")
 {
@@ -208,11 +214,19 @@ fun genType(typeType: Class<*>, funName: String? = null, baseInterface: Class<*>
 	queueGen(task, ::genTypeFile, folder)
 }
 
+/**
+ * Generate code to initialize a type used by another Ant task as nested element.
+ */
 fun genTypeInit(typeType: Class<*>, order: String? = null, exclude: String? = null, folder: String = "types") {
 	val task = reflectTask(typeType, null, null, order, exclude)
 	queueGen(task, ::genTypeInitFile, folder)
 }
 
+/**
+ * Generate code for a not-inner enum used by an Ant task.
+ *
+ * Not necessary for inner enums (nested in task class), because they will be automatically generated.
+ */
 fun genEnum(enumType: Class<*>, order: String? = null, exclude: String? = null, folder: String = "types") {
 	val task = reflectTask(enumType, null, null, order, exclude)
 	queueGen(task, ::genEnumFile, folder)
