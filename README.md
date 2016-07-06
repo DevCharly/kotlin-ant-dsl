@@ -92,6 +92,16 @@ Ant {
   * [ZipFileSet](http://ant.apache.org/manual/Types/zipfileset.html)
 
 
+## Generator
+
+The Kotlin code for the Ant tasks DSL is generated.
+See [generator](generator/src/main/kotlin/com/devcharly/kotlin/ant/generator).
+If you miss some tasks, you can add them to
+[generator/Main.kt](generator/src/main/kotlin/com/devcharly/kotlin/ant/generator/Main.kt)
+and use `./kobaltw generator:run` to generate the DSL.
+Then use `./kobaltw assemble` to compile the DSL.
+
+
 ## Who uses Kotlin Ant DSL?
 
   * [Kobalt build system Ant plug-in](https://github.com/DevCharly/kobalt-ant)
@@ -107,6 +117,11 @@ For Maven, Gradle or Kobalt use:
     Group:      com.devcharly
     Artifact:   kotlin-ant-dsl
     Version:    (latest)
+
+
+## Requirements
+
+Ant 1.9.7 or later
 
 
 [Ant]: http://ant.apache.org/
