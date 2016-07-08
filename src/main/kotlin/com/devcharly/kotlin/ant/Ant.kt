@@ -24,7 +24,7 @@ import org.apache.tools.ant.Target
 import org.apache.tools.ant.Task
 import java.io.File
 
-open class Ant(basedir: String = "", logLevel: LogLevel = LogLevel.INFO,
+open class Ant(val context: AntContext = AntContext(),
 			   execute: Boolean = true,
 			   private val tasks: Ant.() -> Unit)
 {
@@ -33,21 +33,33 @@ open class Ant(basedir: String = "", logLevel: LogLevel = LogLevel.INFO,
 
 	init {
 		if (execute)
-			execute(basedir, logLevel)
+			execute()
 	}
 
-	fun execute(basedir: String = "", logLevel: LogLevel = LogLevel.INFO) {
-		// create Ant logger
-		val logger = DefaultLogger()
-		logger.setMessageOutputLevel(logLevel.level)
-		logger.setOutputPrintStream(System.out)
-		logger.setErrorPrintStream(System.err)
+	constructor(basedir: String = "", logLevel: LogLevel = LogLevel.INFO,
+				execute: Boolean = true, tasks: Ant.() -> Unit)
+		: this(AntContext(basedir, logLevel), execute, tasks)
+	{
+	}
 
-		// create Ant project
-		project = Project()
-		project.addBuildListener(logger)
-		project.init()
-		project.baseDir = File(basedir).absoluteFile
+	fun execute() {
+		if (context.project == null) {
+			// create Ant logger
+			val logger = DefaultLogger().apply {
+				setMessageOutputLevel(context.logLevel.level)
+				setOutputPrintStream(System.out)
+				setErrorPrintStream(System.err)
+			}
+
+			// create Ant project
+			context.project = Project().apply {
+				addBuildListener(logger)
+				init()
+				baseDir = File(context.basedir).absoluteFile
+			}
+		}
+
+		project = context.project!!
 
 		// create Ant target
 		target = Target()
@@ -79,6 +91,19 @@ open class Ant(basedir: String = "", logLevel: LogLevel = LogLevel.INFO,
 	}
 
 	fun p(name: String): String {
+		return PropertyHelper.getPropertyHelper(project).parseProperties("\${$name}").toString()
+	}
+}
+
+//---- class AntContext -------------------------------------------------------
+
+class AntContext(val basedir: String = "", val logLevel: LogLevel = LogLevel.INFO) {
+	internal var project: Project? = null
+
+	fun p(name: String): String {
+		if (project == null)
+			throw IllegalStateException("AntContext not initialized")
+
 		return PropertyHelper.getPropertyHelper(project).parseProperties("\${$name}").toString()
 	}
 }
