@@ -92,6 +92,15 @@ Ant {
   * [ZipFileSet](http://ant.apache.org/manual/Types/zipfileset.html)
 
 
+## Converter
+
+The [Converter](converter/src/main/kotlin/com/devcharly/kotlin/ant/converter/Main.kt)
+converts Ant XML files to Kotlin Ant DSL.
+Note that Kotlin Ant DSL does not support some Ant tags (e.g. `<project>` and `<target>`).
+So you can not compile/run the output, but you can copy the parts that you need.
+The primary goal is support migration of Ant builds to Kotlin based build systems (e.g. [Kobalt])
+
+
 ## Generator
 
 The Kotlin code for the Ant tasks DSL is generated.
@@ -126,3 +135,4 @@ Ant 1.9.7 or later
 
 [Ant]: http://ant.apache.org/
 [Ant tasks]: http://ant.apache.org/manual/tasksoverview.html
+[Kobalt]: https://github.com/cbeust/kobalt
