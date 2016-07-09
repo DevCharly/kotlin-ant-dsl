@@ -42,6 +42,11 @@ val generator = project {
 	}
 }
 
+val converter = project {
+	name = "converter"
+	directory = "converter"
+}
+
 val examples = project(dsl) {
 	name = "examples"
 	directory = "examples"
