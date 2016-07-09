@@ -95,7 +95,7 @@ fun convertAntXml2Kotlin(fileName: String) {
 
 private fun attrs2params(attrs: String): String {
 	var s = attrs.replace(Regex("(?:${ATTRIBUTE})(${WHITESPACES_OPT})"), { match ->
-		"${match.groupValues[1]}=${attr2paramValue(match.groupValues[2])},${match.groupValues[3]}"
+		"${match.groupValues[1]} = ${attr2paramValue(match.groupValues[2])},${match.groupValues[3]}"
 	})
 
 	// remove trailing ',', but keep whitespace (in case it contains line separator
@@ -113,7 +113,9 @@ private fun attr2paramValue(attrValue: String): String {
 		"\"false\"" -> "false"
 		"\"yes\"" -> "true"
 		"\"no\"" -> "false"
-		else -> attrValue
+
+		// replace "${ant.property}" with "${p("ant.property")}"
+		else -> attrValue.replace(Regex("\\$\\{([^}]*)\\}"), "\\\${p(\"$1\")}")
 	}
 }
 
