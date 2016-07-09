@@ -48,8 +48,10 @@ fun main(args: Array<String>) {
 fun convertAntXml2Kotlin(fileName: String) {
 	println("Convert $fileName")
 
+	// read Ant XML file
 	var s = FileReader(fileName).readText()
 
+	// determine used line separator
 	val lineSeparator = if (s.contains("\r\n")) "\r\n" else "\n"
 
 	// <?xml version="1.0"?>
@@ -57,6 +59,9 @@ fun convertAntXml2Kotlin(fileName: String) {
 
 	// comments
 	s = s.replace(Regex("<!--(.+?)-->", RegexOption.DOT_MATCHES_ALL), "/*$1*/")
+
+	// top-level elements must be assigned to a val in Kotlin
+	s = s.replace("<project", "val p = <project")
 
 	// tag
 	s = s.replace(Regex(TAG), { match ->
@@ -76,6 +81,10 @@ fun convertAntXml2Kotlin(fileName: String) {
 	// close tag
 	s = s.replace(Regex(TAG_CLOSE), "}")
 
+	// insert imports
+	s = "import com.devcharly.kotlin.ant.*$lineSeparator$lineSeparator$s"
+
+	// write Kotlin file
 	val kotlinFileName = fileName.removeSuffix(".xml") + ".kt"
 	println("     to $kotlinFileName")
 	FileWriter(kotlinFileName).apply {
