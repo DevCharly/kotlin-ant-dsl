@@ -21,7 +21,6 @@ import java.io.FileWriter
 
 const val NAME				= "[\\w-_.]+"
 const val STRING			= "\"[^\"]*?\""
-const val WHITESPACES		= "\\s+"
 const val WHITESPACES_OPT	= "(?:\\s*)"
 
 const val ATTRIBUTE			= "(${NAME})${WHITESPACES_OPT}=${WHITESPACES_OPT}(${STRING})"
@@ -30,6 +29,8 @@ const val ATTRIBUTES		= "(${ATTRIBUTE}${WHITESPACES_OPT})*"
 const val TAG				= "<(${NAME})${WHITESPACES_OPT}(${ATTRIBUTES})/>"
 const val TAG_OPEN			= "<(${NAME})${WHITESPACES_OPT}(${ATTRIBUTES})>"
 const val TAG_CLOSE			= "</(${NAME})>"
+
+const val PARENTHESIS_SPACE	= ""
 
 /**
  * Converts Ant XML files to Kotlin Ant DSL.
@@ -65,7 +66,9 @@ fun convertAntXml2Kotlin(fileName: String) {
 
 	// tag
 	s = s.replace(Regex(TAG), { match ->
-		"${match.groupValues[1]}(${attrs2params(match.groupValues[2])})"
+		val name = match.groupValues[1]
+		val params = attrs2params(match.groupValues[2])
+		"$name($PARENTHESIS_SPACE$params$PARENTHESIS_SPACE)"
 	})
 
 	// open tag
@@ -75,7 +78,7 @@ fun convertAntXml2Kotlin(fileName: String) {
 		if (params.isEmpty())
 			"$name {"
 		else
-			"$name($params) {"
+			"$name($PARENTHESIS_SPACE$params$PARENTHESIS_SPACE) {"
 	})
 
 	// close tag
@@ -117,9 +120,4 @@ private fun attr2paramValue(attrValue: String): String {
 		// replace "${ant.property}" with "${p("ant.property")}"
 		else -> attrValue.replace(Regex("\\$\\{([^}]*)\\}"), "\\\${p(\"$1\")}")
 	}
-}
-
-private fun printArray(a: Array<Any>) {
-	println("---- ${a.size} ----")
-	a.forEachIndexed { i, any -> println("$i: $any") }
 }
