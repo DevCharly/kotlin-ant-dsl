@@ -66,7 +66,7 @@ fun convertAntXml2Kotlin(fileName: String) {
 
 	// tag
 	s = s.replace(Regex(TAG), { match ->
-		val name = match.groupValues[1]
+		val name = match.groupValues[1].toLowerCase()
 		val params = attrs2params(match.groupValues[2])
 		"$name($PARENTHESIS_SPACE$params$PARENTHESIS_SPACE)"
 	})
@@ -98,7 +98,7 @@ fun convertAntXml2Kotlin(fileName: String) {
 
 private fun attrs2params(attrs: String): String {
 	var s = attrs.replace(Regex("(?:${ATTRIBUTE})(${WHITESPACES_OPT})"), { match ->
-		"${match.groupValues[1]} = ${attr2paramValue(match.groupValues[2])},${match.groupValues[3]}"
+		"${match.groupValues[1].toLowerCase()} = ${attr2paramValue(match.groupValues[2])},${match.groupValues[3]}"
 	})
 
 	// remove trailing ',', but keep whitespace (in case it contains line separator
