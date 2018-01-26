@@ -4,8 +4,8 @@ import com.beust.kobalt.plugin.packaging.*
 import com.beust.kobalt.plugin.publish.bintray
 
 object Versions {
-	val ant = "1.9.7"
-	val asm = "5.1"
+	val ant = "1.10.1"
+	val asm = "6.0"
 }
 
 val dsl = project {

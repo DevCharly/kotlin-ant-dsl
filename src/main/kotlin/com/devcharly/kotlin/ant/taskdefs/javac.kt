@@ -60,6 +60,7 @@ fun Ant.javac(
 	extdirs: String? = null,
 	debuglevel: String? = null,
 	source: String? = null,
+	nativeheaderdir: String? = null,
 	modulesourcepath: String? = null,
 	modulesourcepathref: String? = null,
 	modulepath: String? = null,
@@ -78,6 +79,7 @@ fun Ant.javac(
 	depend: Boolean? = null,
 	verbose: Boolean? = null,
 	target: String? = null,
+	release: String? = null,
 	includeantruntime: Boolean? = null,
 	includejavaruntime: Boolean? = null,
 	fork: Boolean? = null,
@@ -125,6 +127,8 @@ fun Ant.javac(
 			task.setDebugLevel(debuglevel)
 		if (source != null)
 			task.setSource(source)
+		if (nativeheaderdir != null)
+			task.setNativeHeaderDir(project.resolveFile(nativeheaderdir))
 		if (modulesourcepath != null)
 			task.setModulesourcepath(Path(project, modulesourcepath))
 		if (modulesourcepathref != null)
@@ -161,6 +165,8 @@ fun Ant.javac(
 			task.setVerbose(verbose)
 		if (target != null)
 			task.setTarget(target)
+		if (release != null)
+			task.setRelease(release)
 		if (includeantruntime != null)
 			task.setIncludeantruntime(includeantruntime)
 		if (includejavaruntime != null)

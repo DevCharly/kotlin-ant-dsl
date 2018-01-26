@@ -68,4 +68,4 @@ class KUntar(override val component: Untar) :
 	override fun _addPatternSet(value: PatternSet) = component.addPatternset(value)
 }
 
-enum class UntarCompressionMethod(val value: String) { NONE("none"), GZIP("gzip"), BZIP2("bzip2") }
+enum class UntarCompressionMethod(val value: String) { NONE("none"), GZIP("gzip"), BZIP2("bzip2"), XZ("xz") }

@@ -164,4 +164,4 @@ class KTar(override val component: Tar) :
 }
 
 enum class TarLongFileMode(val value: String) { WARN("warn"), FAIL("fail"), TRUNCATE("truncate"), GNU("gnu"), POSIX("posix"), OMIT("omit") }
-enum class TarCompressionMethod(val value: String) { NONE("none"), GZIP("gzip"), BZIP2("bzip2") }
+enum class TarCompressionMethod(val value: String) { NONE("none"), GZIP("gzip"), BZIP2("bzip2"), XZ("xz") }

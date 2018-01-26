@@ -24,6 +24,7 @@ import org.apache.tools.ant.types.selectors.DateSelector
 import org.apache.tools.ant.types.selectors.DependSelector
 import org.apache.tools.ant.types.selectors.DepthSelector
 import org.apache.tools.ant.types.selectors.DifferentSelector
+import org.apache.tools.ant.types.selectors.ExecutableSelector
 import org.apache.tools.ant.types.selectors.ExtendSelector
 import org.apache.tools.ant.types.selectors.FileSelector
 import org.apache.tools.ant.types.selectors.FilenameSelector
@@ -31,10 +32,12 @@ import org.apache.tools.ant.types.selectors.MajoritySelector
 import org.apache.tools.ant.types.selectors.NoneSelector
 import org.apache.tools.ant.types.selectors.NotSelector
 import org.apache.tools.ant.types.selectors.OrSelector
+import org.apache.tools.ant.types.selectors.OwnedBySelector
 import org.apache.tools.ant.types.selectors.PresentSelector
 import org.apache.tools.ant.types.selectors.ReadableSelector
 import org.apache.tools.ant.types.selectors.SelectSelector
 import org.apache.tools.ant.types.selectors.SizeSelector
+import org.apache.tools.ant.types.selectors.SymlinkSelector
 import org.apache.tools.ant.types.selectors.TypeSelector
 import org.apache.tools.ant.types.selectors.WritableSelector
 import org.apache.tools.ant.types.selectors.modifiedselector.ModifiedSelector
@@ -152,7 +155,10 @@ class KDirSet(override val component: DirSet) :
 	IContainsRegexpSelectorNested,
 	IModifiedSelectorNested,
 	IReadableSelectorNested,
-	IWritableSelectorNested
+	IWritableSelectorNested,
+	IExecutableSelectorNested,
+	ISymlinkSelectorNested,
+	IOwnedBySelectorNested
 {
 	fun patternset(includes: String? = null, excludes: String? = null, includesfile: String? = null, excludesfile: String? = null, nested: (KPatternSet.() -> Unit)? = null) {
 		component.createPatternSet().apply {
@@ -201,4 +207,7 @@ class KDirSet(override val component: DirSet) :
 	override fun _addModifiedSelector(value: ModifiedSelector) = component.addModified(value)
 	override fun _addReadableSelector(value: ReadableSelector) = component.addReadable(value)
 	override fun _addWritableSelector(value: WritableSelector) = component.addWritable(value)
+	override fun _addExecutableSelector(value: ExecutableSelector) = component.addExecutable(value)
+	override fun _addSymlinkSelector(value: SymlinkSelector) = component.addSymlink(value)
+	override fun _addOwnedBySelector(value: OwnedBySelector) = component.addOwnedBy(value)
 }
