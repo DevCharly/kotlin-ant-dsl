@@ -34,7 +34,7 @@ import java.io.File
 import java.io.FileWriter
 import java.util.*
 
-var OUT_FOLDER = "src/main/kotlin"
+var OUT_FOLDER = "../src/main/kotlin"
 var PACKAGE = "com.devcharly.kotlin.ant"
 
 fun main(args: Array<String>) {
