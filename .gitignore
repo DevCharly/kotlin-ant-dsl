@@ -1,4 +1,7 @@
 /.kobalt/
-/kobaltBuild/
+kobaltBuild/
 /bin/
 /out/
+/.idea/
+*.iml
+/local.properties
