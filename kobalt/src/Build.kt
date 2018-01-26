@@ -33,6 +33,7 @@ val dsl = project {
 val generator = project {
 	name = "generator"
 	directory = "generator"
+	version = "1.0" // run task does not work without version because of a bug in Kobalt
 
 	dependencies {
 		compile("org.apache.ant:ant:${Versions.ant}")
