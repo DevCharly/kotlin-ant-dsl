@@ -3,6 +3,11 @@ import com.beust.kobalt.plugin.application.application
 import com.beust.kobalt.plugin.packaging.*
 import com.beust.kobalt.plugin.publish.bintray
 
+object Versions {
+	val ant = "1.9.7"
+	val asm = "5.1"
+}
+
 val dsl = project {
 	name = "kotlin-ant-dsl"
 	group = "com.devcharly"
@@ -10,7 +15,7 @@ val dsl = project {
 	version = "0.5"
 
 	dependencies {
-		compile("org.apache.ant:ant:1.9.7")
+		compile("org.apache.ant:ant:${Versions.ant}")
 	}
 
 	assemble {
@@ -30,8 +35,8 @@ val generator = project {
 	directory = "generator"
 
 	dependencies {
-		compile("org.apache.ant:ant:1.9.7")
-		compile("org.ow2.asm:asm:5.1")
+		compile("org.apache.ant:ant:${Versions.ant}")
+		compile("org.ow2.asm:asm:${Versions.asm}")
 	}
 
 	// this is necessary for the application directive
